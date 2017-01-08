@@ -4,7 +4,7 @@
 
 Command to initialize PhpUnit configuration and folders hierarchy.
 
-:warning: **Requires** this [Composer implementation](https://github.com/yoanm/intRepositoryWithComposer) (See [Tests strategy rule - base namespace](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-base-namespace))
+:warning: **Requires** this [Composer implementation](https://github.com/yoanm/intRepositoryWithComposer)
 
  * [Configuration reference](#configuration-reference)
   * [Requirements](#configuration-reference-requirements)
