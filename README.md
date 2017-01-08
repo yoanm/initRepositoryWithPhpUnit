@@ -2,6 +2,9 @@
 
 > *Implementation is compliant to this* [**Tests strategy**](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md)
 
+*This [Composer implementation](https://github.com/yoanm/intRepositoryWithComposer) is* **required** *(See [Tests strategy rule - base namespace](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-base-namespace))*
+
+
 Command to initialize PhpUnit configuration and folders hierarchy
 
  * [Configuration reference](#configuration-reference)
