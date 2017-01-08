@@ -1,11 +1,11 @@
 # initRepositoryWithPhpUnit
 
-> *Implementation is compliant to this* **[Tests strategy](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md)**
+> *Implementation is compliant to this* [**Tests strategy**](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md)
 
 Command to initialize PhpUnit configuration and folders hierarchy
 
- * [Rules validated with configuration reference](#rules-validated)
-  * [Mandatory](#mandatory)
+ * [Tests strategy rules validated by configuration reference](#rules-validated)
+  * [Mandatory](#rules-validated-mandatory)
     * [**Early stop**](#mandatory-early-stop)
     * [Strict mode](#mandatory-strict-mode)
       * [**Exit status**](#mandatory-strict-mode-exit-status)
@@ -22,12 +22,12 @@ Command to initialize PhpUnit configuration and folders hierarchy
     * [Real coverage](#mandatory-real-coverage)
       * [**No coverage overflow**](#mandatory-real-coverage-overflow)
       * [**Risky tests does not count in coverage**](#mandatory-real-coverage-risky-tests)
-    * [\<listener>](#listener)
-      * [**Strict mode - fails if - risky tests**](#listener-rule-1)
-      * [**Real coverage - risky tests  does not count in coverage**](#listener-rule-2)
-    * [\<test-suites>](#test-suites)
-      * [**Tests Root directory**](#test-suites-tests-root-directory)
-      * [**Tests order**](#test-suites-tests-order)
+    * [\<listener>](#mandatory-listener)
+      * [**Strict mode - fails if - risky tests**](#mandatory-listener-rule-1)
+      * [**Real coverage - risky tests  does not count in coverage**](#mandatory-listener-rule-2)
+    * [\<test-suites>](#mandatory-test-suites)
+      * [**Tests Root directory**](#mandatory-test-suites-tests-root-directory)
+      * [**Tests order**](#mandatory-test-suites-tests-order)
   * [Optional](#optional)
     * [**Test doc - tested class**](#optional-rule-1)
     * [**Test doc - tested class dependencies**](#optional-rule-2)
@@ -36,8 +36,9 @@ Command to initialize PhpUnit configuration and folders hierarchy
  * [Configuration requirements](#configuration-requirements)
 
 <a name="rules-validated"></a>
-## [Rules](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules) validated with [configuration reference](#configuration-reference)
+## [Tests strategy rules](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules) validated by [configuration reference](#configuration-reference)
 
+<a name="rules-validated-mandatory"></a>
 ### Mandatory
 
 <a name="mandatory-early-stop"></a>
@@ -60,7 +61,7 @@ Command to initialize PhpUnit configuration and folders hierarchy
     * `convertNoticesToExceptions="true"`
     * `convertWarningsToExceptions="true"`
 <a name="mandatory-strict-mode-fails-if-risky-tests"></a>
-  * [Risky tests](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-strict-mode-fails-if-risky-tests) (requires [`listener`](#listener))
+  * [Risky tests](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-strict-mode-fails-if-risky-tests) (requires [`listener`](#mandatory-listener))
 
     * [No Output](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-risky-tests-output) with `beStrictAboutOutputDuringTests="true"`
     * [No globals manipulation](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-risky-tests-manipulate-globals) with `beStrictAboutChangesToGlobalState="true"`
@@ -108,16 +109,16 @@ Command to initialize PhpUnit configuration and folders hierarchy
 <a name="mandatory-real-coverage-risky-tests"></a>
  * [Risky tests does not count in coverage](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-real-coverage-risky-tests)
     
-  * [No Output](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-risky-tests-output) with `beStrictAboutOutputDuringTests="true"` (requires [`listener`](#listener))
+  * [No Output](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-risky-tests-output) with `beStrictAboutOutputDuringTests="true"` (requires [`listener`](#mandatory-listener))
   * [No globals manipulation](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-risky-tests-manipulate-globals) with `beStrictAboutChangesToGlobalState="true"`
   * [No test that test nothing](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-risky-tests-test-nothing) with `beStrictAboutTestsThatDoNotTestAnything="true"`
 
-<a name="listener"></a>
+<a name="mandatory-listener"></a>
 #### \<listener> (See [TestsStrategyListener](./src/Yoanm/InitRepositoryWithPhpUnit/Listener/TestsStrategyListener.php))
       
 Listener will validate following mandatory rules
 
-<a name="listener-rule-1"></a>
+<a name="mandatory-listener-rule-1"></a>
  * [Strict mode - fails if - risky tests](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-strict-mode-fails-if-risky-tests)
 
   * Required by 
@@ -126,17 +127,17 @@ Listener will validate following mandatory rules
     * `beStrictAboutChangesToGlobalState="true"` ([No globals manipulation](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-risky-tests-manipulate-globals))
     * `beStrictAboutTestsThatDoNotTestAnything="true"` ([No test that test nothing](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-risky-tests-test-nothing))
 
-<a name="listener-rule-2"></a>
+<a name="mandatory-listener-rule-2"></a>
  * [Real coverage - risky tests  does not count in coverage](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-real-coverage-risky-tests) for some specific kinds of risky test   
       
   * Required by `beStrictAboutOutputDuringTests="true"` ([No Output](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-risky-tests-output))
  
-<a name="test-suites"></a>
+<a name="mandatory-test-suites"></a>
 #### \<test-suites>
     
-<a name="test-suites-tests-root-directory"></a>
+<a name="mandatory-test-suites-tests-root-directory"></a>
   * [Tests Root directory](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#tests-root-directory)
-<a name="test-suites-tests-order"></a>
+<a name="mandatory-test-suites-tests-order"></a>
   * [Tests order](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#tests-order)
 
 ### Optional
@@ -149,7 +150,7 @@ Listener will validate following mandatory rules
 <a name="optional-rule-2"></a>
  * [Test doc - tested class dependencies](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-test-documentation-tested-class-dependencies-description) by using `@uses`
   
-    * Also use `checkForUnintentionallyCoveredCode="true"`, to be sure sure that new dependencies will be forced to be documented. With [configuration reference](#configuration-reference), it will convert test into risky test, and risky test will be converted into failed test by [`listener`](#listener)
+    * Also use `checkForUnintentionallyCoveredCode="true"`, to be sure sure that new dependencies will be forced to be documented. With [configuration reference](#configuration-reference), it will convert test into risky test, and risky test will be converted into failed test by [`listener`](#mandatory-listener)
       
     Simply add the following as test class or test method comment : 
     ```
