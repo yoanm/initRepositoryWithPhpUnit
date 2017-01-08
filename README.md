@@ -113,7 +113,7 @@ Command to initialize PhpUnit configuration and folders hierarchy
   * [No test that test nothing](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-risky-tests-test-nothing) with `beStrictAboutTestsThatDoNotTestAnything="true"`
 
 <a name="listener"></a>
-#### \<listener> (See [TestsStrategyListener](../src/PhpUnit/TestsStrategyListener.php))
+#### \<listener> (See [TestsStrategyListener](../src/Yoanm/InitRepositoryWithPhpUnit/Listener/TestsStrategyListener.php))
       
 Listener will validate following mandatory rules
 
@@ -186,7 +186,7 @@ Listener will validate following mandatory rules
   colors="true"
 >
   <listeners>
-        <listener class="Yoanm\InitPhpRepositoryTestsStrategy\PhpUnit\TestsStrategyListener"/>
+        <listener class="Yoanm\InitRepositoryWithPhpUnit\Listener\TestsStrategyListener"/>
   </listeners>
 
   <testsuites>
