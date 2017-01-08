@@ -7,6 +7,8 @@ Command to initialize PhpUnit configuration and folders hierarchy.
 
 > :warning: **Requires** this [Composer implementation](https://github.com/yoanm/initRepositoryWithComposer)
 
+> :warning: **Requires** [PhpUnitExtended](https://github.com/yoanm/PhpUnitExtended)
+
  * [Configuration reference](#configuration-reference)
   * [Requirements](#configuration-reference-requirements)
   * [\<listener>](#configuration-reference-listener)
