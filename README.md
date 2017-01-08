@@ -4,6 +4,8 @@
 
 Command to initialize PhpUnit configuration and folders hierarchy
 
+ * [Configuration reference](#configuration-reference)
+  * [Requirements](#configuration-reference-requirements)
  * [Tests strategy rules validated by configuration reference](#rules-validated)
   * [Mandatory](#rules-validated-mandatory)
     * [**Early stop**](#mandatory-early-stop)
@@ -32,8 +34,53 @@ Command to initialize PhpUnit configuration and folders hierarchy
     * [**Test doc - tested class**](#optional-rule-1)
     * [**Test doc - tested class dependencies**](#optional-rule-2)
  * [Optional config](#optional-config)
- * [Configuration reference](#configuration-reference)
-  * [Requirements](#configuration-reference-requirements)
+
+## Configuration reference
+```xml
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.8/phpunit.xsd"
+  stopOnError="true"
+  stopOnFailure="true"
+  convertErrorsToExceptions="true"
+  convertNoticesToExceptions="true"
+  convertWarningsToExceptions="true"
+  beStrictAboutOutputDuringTests="true"
+  beStrictAboutChangesToGlobalState="true"
+  beStrictAboutTestsThatDoNotTestAnything="true"
+  backupGlobals="true"
+  backupStaticAttributes="false"
+  forceCoversAnnotation="true"
+  checkForUnintentionallyCoveredCode="true"
+  bootstrap="vendor/autoload.php"
+  colors="true"
+>
+  <listeners>
+        <listener class="Yoanm\InitRepositoryWithPhpUnit\Listener\TestsStrategyListener"/>
+  </listeners>
+
+  <testsuites>
+      <testsuite name="technical">
+          <directory>tests/Technical/Unit/*</directory>
+          <!-- define (and so, launch) integration tests after unit tests => slower than unit tests -->
+          <directory>tests/Technical/Integration/*</directory>
+      </testsuite>
+      <!-- defined (and so, launch) functional tests tests after technical tests => slower than technical tests -->
+      <testsuite name="functional">
+          <directory>tests/Functional/*</directory>
+      </testsuite>
+  </testsuites>
+
+  <filter>
+    <whitelist>
+      <directory>src</directory>
+    </whitelist>
+  </filter>
+</phpunit>
+```
+<a name="configuration-reference-requirements"></a>
+### Requirements
+
+  * `beStrictAboutChangesToGlobalState="true"`requires `backupGlobals="true"` in order to work
 
 <a name="rules-validated"></a>
 ## [Tests strategy rules](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules) validated by [configuration reference](#configuration-reference)
@@ -167,49 +214,3 @@ Listener will validate following mandatory rules
  * `colors="true"` : Pretty output
  * `processIsolation="true"` : For [test isolation - different process](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-tests-isolation-different-process), but it could create edge cases
  
-## Configuration reference
-```xml
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.8/phpunit.xsd"
-  stopOnError="true"
-  stopOnFailure="true"
-  convertErrorsToExceptions="true"
-  convertNoticesToExceptions="true"
-  convertWarningsToExceptions="true"
-  beStrictAboutOutputDuringTests="true"
-  beStrictAboutChangesToGlobalState="true"
-  beStrictAboutTestsThatDoNotTestAnything="true"
-  backupGlobals="true"
-  backupStaticAttributes="false"
-  forceCoversAnnotation="true"
-  checkForUnintentionallyCoveredCode="true"
-  bootstrap="vendor/autoload.php"
-  colors="true"
->
-  <listeners>
-        <listener class="Yoanm\InitRepositoryWithPhpUnit\Listener\TestsStrategyListener"/>
-  </listeners>
-
-  <testsuites>
-      <testsuite name="technical">
-          <directory>tests/Technical/Unit/*</directory>
-          <!-- define (and so, launch) integration tests after unit tests => slower than unit tests -->
-          <directory>tests/Technical/Integration/*</directory>
-      </testsuite>
-      <!-- defined (and so, launch) functional tests tests after technical tests => slower than technical tests -->
-      <testsuite name="functional">
-          <directory>tests/Functional/*</directory>
-      </testsuite>
-  </testsuites>
-
-  <filter>
-    <whitelist>
-      <directory>src</directory>
-    </whitelist>
-  </filter>
-</phpunit>
-```
-<a name="configuration-reference-requirements"></a>
-### Requirements
-
-  * `beStrictAboutChangesToGlobalState="true"`requires `backupGlobals="true"` in order to work
