@@ -1,10 +1,10 @@
 # initRepositoryWithPhpUnit
 
-> *Implementation is compliant to this* [**Tests strategy**](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md)
-
 Command to initialize PhpUnit configuration and folders hierarchy.
 
-:warning: **Requires** this [Composer implementation](https://github.com/yoanm/initRepositoryWithComposer)
+> *Implementation is compliant to this* [**Tests strategy**](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md)
+
+> :warning: **Requires** this [Composer implementation](https://github.com/yoanm/initRepositoryWithComposer)
 
  * [Configuration reference](#configuration-reference)
   * [Requirements](#configuration-reference-requirements)
