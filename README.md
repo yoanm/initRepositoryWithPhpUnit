@@ -54,7 +54,7 @@ Command to initialize PhpUnit configuration and folders hierarchy.
   beStrictAboutChangesToGlobalState="true"
   beStrictAboutTestsThatDoNotTestAnything="true"
   backupGlobals="true"
-  backupStaticAttributes="false"
+  backupStaticAttributes="true"
   forceCoversAnnotation="true"
   checkForUnintentionallyCoveredCode="true"
   bootstrap="vendor/autoload.php"
@@ -149,7 +149,7 @@ Listener is required by
    *Required by `beStrictAboutChangesToGlobalState="true"`*
 
 <a name="rules-validated-mandatory-tests-isolation-static-class-member"></a>
- * [Static class member backup](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-tests-isolation-static-class-member) with `backupStaticAttributes="false"`
+ * [Static class member backup](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-tests-isolation-static-class-member) with `backupStaticAttributes="true"`
   
 <a name="rules-validated-mandatory-real-coverage"></a>
 #### [Real coverage](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-real-coverage)
