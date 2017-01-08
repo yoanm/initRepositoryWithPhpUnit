@@ -146,7 +146,7 @@ Listener will validate following mandatory rules
       
    *In fact, required if coverage is used as configuration uses `forceCoversAnnotation="true"`*
 
-<a name="optional-rule-1"></a>
+<a name="optional-rule-2"></a>
  * [Test doc - tested class dependencies](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-test-documentation-tested-class-dependencies-description) by using `@uses`
   
     * Also use `checkForUnintentionallyCoveredCode="true"`, to be sure sure that new dependencies will be forced to be documented. With [configuration reference](#configuration-reference), it will convert test into risky test, and risky test will be converted into failed test by [`listener`](#listener)
