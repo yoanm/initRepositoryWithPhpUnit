@@ -4,7 +4,7 @@
 
 Command to initialize PhpUnit configuration and folders hierarchy
 
- * [Rules validated with configuration reference](#configuration-reference)
+ * [Rules validated with configuration reference](#rules-validated)
   * [Mandatory](#mandatory)
     * [**Early stop**](#mandatory-early-stop)
     * [Strict mode](#mandatory-strict-mode)
