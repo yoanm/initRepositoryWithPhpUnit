@@ -33,7 +33,7 @@ Command to initialize PhpUnit configuration and folders hierarchy
     * [**Test doc - tested class dependencies**](#optional-rule-2)
  * [Optional config](#optional-config)
  * [Configuration reference](#configuration-reference)
- * [Configuration requirements](#configuration-requirements)
+  * [Requirements](#configuration-reference-requirements)
 
 <a name="rules-validated"></a>
 ## [Tests strategy rules](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules) validated by [configuration reference](#configuration-reference)
@@ -209,6 +209,7 @@ Listener will validate following mandatory rules
   </filter>
 </phpunit>
 ```
-### Configuration requirements
+<a name="configuration-reference-requirements"></a>
+### Requirements
 
   * `beStrictAboutChangesToGlobalState="true"`requires `backupGlobals="true"` in order to work
