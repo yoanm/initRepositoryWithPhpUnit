@@ -56,7 +56,7 @@ Command to initialize PhpUnit configuration and folders hierarchy.
   colors="true"
 >
   <listeners>
-        <listener class="Yoanm\InitRepositoryWithPhpUnit\Listener\TestsStrategyListener"/>
+        <listener class="Yoanm\PhpUnitExtended\Listener\TestsStrategyListener"/>
   </listeners>
 
   <testsuites>
