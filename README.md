@@ -24,14 +24,15 @@ Command to initialize PhpUnit configuration and folders hierarchy
       * [**Risky tests does not count in coverage**](#mandatory-real-coverage-risky-tests)
     * [\<listener>](#listener)
       * [**Strict mode - fails if - risky tests**](#listener-rule-1)
-      * [**Real coverage - risky tests  does not count in coverage**](#listener-rule-1)
+      * [**Real coverage - risky tests  does not count in coverage**](#listener-rule-2)
     * [\<test-suites>](#test-suites)
       * [**Tests Root directory**](#test-suites-tests-root-directory)
       * [**Tests order**](#test-suites-tests-order)
   * [Optional](#optional)
-    * [**Tests Root directory**](#test-suites-tests-root-directory)
-    * [**Tests Order**](#test-suites-tests-order)
+    * [**Test doc - tested class**](#optional-rule-1)
+    * [**Test doc - tested class dependencies**](#optional-rule-2)
  * [Optional config](#optional-config)
+ * [Configuration reference](#configuration-reference)
  * [Configuration requirements](#configuration-requirements)
 
 <a name="rules-validated"></a>
