@@ -99,63 +99,63 @@ Listener is required by
  * `beStrictAboutTestsThatDoNotTestAnything="true"`
 
 <a name="rules-validated"></a>
-## [Tests strategy rules](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules) validated by [configuration reference](#configuration-reference)
+## [Tests strategy rules](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules) validated by [configuration reference](#configuration-reference)
 
 <a name="rules-validated-mandatory"></a>
 ### Mandatory
 
 <a name="rules-validated-mandatory-early-stop"></a>
-#### [Early stop](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-early-stop)
+#### [Early stop](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-early-stop)
 
 * `stopOnError="true"`
 * `stopOnFailure="true"`
 
 <a name="rules-validated-mandatory-strict-mode"></a>
-#### [Strict mode](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-strict-mode)
+#### [Strict mode](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-strict-mode)
 
 <a name="rules-validated-mandatory-strict-mode-exit-status"></a>
- * [Exit status](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#exit-status) : PhpUnit command will return a failed status if a failed or on error test exist
+ * [Exit status](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#exit-status) : PhpUnit command will return a failed status if a failed or on error test exist
 <a name="rules-validated-mandatory-strict-mode-fails-if"></a>
- * [Fails if](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-strict-mode-fails-if)
+ * [Fails if](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-strict-mode-fails-if)
 <a name="rules-validated-mandatory-strict-mode-fails-if-php-errors"></a>
-  * [Php errors](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-strict-mode-fails-if-php-errors)
+  * [Php errors](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-strict-mode-fails-if-php-errors)
 
     * `convertErrorsToExceptions="true"`
     * `convertNoticesToExceptions="true"`
     * `convertWarningsToExceptions="true"`
 <a name="rules-validated-mandatory-strict-mode-fails-if-risky-tests"></a>
-  * [Risky tests](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-strict-mode-fails-if-risky-tests) (requires [`listener`](#configuration-reference-listener))
+  * [Risky tests](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-strict-mode-fails-if-risky-tests) (requires [`listener`](#configuration-reference-listener))
 
-    * [No Output](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-risky-tests-output) with `beStrictAboutOutputDuringTests="true"`
-    * [No globals manipulation](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-risky-tests-manipulate-globals) with `beStrictAboutChangesToGlobalState="true"`
-    * [No test that test nothing](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-risky-tests-test-nothing) with `beStrictAboutTestsThatDoNotTestAnything="true"`
+    * [No Output](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-risky-tests-output) with `beStrictAboutOutputDuringTests="true"`
+    * [No globals manipulation](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-risky-tests-manipulate-globals) with `beStrictAboutChangesToGlobalState="true"`
+    * [No test that test nothing](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-risky-tests-test-nothing) with `beStrictAboutTestsThatDoNotTestAnything="true"`
 
 <a name="rules-validated-mandatory-risky-tests"></a>
-#### [Risky tests](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-risky-tests)
+#### [Risky tests](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-risky-tests)
 
 <a name="rules-validated-mandatory-risky-tests-output"></a>
- * [No Output](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-risky-tests-output) with `beStrictAboutOutputDuringTests="true"` 
+ * [No Output](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-risky-tests-output) with `beStrictAboutOutputDuringTests="true"` 
 <a name="rules-validated-mandatory-risky-tests-manipulate-globals"></a>
- * [No globals manipulation](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-risky-tests-manipulate-globals) with `beStrictAboutChangesToGlobalState="true"`
+ * [No globals manipulation](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-risky-tests-manipulate-globals) with `beStrictAboutChangesToGlobalState="true"`
 <a name="rules-validated-mandatory-risky-tests-test-nothing"></a>
- * [No test that test nothing](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-risky-tests-test-nothing) with `beStrictAboutTestsThatDoNotTestAnything="true"`
+ * [No test that test nothing](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-risky-tests-test-nothing) with `beStrictAboutTestsThatDoNotTestAnything="true"`
 
 <a name="rules-validated-mandatory-tests-isolation"></a>
-#### [Tests isolation](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-tests-isolation)
+#### [Tests isolation](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-tests-isolation)
     
 <a name="rules-validated-mandatory-tests-isolation-globals"></a>
- * [Globals backup](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-tests-isolation-globals) with `backupGlobals="true"`
+ * [Globals backup](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-tests-isolation-globals) with `backupGlobals="true"`
       
    *Required by `beStrictAboutChangesToGlobalState="true"`*
 
 <a name="rules-validated-mandatory-tests-isolation-static-class-member"></a>
- * [Static class member backup](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-tests-isolation-static-class-member) with `backupStaticAttributes="true"`
+ * [Static class member backup](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-tests-isolation-static-class-member) with `backupStaticAttributes="true"`
   
 <a name="rules-validated-mandatory-real-coverage"></a>
-#### [Real coverage](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-real-coverage)
+#### [Real coverage](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-real-coverage)
     
 <a name="rules-validated-mandatory-real-coverage-overflow"></a>
- * [No coverage overflow](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-real-coverage-overflow)
+ * [No coverage overflow](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-real-coverage-overflow)
       
   * `forceCoversAnnotation="true"`
 
@@ -170,29 +170,29 @@ Listener is required by
   ```
 
 <a name="rules-validated-mandatory-real-coverage-risky-tests"></a>
- * [Risky tests does not count in coverage](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-real-coverage-risky-tests)
+ * [Risky tests does not count in coverage](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-real-coverage-risky-tests)
     
-  * [No Output](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-risky-tests-output) with `beStrictAboutOutputDuringTests="true"` (requires [`listener`](#configuration-reference-listener))
-  * [No globals manipulation](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-risky-tests-manipulate-globals) with `beStrictAboutChangesToGlobalState="true"`
-  * [No test that test nothing](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-risky-tests-test-nothing) with `beStrictAboutTestsThatDoNotTestAnything="true"`
+  * [No Output](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-risky-tests-output) with `beStrictAboutOutputDuringTests="true"` (requires [`listener`](#configuration-reference-listener))
+  * [No globals manipulation](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-risky-tests-manipulate-globals) with `beStrictAboutChangesToGlobalState="true"`
+  * [No test that test nothing](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-risky-tests-test-nothing) with `beStrictAboutTestsThatDoNotTestAnything="true"`
 
 <a name="rules-validated-mandatory-test-suites"></a>
 #### \<test-suites>
     
 <a name="rules-validated-mandatory-test-suites-tests-root-directory"></a>
-  * [Tests Root directory](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#tests-root-directory)
+  * [Tests Root directory](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#tests-root-directory)
 <a name="rules-validated-mandatory-test-suites-tests-order"></a>
-  * [Tests order](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#tests-order)
+  * [Tests order](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#tests-order)
 
 ### Optional
 
 <a name="optional-rule-1"></a>
- * [Test doc - tested class](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-test-documentation-tested-class-description) : by using `@covers`
+ * [Test doc - tested class](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-test-documentation-tested-class-description) : by using `@covers`
       
    *In fact, required if coverage is used as configuration uses `forceCoversAnnotation="true"`*
 
 <a name="optional-rule-2"></a>
- * [Test doc - tested class dependencies](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-test-documentation-tested-class-dependencies-description) by using `@uses`
+ * [Test doc - tested class dependencies](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-test-documentation-tested-class-dependencies-description) by using `@uses`
   
     * Also use `checkForUnintentionallyCoveredCode="true"`, to be sure sure that new dependencies will be forced to be documented. With [configuration reference](#configuration-reference), it will convert test into risky test, and risky test will be converted into failed test by [`listener`](#configuration-reference-listener)
       
@@ -209,5 +209,5 @@ Listener is required by
   
  * `bootstrap="vendor/autoload.php"` : Autoload file
  * `colors="true"` : Pretty output
- * `processIsolation="true"` : For [test isolation - different process](https://github.com/yoanm/Readme/blob/master/TESTS_STRATEGY.md#rules-tests-isolation-different-process), but it could create edge cases
+ * `processIsolation="true"` : For [test isolation - different process](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-tests-isolation-different-process), but it could create edge cases
  
