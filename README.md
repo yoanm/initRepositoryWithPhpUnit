@@ -11,7 +11,6 @@ Command to initialize PhpUnit configuration and folders hierarchy.
 
  * [Configuration reference](#configuration-reference)
   * [Requirements](#configuration-reference-requirements)
-  * [\<listener>](#configuration-reference-listener)
  * [Tests strategy rules validated by configuration reference](#rules-validated)
   * [Mandatory](#rules-validated-mandatory)
     * [**Early stop**](#rules-validated-mandatory-early-stop)
@@ -45,23 +44,23 @@ Command to initialize PhpUnit configuration and folders hierarchy.
 <!-- https://phpunit.de/manual/current/en/appendixes.configuration.html -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.8/phpunit.xsd"
+  
   stopOnError="true"
   stopOnFailure="true"
+  
   convertErrorsToExceptions="true"
   convertNoticesToExceptions="true"
   convertWarningsToExceptions="true"
+  
   beStrictAboutOutputDuringTests="true"
-  beStrictAboutChangesToGlobalState="true"
   beStrictAboutTestsThatDoNotTestAnything="true"
+  beStrictAboutChangesToGlobalState="true"
   backupGlobals="true"
-  backupStaticAttributes="true"
+  
   forceCoversAnnotation="true"
-  checkForUnintentionallyCoveredCode="true"
-  bootstrap="vendor/autoload.php"
-  colors="true"
 >
   <listeners>
-        <listener class="Yoanm\PhpUnitExtended\Listener\TestsStrategyListener"/>
+        <listener class="Yoanm\PhpUnitExtended\Listener\YoanmTestsStrategyListener"/>
   </listeners>
 
   <testsuites>
@@ -85,18 +84,8 @@ Command to initialize PhpUnit configuration and folders hierarchy.
 ```
 <a name="configuration-reference-requirements"></a>
 ### Requirements
-
+  * [PhpUnitExtended](https://github.com/yoanm/PhpUnitExtended) configured like describe [there](https://github.com/yoanm/PhpUnitExtended/blob/master/doc/listener/YoanmTestsStrategyListener.md#configuration-reference)
   * `beStrictAboutChangesToGlobalState="true"`requires `backupGlobals="true"` in order to work
-
-<a name="configuration-reference-listener"></a>
-### \<listener>
-
-*See [PhpUnitExtended](https://github.com/yoanm/PhpUnitExtended)*
-      
-Listener is required by
- * `beStrictAboutOutputDuringTests="true"`
- * `beStrictAboutChangesToGlobalState="true"`
- * `beStrictAboutTestsThatDoNotTestAnything="true"`
 
 <a name="rules-validated"></a>
 ## [Tests strategy rules](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules) validated by [configuration reference](#configuration-reference)
@@ -124,7 +113,7 @@ Listener is required by
     * `convertNoticesToExceptions="true"`
     * `convertWarningsToExceptions="true"`
 <a name="rules-validated-mandatory-strict-mode-fails-if-risky-tests"></a>
-  * [Risky tests](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-strict-mode-fails-if-risky-tests) (requires [`listener`](#configuration-reference-listener))
+  * [Risky tests](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-strict-mode-fails-if-risky-tests) (requires [YoanmTestsStrategyListener](https://github.com/yoanm/PhpUnitExtended/blob/master/doc/listener/YoanmTestsStrategyListener.md))
 
     * [No Output](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-risky-tests-output) with `beStrictAboutOutputDuringTests="true"`
     * [No globals manipulation](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-risky-tests-manipulate-globals) with `beStrictAboutChangesToGlobalState="true"`
@@ -146,10 +135,7 @@ Listener is required by
 <a name="rules-validated-mandatory-tests-isolation-globals"></a>
  * [Globals backup](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-tests-isolation-globals) with `backupGlobals="true"`
       
-   *Required by `beStrictAboutChangesToGlobalState="true"`*
-
-<a name="rules-validated-mandatory-tests-isolation-static-class-member"></a>
- * [Static class member backup](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-tests-isolation-static-class-member) with `backupStaticAttributes="true"`
+   *Requires `beStrictAboutChangesToGlobalState="true"`*
   
 <a name="rules-validated-mandatory-real-coverage"></a>
 #### [Real coverage](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-real-coverage)
@@ -172,9 +158,9 @@ Listener is required by
 <a name="rules-validated-mandatory-real-coverage-risky-tests"></a>
  * [Risky tests does not count in coverage](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-real-coverage-risky-tests)
     
-  * [No Output](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-risky-tests-output) with `beStrictAboutOutputDuringTests="true"` (requires [`listener`](#configuration-reference-listener))
-  * [No globals manipulation](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-risky-tests-manipulate-globals) with `beStrictAboutChangesToGlobalState="true"`
-  * [No test that test nothing](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-risky-tests-test-nothing) with `beStrictAboutTestsThatDoNotTestAnything="true"`
+  * [No Output](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-risky-tests-output) with `beStrictAboutOutputDuringTests="true"` (requires [YoanmTestsStrategyListener](https://github.com/yoanm/PhpUnitExtended/blob/master/doc/listener/YoanmTestsStrategyListener.md))
+  * [No globals manipulation](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-risky-tests-manipulate-globals) => already handled by PhpUnit
+  * [No test that test nothing](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-risky-tests-test-nothing) => already handled by PhpUnit
 
 <a name="rules-validated-mandatory-test-suites"></a>
 #### \<test-suites>
@@ -194,7 +180,7 @@ Listener is required by
 <a name="optional-rule-2"></a>
  * [Test doc - tested class dependencies](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-test-documentation-tested-class-dependencies-description) by using `@uses`
   
-    * Also use `checkForUnintentionallyCoveredCode="true"`, to be sure sure that new dependencies will be forced to be documented. With [configuration reference](#configuration-reference), it will convert test into risky test, and risky test will be converted into failed test by [`listener`](#configuration-reference-listener)
+    * Also use `checkForUnintentionallyCoveredCode="true"`, to be sure sure that new dependencies will be forced to be documented. With [configuration reference](#configuration-reference), it will convert test into risky test, and risky test will be converted into failed test by [YoanmTestsStrategyListener](https://github.com/yoanm/PhpUnitExtended/blob/master/doc/listener/YoanmTestsStrategyListener.md)
       
     Simply add the following as test class or test method comment : 
     ```
