@@ -31,7 +31,7 @@ just type the following
 BIN_PATH/initRepositoryWithPhpUnit path/to/project/directory --strategy-compliance default
 ```
 
-In case you launch the command from inside of the project directory, you can simply use 
+In case you launch the command from the project directory, you can simply use 
 ```bash
 BIN_PATH/initRepositoryWithPhpUnit --strategy-compliance default
 ```
