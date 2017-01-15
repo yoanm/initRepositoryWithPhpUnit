@@ -20,12 +20,12 @@ composer require --global yoanm/init-repository-with-phpunit
 
 just type the following
 ```bash
-BIN_PATH/initRepositoryWithPhpUnit path/to/project/directory [--config-file phpunit.xml.dist] [--colors true]
+BIN_PATH/initRepositoryWithPhpUnit path/to/project/directory --strategy-compliance default
 ```
 
 In case you launch the command from inside of the project directory, you can simply use 
 ```bash
-BIN_PATH/initRepositoryWithPhpUnit [--config-file phpunit.xml.dist] [--colors true]
+BIN_PATH/initRepositoryWithPhpUnit --strategy-compliance default
 ```
 
 See below for more information regarding command line options
@@ -41,8 +41,8 @@ Lonely argument is the project root directory, default value is `.` (directory w
 #### For phpunit configuration 
 
   * `--config-file path`
-
-    *Default value is `phpunit.xml.dist` if option not used*
+  
+    Path where phpunit configuration will be dumped
 
 ##### Options
 
@@ -118,8 +118,6 @@ Following command line options will append related xml attribute under `<phpunit
   
   * `--colors [true]|false`
 
-    *Default value is* **true** *if option not used*
-
     Will add `colors="true|false"`
 
 ##### Listeners
@@ -170,47 +168,62 @@ Following command line options will append related xml node under `<phpunit>` ->
     
     Will create the given directory hierarchy if not already there.
  
-### Special
-
-  * `--default` 
-
-    Will be equivalent to use the following options
-
-```bash
---bootstrap-delegate composer --colors true --test-suite-directory "tests" --test-path "tests" --filter-whitelist-directory "src"
-```
+### Special 
 
   * `--strategy-compliance name` 
-  
-    *:warning: When using a strategy, some single value options described above could be overwritten and some multi-values options could have extra data (depends of the strategy choosen)*
     
-      Available strategies :
-      * `YoanmTestsStrategy` : See [compliance document](./doc/YoanmTestsStrategy.md)
+    *:warning: When using a strategy, some single value options described above could be overwritten and some multi-values options could have extra data (depends of the strategy choosen).*
     
-        :warning: **Requires** [PhpUnitExtended](https://github.com/yoanm/PhpUnitExtended)
+    *It means you still be able to defined options that strategy does not use*
+    
+    Available strategies :
+    
+    * `default` : 
 
-        Using this strategy will 
-        * Override following single value options
-          * `--stop-on-error true`
-          * `--stop-on-failure true`
-          * `--convert-errors-to-exception true`
-          * `--convert-notices-to-exception true`
-          * `--convert-warnings-to-exception true`
-          * `--be-strict-about-output-during-test true`
-          * `--be-strict-about-tests-that-do-not-test-anything true`
-          * `--be-strict-about-changes-to-global-state true`
-          * `--force-covers-annotation true`
-          * `--backup-globals true`
-          * `--bootstrap-delegate composer`
-        * Append extra data to following multi-values options
-          * `--filter-whitelist-directory "src"`
-          * `--test-suite-directory "technical#tests/Technical/Unit/*"`
-          * `--test-suite-directory "technical#tests/Technical/Integration/*"`
-          * `--test-suite-directory "functional#tests/Functional/*"` 
-          * `--listener-class "Yoanm\PhpUnitExtended\Listener\YoanmTestsStrategyListener"`
-          * `--test-path "tests/Technical/Unit"`
-          * `--test-path "tests/Technical/Integration"`
-          * `--test-path "tests/Functional"`
+      Will create :
+      
+      * basic `phpunit.xml.dist` config file with a basic configuration
+      * default folder hierarchy
+
+      Using this strategy will 
+
+      * Override following single value options
+        * `--config-file phpunit.xml.dist`
+        * `--colors true`
+        * `--bootstrap-delegate composer`
+      * Append extra data to following multi-values options
+        * `--filter-whitelist-directory "src"`
+        * `--test-suite-directory "tests/*"`
+        * `--test-path "tests"`
+
+    * `YoanmTestsStrategy` : See [compliance document](./doc/YoanmTestsStrategy.md)
+    
+      :warning: **Requires** [PhpUnitExtended](https://github.com/yoanm/PhpUnitExtended)
+
+      Using this strategy will 
+        
+      * Override following single value options
+        * `--stop-on-error true`
+        * `--stop-on-failure true`
+        * `--convert-errors-to-exception true`
+        * `--convert-notices-to-exception true`
+        * `--convert-warnings-to-exception true`
+        * `--be-strict-about-output-during-test true`
+        * `--be-strict-about-tests-that-do-not-test-anything true`
+        * `--be-strict-about-changes-to-global-state true`
+        * `--force-covers-annotation true`
+        * `--backup-globals true`
+        * `--config-file phpunit.xml.dist`
+        * `--bootstrap-delegate composer`
+      * Append extra data to following multi-values options
+        * `--filter-whitelist-directory "src"`
+        * `--test-suite-directory "technical#tests/Technical/Unit/*"`
+        * `--test-suite-directory "technical#tests/Technical/Integration/*"`
+        * `--test-suite-directory "functional#tests/Functional/*"` 
+        * `--listener-class "Yoanm\PhpUnitExtended\Listener\YoanmTestsStrategyListener"`
+        * `--test-path "tests/Technical/Unit"`
+        * `--test-path "tests/Technical/Integration"`
+        * `--test-path "tests/Functional"`
 
 ## Full PhpUnit configuration
 ```xml
