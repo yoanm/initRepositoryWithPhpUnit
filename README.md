@@ -2,198 +2,303 @@
 
 Command to initialize PhpUnit configuration and folders hierarchy.
 
-> :information_source: **[Yoanm Tests strategy](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md) compliant**
+> :information_source: **[Yoanm Tests strategy](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md) compliant (see [there](./doc/YoanmTestsStrategy.md))**
 
+> :warning: **Rely on** this [Composer implementation](https://github.com/yoanm/initRepositoryWithComposer) for autoloading
 
-> :warning: **Requires** this [Composer implementation](https://github.com/yoanm/initRepositoryWithComposer)
+  * [Install](#install)
+  * [How to](#how-to)
+  * [In the box](#in-the-box)
+    * [Command line arguments](#in-the-box-command-line-arguments)
+    * [Command line options](#in-the-box-command-line-options)
+      * [PhpUnit configuration](#in-the-box-command-line-options-phpunit-configuration)
+        * [Options](#in-the-box-command-line-options-phpunit-configuration-options)
+        * [Listeners](#in-the-box-command-line-options-phpunit-configuration-listeners)
+        * [Test suites](#in-the-box-command-line-options-phpunit-configuration-test-suites)
+        * [Filter](#in-the-box-command-line-options-phpunit-configuration-filter)
+      * [Folder hierarchy](#in-the-box-command-line-options-folder-hierarchy)
+      * [Special](#in-the-box-command-line-options-special)
+  * [Full PhpUnit configuration](#full-phpunit-configuration)
+  * [Contributing](#contributing)
 
-> :warning: **Requires** [PhpUnitExtended](https://github.com/yoanm/PhpUnitExtended)
+## Install
+```bash
+composer require --global yoanm/init-repository-with-phpunit
+```
 
- * [Configuration reference](#configuration-reference)
-  * [Requirements](#configuration-reference-requirements)
- * [Tests strategy rules validated by configuration reference](#rules-validated)
-  * [Mandatory](#rules-validated-mandatory)
-    * [**Early stop**](#rules-validated-mandatory-early-stop)
-    * [Strict mode](#rules-validated-mandatory-strict-mode)
-      * [**Exit status**](#rules-validated-mandatory-strict-mode-exit-status)
-      * [**Fails if**](#rules-validated-mandatory-strict-mode-fails-if)
-        * [**Php errors**](#rules-validated-mandatory-strict-mode-fails-if-php-errors)
-        * [**Risky tests**](#rules-validated-mandatory-strict-mode-fails-if-risky-tests)
-    * [Risky tests](#rules-validated-mandatory-risky-tests)
-      * [**No output**](#rules-validated-mandatory-risky-tests-output)
-      * [**No globals manipulation**](#rules-validated-mandatory-risky-tests-manipulate-globals)
-      * [**No test that test nothing**](#rules-validated-mandatory-risky-tests-test-nothing)
-    * [Tests isolation](#rules-validated-mandatory-tests-isolation)
-      * [**Globals backup**](#rules-validated-mandatory-tests-isolation-globals)
-      * [**Static class member backup**](#rules-validated-mandatory-tests-isolation-static-class-member)
-    * [Real coverage](#rules-validated-mandatory-real-coverage)
-      * [**No coverage overflow**](#rules-validated-mandatory-real-coverage-overflow)
-      * [**Risky tests does not count in coverage**](#rules-validated-mandatory-real-coverage-risky-tests)
-    * [\<test-suites>](#rules-validated-mandatory-test-suites)
-      * [**Tests Root directory**](#rules-validated-mandatory-test-suites-tests-root-directory)
-      * [**Tests order**](#rules-validated-mandatory-test-suites-tests-order)
-  * [Optional](#optional)
-    * [**Test doc - tested class**](#optional-rule-1)
-    * [**Test doc - tested class dependencies**](#optional-rule-2)
- * [Optional config](#optional-config)
+## How to
 
-## Configuration reference
+just type the following
+```bash
+BIN_PATH/initRepositoryWithPhpUnit path/to/project/directory --strategy-compliance default
+```
+
+In case you launch the command from inside of the project directory, you can simply use 
+```bash
+BIN_PATH/initRepositoryWithPhpUnit --strategy-compliance default
+```
+
+See below for more information regarding command line options
+
+## In the box
+
+<a name="in-the-box-command-line-arguments"></a>
+### Command line arguments
+
+Lonely argument is the project root directory, default value is `.` (directory where the command is launched)
+
+<a name="in-the-box-command-line-options"></a>
+### Command line options
+
+<a name="in-the-box-command-line-options-phpunit-configuration"></a>
+#### PhpUnit configuration 
+
+  * `--config-file path`
+  
+    Path where phpunit configuration will be dumped
+
+<a name="in-the-box-command-line-options-phpunit-configuration-options"></a>
+##### Options
+
+Following command line options will append related xml attribute under `<phpunit>` node
+
+  * `--stop-on-error [true]|false`
+
+    Will add `stopOnError="true|false"`
+
+  * `--stop-on-failure [true]|false`
+
+    Will add `stopOnFailure="true|false"`
+
+  * `--convert-errors-to-exception [true]|false`
+
+    Will add `convertErrorsToExceptions="true|false"`
+
+  * `--convert-notices-to-exception [true]|false`
+
+    Will add `convertNoticesToExceptions="true|false"`
+
+  * `--convert-warnings-to-exception [true]|false`
+
+    Will add `convertWarningsToExceptions="true|false"`
+
+  * `--be-strict-about-output-during-test [true]|false`
+
+    Will add `beStrictAboutOutputDuringTests="true|false"`
+
+  * `--be-strict-about-tests-that-do-not-test-anything [true]|false`
+
+    Will add `beStrictAboutTestsThatDoNotTestAnything="true|false"`
+
+  * `--be-strict-about-changes-to-global-state [true]|false`
+
+    Will add `beStrictAboutChangesToGlobalState="true|false"`
+    
+    :information_source: Be aware that `beStrictAboutChangesToGlobalState="true"` requires, at least, either `backupGlobals="true"` or `backupStaticAttributes="true"` in order to do something
+
+  * `--backup-globals [true]|false`
+
+    Will add `backupGlobals="true|false"`
+
+  * `--backup-static-attributes [true]|false`
+
+    Will add `backupStaticAttributes="true|false"`
+
+  * `--check-for-unintentionally-covered-code [true]|false`
+
+    Will add `checkForUnintentionallyCoveredCode="true|false"`
+
+  * `--force-covers-annotation [true]|false`
+
+    Will add `forceCoversAnnotation="true|false"`
+
+  * `--bootstrap bootstrap-path`
+
+    Could be a relative path (root path will be the phpunit configuration file location) or an absolute path
+
+    Will add `bootstrap="bootstrap-path"`
+    
+    You can also use the `--bootstrap-delegate delegateName` option. 
+    
+    Current implemented delegates are : 
+    
+      * `composer` : will be equivalent to `--bootstrap vendor/autoload.php`
+      
+    :warning: `--bootstrap-delegate` override `--bootstrap`
+
+  * `--process-isolation [true]|false`
+
+    Will add `processIsolation="true|false"`
+  
+  * `--colors [true]|false`
+
+    Will add `colors="true|false"`
+
+<a name="in-the-box-command-line-options-phpunit-configuration-listeners"></a>
+##### Listeners
+
+Following command line options will append related xml node under `<phpunit>` -> `<listeners>` node
+
+  * `--listener-class "Fully\Qualified\Namespace\To\ListenerClass"` *Multiple listeners allowed*
+
+    Will append  following node `<listener class="Fully\Qualified\Namespace\To\ListenerClass"/>`
+
+<a name="in-the-box-command-line-options-phpunit-configuration-test-suites"></a>
+##### Test suites
+
+Following command line options will append related xml node under `<phpunit>` -> `<testsuites>` node
+
+*If `suiteName` is not provided, node will be appended under a* **default test suite named "default"**
+
+  * `--test-suite-directory "[suiteName#]path"` *Multiple suite directories allowed*
+
+    Could be a relative path (root path will be the phpunit configuration file location) or an absolute path
+
+    Will append  following node `<directory>path</directory>` under `<testsuite name="suiteName">`
+
+  * `--test-suite-file "[suiteName#]path"` *Multiple suite files allowed*
+
+    Could be a relative path (root path will be the phpunit configuration file location) or an absolute path
+
+    Will append  following node `<file>path</file>` under `<testsuite name="suiteName">`
+
+<a name="in-the-box-command-line-options-phpunit-configuration-filter"></a>
+##### Filter
+
+  * `--filter-whitelist-directory path` *Multiple whitelist directories allowed*
+
+    Could be a relative path (root path will be the phpunit configuration file location) or an absolute path
+
+    Will append  following node `<directory>src</directory>` into the `<filter>` -> `<whitelist>` node of phpunit configuration
+
+  * `--filter-whitelist-file path` *Multiple whitelist files allowed*
+
+    Could be a relative path (root path will be the phpunit configuration file location) or an absolute path
+
+    Will append  following node `<file>src</file>` into the `<filter>` -> `<whitelist>` node of phpunit configuration
+
+<a name="in-the-box-command-line-options-folder-hierarchy"></a>
+### Folder hierarchy
+
+  * `--test-path "subPath/subSubPath"` *Multiple test directories allowed*
+  
+    *Path will be appended in the project root directory defined by the command argument*
+    
+    Will create the given directory hierarchy if not already there.
+ 
+<a name="in-the-box-command-line-options-special"></a>
+### Special 
+
+  * `--strategy-compliance name` 
+    
+    *:warning: When using a strategy, some single value options described above could be overwritten and some multi-values options could have extra data (depends of the strategy choosen).*
+    
+    *It means you still be able to defined options that strategy does not use*
+    
+    Available strategies :
+    
+    * `default` : 
+
+      Will create :
+      
+      * a `phpunit.xml.dist` config file with a basic configuration
+      * default folder hierarchy
+
+      Using this strategy will 
+
+      * Override following single value options
+        * `--config-file phpunit.xml.dist`
+        * `--colors true`
+        * `--bootstrap-delegate composer`
+      * Append extra data to following multi-values options
+        * `--filter-whitelist-directory "src"`
+        * `--test-suite-directory "tests/*"`
+        * `--test-path "tests"`
+
+    * `YoanmTestsStrategy` : See [compliance document](./doc/YoanmTestsStrategy.md)
+    
+      :warning: **Requires** [PhpUnitExtended](https://github.com/yoanm/PhpUnitExtended) 
+
+      Will create :
+      
+      * a `phpunit.xml.dist` config file with specific configuration to be compliant with the strategy
+      * folder hierarchy compliant with the strategy
+
+      Using this strategy will 
+        
+      * Override following single value options
+        * `--stop-on-error true`
+        * `--stop-on-failure true`
+        * `--convert-errors-to-exception true`
+        * `--convert-notices-to-exception true`
+        * `--convert-warnings-to-exception true`
+        * `--be-strict-about-output-during-test true`
+        * `--be-strict-about-tests-that-do-not-test-anything true`
+        * `--be-strict-about-changes-to-global-state true`
+        * `--force-covers-annotation true`
+        * `--backup-globals true`
+        * `--config-file phpunit.xml.dist`
+        * `--bootstrap-delegate composer`
+      * Append extra data to following multi-values options
+        * `--filter-whitelist-directory "src"`
+        * `--test-suite-directory "technical#tests/Technical/Unit/*"`
+        * `--test-suite-directory "technical#tests/Technical/Integration/*"`
+        * `--test-suite-directory "functional#tests/Functional/*"` 
+        * `--listener-class "Yoanm\PhpUnitExtended\Listener\YoanmTestsStrategyListener"`
+        * `--test-path "tests/Technical/Unit"`
+        * `--test-path "tests/Technical/Integration"`
+        * `--test-path "tests/Functional"`
+
+## Full PhpUnit configuration
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- https://phpunit.de/manual/current/en/appendixes.configuration.html -->
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.8/phpunit.xsd"
-  
+<phpunit
   stopOnError="true"
   stopOnFailure="true"
-  
   convertErrorsToExceptions="true"
   convertNoticesToExceptions="true"
   convertWarningsToExceptions="true"
-  
   beStrictAboutOutputDuringTests="true"
   beStrictAboutTestsThatDoNotTestAnything="true"
   beStrictAboutChangesToGlobalState="true"
   backupGlobals="true"
-  
+  backupStaticAttributes="true"
+  checkForUnintentionallyCoveredCode="true"
   forceCoversAnnotation="true"
+  bootstrap="bootstrap-path"
+  processIsolation="true"
+  colors="true"
 >
   <listeners>
-        <listener class="Yoanm\PhpUnitExtended\Listener\YoanmTestsStrategyListener"/>
+        <listener class="Fully\Qualified\Namespace\To\ListenerClass"/>
+        <listener class="Fully\Qualified\Namespace\To\SecondListenerClass"/>
   </listeners>
 
   <testsuites>
-      <testsuite name="technical">
-          <directory>tests/Technical/Unit/*</directory>
-          <!-- define (and so, launch) integration tests after unit tests => slower than unit tests -->
-          <directory>tests/Technical/Integration/*</directory>
+      <testsuite name="first-suite">
+          <directory>directory_1</directory>
+          <directory>directory_2</directory>
+          <file>file_1</file>
+          <file>file_2</file>
       </testsuite>
-      <!-- defined (and so, launch) functional tests tests after technical tests => slower than technical tests -->
-      <testsuite name="functional">
-          <directory>tests/Functional/*</directory>
+      <testsuite name="second-suite">
+          <directory>directory_3</directory>
+          <directory>directory_4</directory>
+          <file>file_3</file>
+          <file>file_4</file>
       </testsuite>
   </testsuites>
 
   <filter>
     <whitelist>
-      <directory>src</directory>
+      <directory>directory_5</directory>
+      <file>file_5</file>
     </whitelist>
   </filter>
 </phpunit>
 ```
-<a name="configuration-reference-requirements"></a>
-### Requirements
-  * [PhpUnitExtended](https://github.com/yoanm/PhpUnitExtended) configured like describe [there](https://github.com/yoanm/PhpUnitExtended/blob/master/doc/listener/YoanmTestsStrategyListener.md#configuration-reference)
-  * `beStrictAboutChangesToGlobalState="true"`requires `backupGlobals="true"` in order to work
-
-<a name="rules-validated"></a>
-## [Tests strategy rules](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules) validated by [configuration reference](#configuration-reference)
-
-<a name="rules-validated-mandatory"></a>
-### Mandatory
-
-<a name="rules-validated-mandatory-early-stop"></a>
-#### [Early stop](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-early-stop)
-
-* `stopOnError="true"`
-* `stopOnFailure="true"`
-
-<a name="rules-validated-mandatory-strict-mode"></a>
-#### [Strict mode](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-strict-mode)
-
-<a name="rules-validated-mandatory-strict-mode-exit-status"></a>
- * [Exit status](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#exit-status) : PhpUnit command will return a failed status if a failed or on error test exist
-<a name="rules-validated-mandatory-strict-mode-fails-if"></a>
- * [Fails if](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-strict-mode-fails-if)
-<a name="rules-validated-mandatory-strict-mode-fails-if-php-errors"></a>
-  * [Php errors](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-strict-mode-fails-if-php-errors)
-
-    * `convertErrorsToExceptions="true"`
-    * `convertNoticesToExceptions="true"`
-    * `convertWarningsToExceptions="true"`
-<a name="rules-validated-mandatory-strict-mode-fails-if-risky-tests"></a>
-  * [Risky tests](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-strict-mode-fails-if-risky-tests) (requires [YoanmTestsStrategyListener](https://github.com/yoanm/PhpUnitExtended/blob/master/doc/listener/YoanmTestsStrategyListener.md))
-
-    * [No Output](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-risky-tests-output) with `beStrictAboutOutputDuringTests="true"`
-    * [No globals manipulation](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-risky-tests-manipulate-globals) with `beStrictAboutChangesToGlobalState="true"`
-    * [No test that test nothing](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-risky-tests-test-nothing) with `beStrictAboutTestsThatDoNotTestAnything="true"`
-
-<a name="rules-validated-mandatory-risky-tests"></a>
-#### [Risky tests](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-risky-tests)
-
-<a name="rules-validated-mandatory-risky-tests-output"></a>
- * [No Output](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-risky-tests-output) with `beStrictAboutOutputDuringTests="true"` 
-<a name="rules-validated-mandatory-risky-tests-manipulate-globals"></a>
- * [No globals manipulation](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-risky-tests-manipulate-globals) with `beStrictAboutChangesToGlobalState="true"`
-<a name="rules-validated-mandatory-risky-tests-test-nothing"></a>
- * [No test that test nothing](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-risky-tests-test-nothing) with `beStrictAboutTestsThatDoNotTestAnything="true"`
-
-<a name="rules-validated-mandatory-tests-isolation"></a>
-#### [Tests isolation](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-tests-isolation)
-    
-<a name="rules-validated-mandatory-tests-isolation-globals"></a>
- * [Globals backup](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-tests-isolation-globals) with `backupGlobals="true"`
-      
-   *Requires `beStrictAboutChangesToGlobalState="true"`*
-  
-<a name="rules-validated-mandatory-real-coverage"></a>
-#### [Real coverage](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-real-coverage)
-    
-<a name="rules-validated-mandatory-real-coverage-overflow"></a>
- * [No coverage overflow](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-real-coverage-overflow)
-      
-  * `forceCoversAnnotation="true"`
-
-  If no annotation, no coverage.
-
-  Symply add the following as test class or test method comment
-
-  ```
-  /**
-   * @covers FULLY\QUALIFIED\NAMESPACE\TO\MyClass
-   */
-  ```
-
-<a name="rules-validated-mandatory-real-coverage-risky-tests"></a>
- * [Risky tests does not count in coverage](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-real-coverage-risky-tests)
-    
-  * [No Output](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-risky-tests-output) with `beStrictAboutOutputDuringTests="true"` (requires [YoanmTestsStrategyListener](https://github.com/yoanm/PhpUnitExtended/blob/master/doc/listener/YoanmTestsStrategyListener.md))
-  * [No globals manipulation](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-risky-tests-manipulate-globals) => already handled by PhpUnit
-  * [No test that test nothing](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-risky-tests-test-nothing) => already handled by PhpUnit
-
-<a name="rules-validated-mandatory-test-suites"></a>
-#### \<test-suites>
-    
-<a name="rules-validated-mandatory-test-suites-tests-root-directory"></a>
-  * [Tests Root directory](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#tests-root-directory)
-<a name="rules-validated-mandatory-test-suites-tests-order"></a>
-  * [Tests order](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#tests-order)
-
-### Optional
-
-<a name="optional-rule-1"></a>
- * [Test doc - tested class](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-test-documentation-tested-class-description) : by using `@covers`
-      
-   *In fact, required if coverage is used as configuration uses `forceCoversAnnotation="true"`*
-
-<a name="optional-rule-2"></a>
- * [Test doc - tested class dependencies](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-test-documentation-tested-class-dependencies-description) by using `@uses`
-  
-    * Also use `checkForUnintentionallyCoveredCode="true"`, to be sure sure that new dependencies will be forced to be documented. With [configuration reference](#configuration-reference), it will convert test into risky test, and risky test will be converted into failed test by [YoanmTestsStrategyListener](https://github.com/yoanm/PhpUnitExtended/blob/master/doc/listener/YoanmTestsStrategyListener.md)
-      
-    Simply add the following as test class or test method comment : 
-    ```
-    /**
-     * @uses FULLY\QUALIFIED\NAMESPACE\TO\MyClassDependencyAClass
-     * @uses FULLY\QUALIFIED\NAMESPACE\TO\MyClassDependencyBClass
-     */
-     class MyClassTest extends \PHPUnit_Framework_TestCase
-     ```
-
-## Optional config
-  
- * `bootstrap="vendor/autoload.php"` : Autoload file
- * `colors="true"` : Pretty output
- * `processIsolation="true"` : For [test isolation - different process](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md#rules-tests-isolation-different-process), but it could create edge cases
  
+## Contributing
+See [contributing note](./CONTRIBUTING.md)
+
