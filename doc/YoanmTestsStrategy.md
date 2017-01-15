@@ -1,6 +1,6 @@
 # Yoanm Tests Strategy compliance
 
-> :information_source: **Default command arguments will allow to have PhpUnit tests compliant with [Yoanm Tests strategy](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md)**
+> :information_source: **Using `--strategy-compliance YoanmTestsStrategy` will allow to have PhpUnit tests compliant with [Yoanm Tests strategy](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md)**
 
 
 > :warning: **Requires** this [Composer implementation](https://github.com/yoanm/initRepositoryWithComposer)
