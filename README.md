@@ -6,10 +6,20 @@ Command to initialize PhpUnit configuration and folders hierarchy.
 
 > :warning: **Rely on** this [Composer implementation](https://github.com/yoanm/initRepositoryWithComposer) for autoloading
 
- * [Install](#install)
- * [In the box](#in-the-box)
- * [Full PhpUnit configuration](#full-phpunit-configuration)
- * [Contributing](#contributing)
+  * [Install](#install)
+  * [How to](#how-to)
+  * [In the box](#in-the-box)
+    * [Command line arguments](#in-the-box-command-line-arguments)
+    * [Command line options](#in-the-box-command-line-options)
+      * [PhpUnit configuration](#in-the-box-command-line-options-phpunit-configuration)
+        * [Options](#in-the-box-command-line-options-phpunit-configuration-options)
+        * [Listeners](#in-the-box-command-line-options-phpunit-configuration-listeners)
+        * [Test suites](#in-the-box-command-line-options-phpunit-configuration-test-suites)
+        * [Filter](#in-the-box-command-line-options-phpunit-configuration-filter)
+      * [Folder hierarchy](#in-the-box-command-line-options-folder-hierarchy)
+      * [Special](#in-the-box-command-line-options-special)
+  * [Full PhpUnit configuration](#full-phpunit-configuration)
+  * [Contributing](#contributing)
 
 ## Install
 ```bash
@@ -32,18 +42,22 @@ See below for more information regarding command line options
 
 ## In the box
 
+<a name="in-the-box-command-line-arguments"></a>
 ### Command line arguments
 
 Lonely argument is the project root directory, default value is `.` (directory where the command is launched)
 
+<a name="in-the-box-command-line-options"></a>
 ### Command line options
 
-#### For phpunit configuration 
+<a name="in-the-box-command-line-options-phpunit-configuration"></a>
+#### PhpUnit configuration 
 
   * `--config-file path`
   
     Path where phpunit configuration will be dumped
 
+<a name="in-the-box-command-line-options-phpunit-configuration-options"></a>
 ##### Options
 
 Following command line options will append related xml attribute under `<phpunit>` node
@@ -120,6 +134,7 @@ Following command line options will append related xml attribute under `<phpunit
 
     Will add `colors="true|false"`
 
+<a name="in-the-box-command-line-options-phpunit-configuration-listeners"></a>
 ##### Listeners
 
 Following command line options will append related xml node under `<phpunit>` -> `<listeners>` node
@@ -128,6 +143,7 @@ Following command line options will append related xml node under `<phpunit>` ->
 
     Will append  following node `<listener class="Fully\Qualified\Namespace\To\ListenerClass"/>`
 
+<a name="in-the-box-command-line-options-phpunit-configuration-test-suites"></a>
 ##### Test suites
 
 Following command line options will append related xml node under `<phpunit>` -> `<testsuites>` node
@@ -146,6 +162,7 @@ Following command line options will append related xml node under `<phpunit>` ->
 
     Will append  following node `<file>path</file>` under `<testsuite name="suiteName">`
 
+<a name="in-the-box-command-line-options-phpunit-configuration-filter"></a>
 ##### Filter
 
   * `--filter-whitelist-directory path` *Multiple whitelist directories allowed*
@@ -160,6 +177,7 @@ Following command line options will append related xml node under `<phpunit>` ->
 
     Will append  following node `<file>src</file>` into the `<filter>` -> `<whitelist>` node of phpunit configuration
 
+<a name="in-the-box-command-line-options-folder-hierarchy"></a>
 ### Folder hierarchy
 
   * `--test-path "subPath/subSubPath"` *Multiple test directories allowed*
@@ -168,6 +186,7 @@ Following command line options will append related xml node under `<phpunit>` ->
     
     Will create the given directory hierarchy if not already there.
  
+<a name="in-the-box-command-line-options-special"></a>
 ### Special 
 
   * `--strategy-compliance name` 
