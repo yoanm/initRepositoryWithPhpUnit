@@ -32,7 +32,7 @@ Lonely argument is the project root directory, default value is `.` (directory w
 
 ##### Options
 
-Following command line options will append related xml attribute into the `<phpunit>` node
+Following command line options will append related xml attribute under `<phpunit>` node
 
   * `--stop-on-error [true]|false`
 
@@ -78,13 +78,9 @@ Following command line options will append related xml attribute into the `<phpu
 
   * `--check-for-unintentionally-covered-code [true]|false`
 
-    Could be a relative path (root path will be the phpunit configuration file location) or an absolute path
-
     Will add `checkForUnintentionallyCoveredCode="true|false"`
 
   * `--force-covers-annotation [true]|false`
-
-    Could be a relative path (root path will be the phpunit configuration file location) or an absolute path
 
     Will add `forceCoversAnnotation="true|false"`
 
@@ -156,35 +152,35 @@ Following command line options will append related xml node under `<phpunit>` ->
 
   * `--strategy-compliance name`
   
-    *:warning: When using a strategy, some single value options described above could be overwritten and some multi-values options could have extra data (depends of the strategy choosen)
+    *:warning: When using a strategy, some single value options described above could be overwritten and some multi-values options could have extra data (depends of the strategy choosen)*
     
-    Available strategies :
-    * `YoanmTestsStrategy` : See [compliance document](./doc/YoanmTestsStrategy.md)
+      Available strategies :
+      * `YoanmTestsStrategy` : See [compliance document](./doc/YoanmTestsStrategy.md)
     
-      :warning: **Requires** [PhpUnitExtended](https://github.com/yoanm/PhpUnitExtended)
+        :warning: **Requires** [PhpUnitExtended](https://github.com/yoanm/PhpUnitExtended)
 
-      Using this strategy will 
-      * Override following single value options
-        * `--stop-on-error true`
-        * `--stop-on-failure true`
-        * `--convert-errors-to-exception true`
-        * `--convert-notices-to-exception true`
-        * `--convert-warnings-to-exception true`
-        * `--be-strict-about-output-during-test true`
-        * `--be-strict-about-tests-that-do-not-test-anything true`
-        * `--be-strict-about-changes-to-global-state true`
-        * `--force-covers-annotation true`
-        * `--backup-globals true`
-        * `--bootstrap vendor/autoload.php`
-      * Append extra data to following multi-values options
-        * `--filter-whitelist-directory "src"`
-        * `--test-suite-directory "technical#tests/Technical/Unit/*"`
-        * `--test-suite-directory "technical#tests/Technical/Integration/*"`
-        * `--test-suite-directory "functional#tests/Functional/*"`
-        * `--listener-class "Yoanm\PhpUnitExtended\Listener\YoanmTestsStrategyListener"`
-        * `--test-path "tests/Technical/Unit"`
-        * `--test-path "tests/Technical/Integration"`
-        * `--test-path "tests/Functional"`
+        Using this strategy will 
+        * Override following single value options
+          * `--stop-on-error true`
+          * `--stop-on-failure true`
+          * `--convert-errors-to-exception true`
+          * `--convert-notices-to-exception true`
+          * `--convert-warnings-to-exception true`
+          * `--be-strict-about-output-during-test true`
+          * `--be-strict-about-tests-that-do-not-test-anything true`
+          * `--be-strict-about-changes-to-global-state true`
+          * `--force-covers-annotation true`
+          * `--backup-globals true`
+          * `--bootstrap vendor/autoload.php`
+        * Append extra data to following multi-values options
+          * `--filter-whitelist-directory "src"`
+          * `--test-suite-directory "technical#tests/Technical/Unit/*"`
+          * `--test-suite-directory "technical#tests/Technical/Integration/*"`
+          * `--test-suite-directory "functional#tests/Functional/*"`
+          * `--listener-class "Yoanm\PhpUnitExtended\Listener\YoanmTestsStrategyListener"`
+          * `--test-path "tests/Technical/Unit"`
+          * `--test-path "tests/Technical/Integration"`
+          * `--test-path "tests/Functional"`
 
 ## Full PhpUnit configuration
 ```xml
