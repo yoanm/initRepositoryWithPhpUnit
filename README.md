@@ -182,7 +182,7 @@ Following command line options will append related xml node under `<phpunit>` ->
 
       Will create :
       
-      * basic `phpunit.xml.dist` config file with a basic configuration
+      * a `phpunit.xml.dist` config file with a basic configuration
       * default folder hierarchy
 
       Using this strategy will 
@@ -198,7 +198,12 @@ Following command line options will append related xml node under `<phpunit>` ->
 
     * `YoanmTestsStrategy` : See [compliance document](./doc/YoanmTestsStrategy.md)
     
-      :warning: **Requires** [PhpUnitExtended](https://github.com/yoanm/PhpUnitExtended)
+      :warning: **Requires** [PhpUnitExtended](https://github.com/yoanm/PhpUnitExtended) 
+
+      Will create :
+      
+      * a `phpunit.xml.dist` config file with specific configuration to be compliant with the strategy
+      * folder hierarchy compliant with the strategy
 
       Using this strategy will 
         
