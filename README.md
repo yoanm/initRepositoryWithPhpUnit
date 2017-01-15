@@ -2,8 +2,6 @@
 
 Command to initialize PhpUnit configuration and folders hierarchy.
 
-> :information_source: **[Yoanm Tests strategy](https://github.com/yoanm/Readme/blob/master/strategy/tests/README.md) compliant (see [there](./doc/YoanmTestsStrategy.md))**
-
 > :warning: **Rely on** this [Composer implementation](https://github.com/yoanm/initRepositoryWithComposer) for autoloading
 
   * [Install](#install)
