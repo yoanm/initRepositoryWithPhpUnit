@@ -16,6 +16,20 @@ Command to initialize PhpUnit configuration and folders hierarchy.
 composer require --global yoanm/init-repository-with-phpunit
 ```
 
+## How to
+
+just type the following
+```bash
+BIN_PATH/initRepositoryWithPhpUnit path/to/project/directory [--config-file phpunit.xml.dist] [--colors true]
+```
+
+In case you launch the command from inside of the project directory, you can simply use 
+```bash
+BIN_PATH/initRepositoryWithPhpUnit [--config-file phpunit.xml.dist] [--colors true]
+```
+
+See below for more information regarding command line options
+
 ## In the box
 
 ### Command line arguments
@@ -176,8 +190,8 @@ Following command line options will append related xml node under `<phpunit>` ->
           * `--filter-whitelist-directory "src"`
           * `--test-suite-directory "technical#tests/Technical/Unit/*"`
           * `--test-suite-directory "technical#tests/Technical/Integration/*"`
-          * `--test-suite-directory "functional#tests/Functional/*"`
-          * `--listener-class "Yoanm\PhpUnitExtended\Listener\YoanmTestsStrategyListener"`
+          * `--test-suite-directory "functional#tests/Functional/*"` 
+          * `--listener-class "Yoanm\PhpUnitExtended\Listener\YoanmTestsStrategyListener"`
           * `--test-path "tests/Technical/Unit"`
           * `--test-path "tests/Technical/Integration"`
           * `--test-path "tests/Functional"`
@@ -196,12 +210,12 @@ Following command line options will append related xml node under `<phpunit>` ->
   beStrictAboutTestsThatDoNotTestAnything="true"
   beStrictAboutChangesToGlobalState="true"
   backupGlobals="true"
-  backupStaticAttributes="false"
+  backupStaticAttributes="true"
   checkForUnintentionallyCoveredCode="true"
   forceCoversAnnotation="true"
-  bootstrap="vendor/autoload.php"
+  bootstrap="bootstrap-path"
+  processIsolation="true"
   colors="true"
-  processIsolation="false"
 >
   <listeners>
         <listener class="Fully\Qualified\Namespace\To\ListenerClass"/>
