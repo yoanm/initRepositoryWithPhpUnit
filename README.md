@@ -6,8 +6,6 @@ Command to initialize PhpUnit configuration and folders hierarchy.
 
 > :warning: **Rely on** this [Composer implementation](https://github.com/yoanm/initRepositoryWithComposer) for autoloading
 
-> :warning: **Requires** [PhpUnitExtended](https://github.com/yoanm/PhpUnitExtended)
-
  * [Install](#install)
  * [In the box](#in-the-box)
  * [Full PhpUnit configuration](#full-phpunit-configuration)
@@ -20,71 +18,119 @@ composer require --global yoanm/init-repository-with-phpunit
 
 ## In the box
 
-### Command options
+### Command line arguments
 
-### For phpunit configuration options
+Lonely argument is the project root directory, default value is `.` (directory where the command is launched)
 
-  * `--stop-on-error [true]|false` (Default value is `true` if option not used)
+### Command line options
 
-    Will add `stopOnError="true|false"` to the phpunit configuration
+#### For phpunit configuration 
 
-  * `--stop-on-failure [true]|false` (Default value is `true` if option not used)
+  * `--config-file path`
 
-    Will add `stopOnFailure="true|false"` to the phpunit configuration
+    *Default value is `phpunit.xml.dist` if option not used*
 
-  * `--convert-errors-to-exception [true]|false` (Default value is `true` if option not used)
+##### Options
 
-    Will add `convertErrorsToExceptions="true|false"` to the phpunit configuration
+Following command line options will append related xml attribute into the `<phpunit>` node
 
-  * `--convert-notices-to-exception [true]|false` (Default value is `true` if option not used)
+  * `--stop-on-error [true]|false`
 
-    Will add `convertNoticesToExceptions="true|false"` to the phpunit configuration
+    Will add `stopOnError="true|false"`
 
-  * `--convert-warnings-to-exception [true]|false` (Default value is `true` if option not used)
+  * `--stop-on-failure [true]|false`
 
-    Will add `convertWarningsToExceptions="true|false"` to the phpunit configuration
+    Will add `stopOnFailure="true|false"`
 
-  * `--be-strict-about-output-during-test [true]|false` (Default value is `true` if option not used)
+  * `--convert-errors-to-exception [true]|false`
 
-    Will add `beStrictAboutOutputDuringTests="true|false"` to the phpunit configuration
+    Will add `convertErrorsToExceptions="true|false"`
 
-  * `--be-strict-about-tests-that-do-not-test-anything [true]|false` (Default value is `true` if option not used)
+  * `--convert-notices-to-exception [true]|false`
 
-    Will add `beStrictAboutTestsThatDoNotTestAnything="true|false"` to the phpunit configuration
+    Will add `convertNoticesToExceptions="true|false"`
 
-  * `--be-strict-about-changes-to-global-state [true]|false` (Default value is `true` if option not used)
+  * `--convert-warnings-to-exception [true]|false`
 
-    Will add `beStrictAboutChangesToGlobalState="true|false"` to the phpunit configuration
+    Will add `convertWarningsToExceptions="true|false"`
 
-  * `--backup-globals [true]|false` (Default value is `true` if option not used)
+  * `--be-strict-about-output-during-test [true]|false`
 
-    Will add `backupGlobals="true|false"` to the phpunit configuration
+    Will add `beStrictAboutOutputDuringTests="true|false"`
 
-  * `--backup-static-attributes [true]|false` (Default value is `true` if option not used)
+  * `--be-strict-about-tests-that-do-not-test-anything [true]|false`
 
-    Will add `backupStaticAttributes="true|false"` to the phpunit configuration
+    Will add `beStrictAboutTestsThatDoNotTestAnything="true|false"`
 
-  * `--bootstrap bootstrap-path` 
+  * `--be-strict-about-changes-to-global-state [true]|false`
+
+    Will add `beStrictAboutChangesToGlobalState="true|false"`
+    
+    :information_source: Be aware that `beStrictAboutChangesToGlobalState="true"` requires, at least, either `backupGlobals="true"` or `backupStaticAttributes="true"` in order to do something
+
+  * `--backup-globals [true]|false`
+
+    Will add `backupGlobals="true|false"`
+
+  * `--backup-static-attributes [true]|false`
+
+    Will add `backupStaticAttributes="true|false"`
+
+  * `--check-for-unintentionally-covered-code [true]|false`
 
     Could be a relative path (root path will be the phpunit configuration file location) or an absolute path
 
-    Will add `bootstrap="bootstrap-path"` to the phpunit configuration
+    Will add `checkForUnintentionallyCoveredCode="true|false"`
 
-  * `--colors [true]|false` (Default value is `true` if option not used)
+  * `--force-covers-annotation [true]|false`
 
-    Will add `colors="true|false"` to the phpunit configuration
+    Could be a relative path (root path will be the phpunit configuration file location) or an absolute path
 
-  * `--process-isolation [true]|false` (Default value is `false` if option not used)
+    Will add `forceCoversAnnotation="true|false"`
 
-    Will add `processIsolation="true|false"` to the phpunit configuration
+  * `--bootstrap bootstrap-path`
 
-### Listeners
+    Could be a relative path (root path will be the phpunit configuration file location) or an absolute path
+
+    Will add `bootstrap="bootstrap-path"`
+
+  * `--process-isolation [true]|false`
+
+    Will add `processIsolation="true|false"`
+  
+  * `--colors [true]|false`
+
+    *Default value is* **true** *if option not used*
+
+    Will add `colors="true|false"`
+
+##### Listeners
+
+Following command line options will append related xml node under `<phpunit>` -> `<listeners>` node
 
   * `--listener-class "Fully\Qualified\Namespace\To\ListenerClass"` *Multiple listeners allowed*
 
-    Will append  following node `<listener class="Fully\Qualified\Namespace\To\ListenerClass"/>` into the `<listeners>` node of phpunit configuration
+    Will append  following node `<listener class="Fully\Qualified\Namespace\To\ListenerClass"/>`
 
-### Filter
+##### Test suites
+
+Following command line options will append related xml node under `<phpunit>` -> `<testsuites>` node
+
+*If `suiteName` is not provided, node will be appended under a* **default test suite named "default"**
+
+  * `--test-suite-directory "[suiteName#]path"` *Multiple suite directories allowed*
+
+    Could be a relative path (root path will be the phpunit configuration file location) or an absolute path
+
+    Will append  following node `<directory>path</directory>` under `<testsuite name="suiteName">`
+
+  * `--test-suite-file "[suiteName#]path"` *Multiple suite files allowed*
+
+    Could be a relative path (root path will be the phpunit configuration file location) or an absolute path
+
+    Will append  following node `<file>path</file>` under `<testsuite name="suiteName">`
+
+##### Filter
 
   * `--filter-whitelist-directory path` *Multiple whitelist directories allowed*
 
@@ -98,24 +144,47 @@ composer require --global yoanm/init-repository-with-phpunit
 
     Will append  following node `<file>src</file>` into the `<filter>` -> `<whitelist>` node of phpunit configuration
 
-### Test suites
+### Folder hierarchy
 
-  * `--test-suite-directory "[suiteName#]path"` *Multiple suite directories allowed*
+  * `--test-path "subPath/subSubPath"` *Multiple test directories allowed*
+  
+    *Path will be appended in the project root directory defined by the command argument*
+    
+    Will create the given directory hierarchy if not already there.
+ 
+### Special
 
-    If `suiteName` is not provided, directory node will be appended into a default test suite named "default"
+  * `--strategy-compliance name`
+  
+    *:warning: When using a strategy, some single value options described above could be overwritten and some multi-values options could have extra data (depends of the strategy choosen)
+    
+    Available strategies :
+    * `YoanmTestsStrategy` : See [compliance document](./doc/YoanmTestsStrategy.md)
+    
+      :warning: **Requires** [PhpUnitExtended](https://github.com/yoanm/PhpUnitExtended)
 
-    Could be a relative path (root path will be the phpunit configuration file location) or an absolute path
-
-    Will append  following node `<directory>src</directory>` into the `<testsuites>` -> `<testsuite name="suiteName">` node of phpunit configuration
-
-  * `--test-suite-file "[suiteName#]path"` *Multiple suite files allowed*
-
-    If `suiteName` is not provided, file node will be appended into a default test suite named "default"
-
-    Could be a relative path (root path will be the phpunit configuration file location) or an absolute path
-
-    Will append  following node `<directory>src</directory>` into the `<testsuites>` -> `<testsuite name="suiteName">` node of phpunit configuration
-
+      Using this strategy will 
+      * Override following single value options
+        * `--stop-on-error true`
+        * `--stop-on-failure true`
+        * `--convert-errors-to-exception true`
+        * `--convert-notices-to-exception true`
+        * `--convert-warnings-to-exception true`
+        * `--be-strict-about-output-during-test true`
+        * `--be-strict-about-tests-that-do-not-test-anything true`
+        * `--be-strict-about-changes-to-global-state true`
+        * `--force-covers-annotation true`
+        * `--backup-globals true`
+        * `--bootstrap vendor/autoload.php`
+      * Append extra data to following multi-values options
+        * `--filter-whitelist-directory "src"`
+        * `--test-suite-directory "technical#tests/Technical/Unit/*"`
+        * `--test-suite-directory "technical#tests/Technical/Integration/*"`
+        * `--test-suite-directory "functional#tests/Functional/*"`
+        * `--listener-class "Yoanm\PhpUnitExtended\Listener\YoanmTestsStrategyListener"`
+        * `--test-path "tests/Technical/Unit"`
+        * `--test-path "tests/Technical/Integration"`
+        * `--test-path "tests/Functional"`
 
 ## Full PhpUnit configuration
 ```xml
@@ -131,7 +200,8 @@ composer require --global yoanm/init-repository-with-phpunit
   beStrictAboutTestsThatDoNotTestAnything="true"
   beStrictAboutChangesToGlobalState="true"
   backupGlobals="true"
-  backupStaticAttributes="true"
+  backupStaticAttributes="false"
+  checkForUnintentionallyCoveredCode="true"
   forceCoversAnnotation="true"
   bootstrap="vendor/autoload.php"
   colors="true"
