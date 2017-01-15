@@ -103,6 +103,14 @@ Following command line options will append related xml attribute under `<phpunit
     Could be a relative path (root path will be the phpunit configuration file location) or an absolute path
 
     Will add `bootstrap="bootstrap-path"`
+    
+    You can also use the `--bootstrap-delegate delegateName` option. 
+    
+    Current implemented delegates are : 
+    
+      * `composer` : will be equivalent to `--bootstrap vendor/autoload.php`
+      
+    :warning: `--bootstrap-delegate` override `--bootstrap`
 
   * `--process-isolation [true]|false`
 
@@ -164,7 +172,15 @@ Following command line options will append related xml node under `<phpunit>` ->
  
 ### Special
 
-  * `--strategy-compliance name`
+  * `--default` 
+
+    Will be equivalent to use the following options
+
+```bash
+--bootstrap-delegate composer --colors true --test-suite-directory "tests" --test-path "tests" --filter-whitelist-directory "src"
+```
+
+  * `--strategy-compliance name` 
   
     *:warning: When using a strategy, some single value options described above could be overwritten and some multi-values options could have extra data (depends of the strategy choosen)*
     
@@ -185,7 +201,7 @@ Following command line options will append related xml node under `<phpunit>` ->
           * `--be-strict-about-changes-to-global-state true`
           * `--force-covers-annotation true`
           * `--backup-globals true`
-          * `--bootstrap vendor/autoload.php`
+          * `--bootstrap-delegate composer`
         * Append extra data to following multi-values options
           * `--filter-whitelist-directory "src"`
           * `--test-suite-directory "technical#tests/Technical/Unit/*"`
