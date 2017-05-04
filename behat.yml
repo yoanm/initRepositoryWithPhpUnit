@@ -1,0 +1,13 @@
+default:
+  autoload:
+    - features/bootstrap/
+  extensions:
+    Yoanm\BehatUtilsExtension:
+      event_subscriber: true
+  suites:
+    default:
+      contexts:
+        - Functional\Yoanm\PhpunitConfigManager\BehatContext\CommandRunnerContext: ~
+        - Functional\Yoanm\PhpunitConfigManager\BehatContext\DefaultContext: ~
+        - Functional\Yoanm\PhpunitConfigManager\BehatContext\CreateContext: ~
+        - Functional\Yoanm\PhpunitConfigManager\BehatContext\UpdateContext: ~

@@ -1,0 +1,86 @@
+{
+    "name": "yoanm/phpunit-config-manager",
+    "type": "library",
+    "description": "command line to manage phpunit configuration file",
+    "license": "MIT",
+    "version": "2.1.1",
+    "authors": [
+        {
+            "name": "yoanm",
+            "email": "yoanm@users.noreply.github.com",
+            "role": "Developer"
+        }
+    ],
+    "bin": [
+        "bin/phpunitcm"
+    ],
+    "support": {
+        "issues": "https://github.com/yoanm/phpunitConfigManager/issues"
+    },
+    "autoload": {
+        "psr-4": {
+            "Yoanm\\PhpunitConfigManager\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Technical\\Unit\\Yoanm\\PhpunitConfigManager\\": "tests/Technical/Unit",
+            "Technical\\Integration\\Yoanm\\PhpunitConfigManager\\": "tests/Technical/Integration",
+            "Functional\\Yoanm\\PhpunitConfigManager\\BehatContext\\": "features/bootstrap"
+        }
+    },
+    "require": {
+        "php": ">=5.5",
+        "symfony/console": "~3.0",
+        "symfony/dependency-injection": "^3.2",
+        "symfony/serializer": "^3.2",
+        "symfony/filesystem": "^3.2",
+        "symfony/config": "^3.2",
+        "symfony/finder": "^3.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.0",
+        "squizlabs/php_codesniffer": "2.*",
+        "behat/behat": "~3.0",
+        "yoanm/behat-utils-extension": "^0.7.0"
+    },
+    "scripts": {
+        "build": [
+            "@composer install --prefer-dist --optimize-autoloader --ansi --no-suggest --no-interaction"
+        ],
+        "build-ci": [
+            "mkdir -p build/coverage",
+            "@composer install --prefer-dist --ansi --no-suggest --no-interaction"
+        ],
+        "ci": [
+            "@build-ci",
+            "@cs",
+            "@test"
+        ],
+        "test": [
+            "@t-test",
+            "@f-test"
+        ],
+        "f-test": [
+            "./vendor/bin/phpunit --testsuite functional",
+            "@behat"
+        ],
+        "t-test": [
+            "./vendor/bin/phpunit --testsuite technical"
+        ],
+        "behat": [
+            "rm -Rf build/behat",
+            "mkdir -p build/behat",
+            "./vendor/bin/behat --no-snippets --colors --format progress"
+        ],
+        "cs": [
+            "./vendor/bin/phpcs"
+        ],
+        "coverage": [
+            "./vendor/bin/phpunit --coverage-html build/coverage"
+        ],
+        "coverage-clover": [
+            "./vendor/bin/phpunit --coverage-clover build/coverage/clover.xml"
+        ]
+    }
+}

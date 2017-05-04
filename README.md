@@ -2,7 +2,7 @@
 
 Command to initialize PhpUnit configuration and folders hierarchy.
 
-> :warning: **Rely on** this [Composer implementation](https://github.com/yoanm/initRepositoryWithComposer) for autoloading
+> :warning: **Rely on** this [Composer implementation](https://github.com/yoanm/composerConfigManager) for autoloading
 
   * [Install](#install)
   * [How to](#how-to)

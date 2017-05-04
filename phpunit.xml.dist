@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- https://phpunit.de/manual/current/en/appendixes.configuration.html -->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.8/phpunit.xsd"
+    backupGlobals="false"
+    backupStaticAttributes="false"
+    colors="true"
+    convertErrorsToExceptions="true"
+    convertNoticesToExceptions="true"
+    convertWarningsToExceptions="true"
+    processIsolation="false"
+    beStrictAboutTestsThatDoNotTestAnything="true"
+    forceCoversAnnotation="true"
+    beStrictAboutOutputDuringTests="true"
+    beStrictAboutChangesToGlobalState="true"
+    bootstrap="vendor/autoload.php"
+>
+    <testsuites>
+        <testsuite name="technical">
+            <directory>tests/Technical/Unit/*</directory> <!-- launch unit before => faster than integration -->
+            <directory>tests/Technical/Integration/*</directory>
+        </testsuite>
+        <testsuite name="functional"> <!-- defined functional after technical => longer than technical -->
+            <directory>tests/Functional/*</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist>
+            <directory>src</directory>
+            <exclude>
+                <file>src/Infrastructure/SfApplication.php</file> <!-- tested thanks to behat tests -->
+                <directory>src/Domain/Model</directory> <!-- Model -->
+                <directory>src/Infrastructure/Command</directory><!-- entry point => tested with behat -->
+                <directory>src/Application/Request</directory><!-- DTO => tested with behat -->
+            </exclude>
+        </whitelist>
+    </filter>
+</phpunit>
