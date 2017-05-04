@@ -1,8 +1,13 @@
 # initRepositoryWithPhpUnit
+[![Scrutinizer Build Status](https://img.shields.io/scrutinizer/build/g/yoanm/phpUnitConfigManager.svg?label=Scrutinizer)](https://scrutinizer-ci.com/g/yoanm/phpUnitConfigManager/?branch=master) [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/yoanm/phpUnitConfigManager.svg?label=Code%20quality)](https://scrutinizer-ci.com/g/yoanm/phpUnitConfigManager/?branch=master) [![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/yoanm/phpUnitConfigManager.svg?label=Coverage)](https://scrutinizer-ci.com/g/yoanm/phpUnitConfigManager/?branch=master)
+
+[![Travis Build Status](https://img.shields.io/travis/yoanm/phpUnitConfigManager/master.svg?label=travis)](https://travis-ci.org/yoanm/phpUnitConfigManager) [![PHP Versions](https://img.shields.io/badge/php-5.5%20%2F%205.6%20%2F%207.0-8892BF.svg)](https://php.net/)
+
+[![Latest Stable Version](https://img.shields.io/packagist/v/yoanm/phpunit-config-manager.svg)](https://packagist.org/packages/yoanm/phpunit-config-manager)
 
 Command to initialize PhpUnit configuration and folders hierarchy.
 
-> :warning: **Rely on** this [Composer implementation](https://github.com/yoanm/composerConfigManager) for autoloading
+> :warning: **Rely on** this [Composer implementation](https://github.com/yoanm/phpUnitConfigManager) for autoloading
 
   * [Install](#install)
   * [How to](#how-to)
