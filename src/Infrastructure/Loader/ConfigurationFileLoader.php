@@ -31,7 +31,7 @@ class ConfigurationFileLoader implements ConfigurationFileLoaderInterface
         $finder = $this->finder
             ->in($path)
             ->files()
-            ->name(ConfigurationFileWriter::FILENAME)
+            ->name(ConfigurationFile::FILENAME)
             ->depth(0);
 
         /** @var SplFileInfo|null $file */
@@ -49,7 +49,7 @@ class ConfigurationFileLoader implements ConfigurationFileLoaderInterface
                 sprintf(
                     '%s/%s',
                     trim($path, '/'),
-                    ConfigurationFileWriter::FILENAME
+                    ConfigurationFile::FILENAME
                 )
             );
         }

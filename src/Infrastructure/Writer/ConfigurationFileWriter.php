@@ -9,8 +9,6 @@ use Yoanm\PhpUnitConfigManager\Infrastructure\Serializer\Encoder\PhpUnitEncoder;
 
 class ConfigurationFileWriter implements ConfigurationFileWriterInterface
 {
-    const FILENAME = 'phpunit.xml.dist';
-
     /** @var SerializerInterface */
     private $serializer;
     /** @var Filesystem */
@@ -37,7 +35,7 @@ class ConfigurationFileWriter implements ConfigurationFileWriterInterface
             '%s%s%s',
             trim($destinationPath, DIRECTORY_SEPARATOR),
             DIRECTORY_SEPARATOR,
-            self::FILENAME
+            ConfigurationFile::FILENAME
         );
 
         $this->filesystem->dumpFile($filename, $data);

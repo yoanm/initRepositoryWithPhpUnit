@@ -3,6 +3,8 @@ namespace Yoanm\PhpUnitConfigManager\Domain\Model;
 
 class ConfigurationFile
 {
+    const FILENAME = 'phpunit.xml.dist';
+
     const KEY_NAME = 'name';
     const KEY_TYPE = 'type';
     const KEY_LICENSE = 'license';
