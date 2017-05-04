@@ -1,0 +1,59 @@
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+
+
+        <service id="phpunit_config_manager.app.update_configuration_file_list" class="Yoanm\PhpUnitConfigManager\Application\UpdateConfigurationFileList">
+            <argument type="service" id="phpunit_config_manager.infra.writer.configuration_file" />
+            <argument type="service" id="phpunit_config_manager.app.updater.configuration_file" />
+        </service>
+
+        <!-- Updater -->
+        <service id="phpunit_config_manager.app.updater.configuration_file" class="Yoanm\PhpUnitConfigManager\Application\Updater\ConfigurationFileUpdater">
+            <argument type="service" id="phpunit_config_manager.app.updater.plain_value" />
+            <argument type="service" id="phpunit_config_manager.app.updater.keyword_list" />
+            <argument type="service" id="phpunit_config_manager.app.updater.list" />
+            <argument type="service" id="phpunit_config_manager.app.updater.author_list" />
+        </service>
+
+        <service id="phpunit_config_manager.app.updater.plain_value" class="Yoanm\PhpUnitConfigManager\Application\Updater\PlainValueUpdater" />
+        <service id="phpunit_config_manager.app.updater.keyword_list" class="Yoanm\PhpUnitConfigManager\Application\Updater\KeywordListUpdater" />
+        <service id="phpunit_config_manager.app.updater.list" class="Yoanm\PhpUnitConfigManager\Application\Updater\ListUpdater" />
+        <service id="phpunit_config_manager.app.updater.author_list" class="Yoanm\PhpUnitConfigManager\Application\Updater\AuthorListUpdater" />
+
+        <!-- Normalizers -->
+        <service id="phpunit_config_manager.app.serializer.normalizer.configuration_file" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\ConfigurationFileNormalizer">
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.configuration" />
+        </service>
+        <service id="phpunit_config_manager.app.serializer.normalizer.configuration" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\ConfigurationNormalizer">
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.configuration.author" />
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.configuration.package" />
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.configuration.suggested_package" />
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.configuration.support" />
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.configuration.autoload" />
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.configuration.script" />
+        </service>
+        <service id="phpunit_config_manager.app.serializer.denormalizer.configuration_file" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\ConfigurationFileDenormalizer">
+            <argument type="service" id="phpunit_config_manager.app.serializer.denormalizer.configuration" />
+        </service>
+        <service id="phpunit_config_manager.app.serializer.denormalizer.configuration" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\ConfigurationDenormalizer">
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.configuration.author" />
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.configuration.package" />
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.configuration.suggested_package" />
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.configuration.support" />
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.configuration.autoload" />
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.configuration.script" />
+        </service>
+
+        <service id="phpunit_config_manager.app.serializer.normalizer.configuration.author" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\AuthorListNormalizer"/>
+        <service id="phpunit_config_manager.app.serializer.normalizer.configuration.package" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\PackageListNormalizer"/>
+        <service id="phpunit_config_manager.app.serializer.normalizer.configuration.suggested_package" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\SuggestedPackageListNormalizer"/>
+        <service id="phpunit_config_manager.app.serializer.normalizer.configuration.support" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\SupportListNormalizer"/>
+        <service id="phpunit_config_manager.app.serializer.normalizer.configuration.autoload" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\AutoloadListNormalizer"/>
+        <service id="phpunit_config_manager.app.serializer.normalizer.configuration.script" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\ScriptListNormalizer"/>
+
+        <!-- Encoders -->
+        <service id="phpunit_config_manager.app.serializer.encoder.phpunit" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Encoder\PhpUnitEncoder" />
+    </services>
+</container>

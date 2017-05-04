@@ -1,0 +1,52 @@
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="phpunit_config_manager.sf_app" class="Yoanm\PhpUnitConfigManager\Infrastructure\SfApplication">
+            <argument type="collection">
+                <argument type="service" id="phpunit_config_manager.infra.command.create_configuration" />
+                <argument type="service" id="phpunit_config_manager.infra.command.update_configuration" />
+            </argument>
+        </service>
+
+        <service id="phpunit_config_manager.infra.command.create_configuration" class="Yoanm\PhpUnitConfigManager\Infrastructure\Command\CreateConfigurationCommand">
+            <argument type="service" id="phpunit_config_manager.infra.transformer.input" />
+            <argument type="service" id="phpunit_config_manager.app.update_configuration_file_list" />
+            <argument type="service" id="phpunit_config_manager.infra.loader.configuration_file" />
+        </service>
+        <service id="phpunit_config_manager.infra.command.update_configuration" class="Yoanm\PhpUnitConfigManager\Infrastructure\Command\UpdateConfigurationCommand">
+            <argument type="service" id="phpunit_config_manager.infra.transformer.input" />
+            <argument type="service" id="phpunit_config_manager.app.update_configuration_file_list" />
+            <argument type="service" id="phpunit_config_manager.infra.loader.configuration_file" />
+        </service>
+
+        <service id="phpunit_config_manager.infra.transformer.input" class="Yoanm\PhpUnitConfigManager\Infrastructure\Transformer\InputTransformer" />
+
+        <service id="phpunit_config_manager.infra.filesystem" class="Symfony\Component\Filesystem\Filesystem" />
+        <service id="phpunit_config_manager.infra.finder" class="Symfony\Component\Finder\Finder" />
+
+        <service id="phpunit_config_manager.infra.writer.configuration_file" class="Yoanm\PhpUnitConfigManager\Infrastructure\Writer\ConfigurationFileWriter">
+            <argument type="service" id="phpunit_config_manager.infra.serializer.configuration_file" />
+            <argument type="service" id="phpunit_config_manager.infra.filesystem" />
+        </service>
+        <service id="phpunit_config_manager.infra.loader.configuration_file" class="Yoanm\PhpUnitConfigManager\Infrastructure\Loader\ConfigurationFileLoader">
+            <argument type="service" id="phpunit_config_manager.infra.finder" />
+            <argument type="service" id="phpunit_config_manager.infra.serializer.configuration_file" />
+        </service>
+        <service id="phpunit_config_manager.infra.encoder.phpunit" class="Yoanm\PhpUnitConfigManager\Infrastructure\Serializer\Encoder\PhpUnitEncoder">
+            <argument type="service" id="phpunit_config_manager.app.serializer.encoder.phpunit" />
+        </service>
+        <service id="phpunit_config_manager.infra.normalizer.configuration_file" class="Yoanm\PhpUnitConfigManager\Infrastructure\Serializer\Normalizer\ConfigurationFileNormalizer">
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.configuration_file" />
+            <argument type="service" id="phpunit_config_manager.app.serializer.denormalizer.configuration_file" />
+        </service>
+        <service id="phpunit_config_manager.infra.serializer.configuration_file" class="Symfony\Component\Serializer\Serializer">
+            <argument type="collection">
+                <argument type="service" id="phpunit_config_manager.infra.normalizer.configuration_file" />
+            </argument>
+            <argument type="collection">
+                <argument type="service" id="phpunit_config_manager.infra.encoder.phpunit" />
+            </argument>
+        </service>
+    </services>
+</container>
