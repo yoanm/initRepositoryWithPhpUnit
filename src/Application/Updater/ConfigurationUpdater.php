@@ -3,23 +3,22 @@ namespace Yoanm\PhpUnitConfigManager\Application\Updater;
 
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AbstractNodeUpdater;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AttributeUpdater;
+use Yoanm\PhpUnitConfigManager\Application\Updater\Common\HeaderFooterHelper;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Configuration;
 use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites;
 
 class ConfigurationUpdater extends AbstractNodeUpdater
 {
-    /** @var AttributeUpdater */
-    private $attributeUpdater;
-
     /**
-     * @param AttributeUpdater $attributeUpdater
-     * @param TestSuitesUpdater $testSuitesUpdater
-     * @param GroupsUpdater $groupsUpdater
-     * @param FilterUpdater $filterUpdater
-     * @param LoggingUpdater $loggingUpdater
-     * @param ListenersUpdater $listenersUpdater
-     * @param PhpUpdater $phpUpdater
+     * @param AttributeUpdater   $attributeUpdater
+     * @param TestSuitesUpdater  $testSuitesUpdater
+     * @param GroupsUpdater      $groupsUpdater
+     * @param FilterUpdater      $filterUpdater
+     * @param LoggingUpdater     $loggingUpdater
+     * @param ListenersUpdater   $listenersUpdater
+     * @param PhpUpdater         $phpUpdater
+     * @param HeaderFooterHelper $headerFooterHelper
      */
     public function __construct(
         AttributeUpdater $attributeUpdater,
@@ -28,18 +27,25 @@ class ConfigurationUpdater extends AbstractNodeUpdater
         FilterUpdater $filterUpdater,
         LoggingUpdater $loggingUpdater,
         ListenersUpdater $listenersUpdater,
-        PhpUpdater $phpUpdater
+        PhpUpdater $phpUpdater,
+        HeaderFooterHelper $headerFooterHelper
     ) {
-        parent::__construct([
-            $testSuitesUpdater,
-            $groupsUpdater,
-            $filterUpdater,
-            $loggingUpdater,
-            $listenersUpdater,
-            $phpUpdater,
-        ]);
+        parent::__construct(
+            $headerFooterHelper,
+            [
+                $testSuitesUpdater,
+                $groupsUpdater,
+                $filterUpdater,
+                $loggingUpdater,
+                $listenersUpdater,
+                $phpUpdater,
+            ]
+        );
         $this->attributeUpdater = $attributeUpdater;
     }
+
+    /** @var AttributeUpdater */
+    private $attributeUpdater;
 
     /**
      * @param Configuration $baseItem

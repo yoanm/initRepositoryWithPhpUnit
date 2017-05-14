@@ -2,6 +2,7 @@
 namespace Yoanm\PhpUnitConfigManager\Application\Updater;
 
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AbstractNodeUpdater;
+use Yoanm\PhpUnitConfigManager\Application\Updater\Common\HeaderFooterHelper;
 use Yoanm\PhpUnitConfigManager\Application\Updater\TestSuites\TestSuiteUpdater;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites;
@@ -9,12 +10,14 @@ use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites;
 class TestSuitesUpdater extends AbstractNodeUpdater
 {
     /**
-     * @param TestSuiteUpdater $testSuiteUpdater
+     * @param TestSuiteUpdater   $testSuiteUpdater
+     * @param HeaderFooterHelper $headerFooterHelper
      */
     public function __construct(
-        TestSuiteUpdater $testSuiteUpdater
+        TestSuiteUpdater $testSuiteUpdater,
+        HeaderFooterHelper $headerFooterHelper
     ) {
-        parent::__construct([$testSuiteUpdater]);
+        parent::__construct($headerFooterHelper, [$testSuiteUpdater]);
     }
 
     /**

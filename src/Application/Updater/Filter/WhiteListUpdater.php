@@ -4,6 +4,7 @@ namespace Yoanm\PhpUnitConfigManager\Application\Updater\Filter;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AbstractNodeUpdater;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AttributeUpdater;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\Block;
+use Yoanm\PhpUnitConfigManager\Application\Updater\Common\HeaderFooterHelper;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\UnmanagedNode;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Filter\ExcludedWhiteList;
@@ -15,16 +16,18 @@ class WhiteListUpdater extends AbstractNodeUpdater
     private $attributeUpdater;
 
     /**
-     * @param AttributeUpdater $attributeUpdater
-     * @param WhiteListItemUpdater $whiteListItemUpdater
+     * @param AttributeUpdater         $attributeUpdater
+     * @param WhiteListItemUpdater     $whiteListItemUpdater
      * @param ExcludedWhiteListUpdater $excludedWhiteListUpdater
+     * @param HeaderFooterHelper       $headerFooterHelper
      */
     public function __construct(
         AttributeUpdater $attributeUpdater,
         WhiteListItemUpdater $whiteListItemUpdater,
-        ExcludedWhiteListUpdater $excludedWhiteListUpdater
+        ExcludedWhiteListUpdater $excludedWhiteListUpdater,
+        HeaderFooterHelper $headerFooterHelper
     ) {
-        parent::__construct([$whiteListItemUpdater, $excludedWhiteListUpdater]);
+        parent::__construct($headerFooterHelper, [$whiteListItemUpdater, $excludedWhiteListUpdater]);
         $this->attributeUpdater = $attributeUpdater;
     }
 
@@ -61,12 +64,56 @@ class WhiteListUpdater extends AbstractNodeUpdater
     }
 
     /**
-     * @param array $itemList
+     * @param ConfigurationItemInterface[] $itemList
+     *
+     * @return ConfigurationItemInterface[]
      */
     private function reorder(array $itemList)
     {
         // Try to move excluded node at end
         $groupedItemList = $this->groupItemList($itemList);
+        list($newItemList, $excludedNodeBlock) = $this->extractItemListAndExcluded($groupedItemList);
+        if ($excludedNodeBlock) {
+            $newItemList = $this->appendExcludedNodeBlock($newItemList, $excludedNodeBlock);
+        }
+
+        return $newItemList;
+    }
+
+    /**
+     * @param array $newItemList
+     * @param Block $excludedNodeBlock
+     *
+     * @return ConfigurationItemInterface[]
+     */
+    private function appendExcludedNodeBlock(array $newItemList, Block $excludedNodeBlock)
+    {
+        // 1 - Remove trailing unmanaged node (spaces and comments)
+        $trailingNonBlockNodeList = [];
+        while ($node = array_pop($newItemList)) {
+            if ($node instanceof UnmanagedNode) {
+                $trailingNonBlockNodeList[] = $node;
+            } else {
+                $newItemList[] = $node;
+                break;
+            }
+        }
+        // 2 - Append node
+        $newItemList = $this->mergeBlock($excludedNodeBlock, $newItemList);
+        // 3 - Re append previously removed trailing non block objects
+        foreach (array_reverse($trailingNonBlockNodeList) as $trailingNonBlockNode) {
+            $newItemList[] = $trailingNonBlockNode;
+        }
+        return $newItemList;
+    }
+
+    /**
+     * @param Block[] $groupedItemList
+     *
+     * @return array
+     */
+    private function extractItemListAndExcluded(array $groupedItemList)
+    {
         $excludedNodeBlock = null;
         $newItemList = [];
         foreach ($groupedItemList as $block) {
@@ -80,25 +127,6 @@ class WhiteListUpdater extends AbstractNodeUpdater
                 $newItemList[] = $block;
             }
         }
-        if ($excludedNodeBlock) {
-            // 1 - Remove trailing unmanaged node (spaces and comments)
-            $trailingNonBlockNodeList = [];
-            while ($node = array_pop($newItemList)) {
-                if ($node instanceof UnmanagedNode) {
-                    $trailingNonBlockNodeList[] = $node;
-                } else {
-                    $newItemList[] = $node;
-                    break;
-                }
-            }
-            // 2 - Append node
-            $newItemList = $this->mergeBlock($excludedNodeBlock, $newItemList);
-            // 3 - Re append previously removed trailing non block objects
-            foreach (array_reverse($trailingNonBlockNodeList) as $trailingNonBlockNode) {
-                $newItemList[] = $trailingNonBlockNode;
-            }
-        }
-
-        return $newItemList;
+        return array($newItemList, $excludedNodeBlock);
     }
 }

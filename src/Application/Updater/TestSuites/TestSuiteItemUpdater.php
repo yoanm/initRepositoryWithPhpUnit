@@ -3,6 +3,7 @@ namespace Yoanm\PhpUnitConfigManager\Application\Updater\TestSuites;
 
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AbstractNodeUpdater;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AttributeUpdater;
+use Yoanm\PhpUnitConfigManager\Application\Updater\Common\HeaderFooterHelper;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\PlainValueUpdater;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites\TestSuite\ExcludedTestSuiteItem;
@@ -17,14 +18,16 @@ class TestSuiteItemUpdater extends AbstractNodeUpdater
     private $attributeUpdater;
 
     /**
-     * @param AttributeUpdater $attributeUpdater
-     * @param PlainValueUpdater $plainValueUpdater
+     * @param AttributeUpdater   $attributeUpdater
+     * @param PlainValueUpdater  $plainValueUpdater
+     * @param HeaderFooterHelper $headerFooterHelper
      */
     public function __construct(
         AttributeUpdater $attributeUpdater,
-        PlainValueUpdater $plainValueUpdater
+        PlainValueUpdater $plainValueUpdater,
+        HeaderFooterHelper $headerFooterHelper
     ) {
-        parent::__construct();
+        parent::__construct($headerFooterHelper);
         $this->plainValueUpdater = $plainValueUpdater;
         $this->attributeUpdater = $attributeUpdater;
     }
@@ -37,9 +40,6 @@ class TestSuiteItemUpdater extends AbstractNodeUpdater
      */
     public function merge(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
     {
-        if ($baseItem instanceof ExcludedTestSuiteItem && $newItem instanceof ExcludedTestSuiteItem) {
-            return $baseItem;
-        }
         return new TestSuiteItem(
             $baseItem->getType(),
             $baseItem->getValue(),

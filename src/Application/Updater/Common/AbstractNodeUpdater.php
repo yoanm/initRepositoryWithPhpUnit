@@ -8,13 +8,17 @@ abstract class AbstractNodeUpdater
 {
     /** @var AbstractNodeUpdater[] */
     private $updateDelegateList;
+    /** @var HeaderFooterHelper */
+    private $headerFooterHelper;
 
     /**
+     * @param HeaderFooterHelper    $headerFooterHelper
      * @param AbstractNodeUpdater[] $updaterDelegateList
      */
-    public function __construct(array $updaterDelegateList = [])
+    public function __construct(HeaderFooterHelper $headerFooterHelper, array $updaterDelegateList = [])
     {
         $this->updateDelegateList = $updaterDelegateList;
+        $this->headerFooterHelper = $headerFooterHelper;
     }
 
     /**
@@ -64,54 +68,23 @@ abstract class AbstractNodeUpdater
     protected function mergeItemList(array $baseItemList, array $newItemList)
     {
         $groupedBaseNodeList = $this->groupItemList($baseItemList);
+        /** @var Block[] $supportedNewNodeList */
         $supportedNewNodeList = $this->groupItemList($newItemList, true);
 
         $updatedItemList = [];
         while ($groupedBaseNode = array_shift($groupedBaseNodeList)) {
             if ($groupedBaseNode instanceof Block) {
-                $newNodeFound = false;
-                $updater = $this->getUpdater($groupedBaseNode->getItem(), false);
-                if ($updater) {
-                    $supportedNewNode = null;
-                    foreach ($supportedNewNodeList as $supportedNewNodeKey => $potentialNewNode) {
-                        if ($updater->isSameNode($groupedBaseNode->getItem(), $potentialNewNode->getItem())) {
-                            $supportedNewNode = $potentialNewNode;
-                            unset($supportedNewNodeList[$supportedNewNodeKey]);
-                            break;
-                        }
-                    }
-                    if ($supportedNewNode) {
-                        $newNodeFound = true;
-                        $updatedItemList = $this->mergeBlock($groupedBaseNode, $updatedItemList, $supportedNewNode);
-                    }
-                }
-                if (false === $newNodeFound) {
-                    $updatedItemList = $this->mergeBlock($groupedBaseNode, $updatedItemList);
-                }
+                list($updatedItemList, $supportedNewNodeList) = $this->updateAndMergeBlock(
+                    $groupedBaseNode,
+                    $supportedNewNodeList,
+                    $updatedItemList
+                );
             } else {
                 $updatedItemList[] = $groupedBaseNode;
             }
         }
         if (count($supportedNewNodeList)) {
-            // 1 - Remove trailing non block object (spaces and comments)
-            $trailingNonBlockNodeList = [];
-            while ($node = array_pop($updatedItemList)) {
-                if (!$node instanceof \DOMNode
-                    || $node->nodeType === XML_ELEMENT_NODE
-                ) {
-                    $trailingNonBlockNodeList[] = $node;
-                    break;
-                }
-                $trailingNonBlockNodeList[] = $node;
-            }
-            // 2 - Append remaining new node
-            foreach ($supportedNewNodeList as $supportedNewNode) {
-                $updatedItemList = $this->mergeBlock($supportedNewNode, $updatedItemList);
-            }
-            // 3 - Re append previously removed trailing non block objects
-            foreach (array_reverse($trailingNonBlockNodeList) as $trailingNonBlockNode) {
-                $updatedItemList[] = $trailingNonBlockNode;
-            }
+            $updatedItemList = $this->appendNewNodeList($supportedNewNodeList, $updatedItemList);
         }
 
         return $updatedItemList;
@@ -129,24 +102,11 @@ abstract class AbstractNodeUpdater
         while ($item = array_shift($itemList)) {
             if ($this->getUpdater($item, false)) {
                 // Check if header comment exist if previous nodes
-                $headerNodeList = $this->extractNodeHeaderList($groupedItemList);
-                if (0 === count($headerNodeList)
-                    && $leadingSpaceNode = $this->extractLeadingSpace($groupedItemList)
-                ) {
-                    $headerNodeList = [$leadingSpaceNode];
-                }
-
+                $headerNodeList = $this->headerFooterHelper->extractHeaderOrLeadingSpaceNode($groupedItemList);
+                $groupedItemList = $this->headerFooterHelper->updateListIfHeader($headerNodeList, $groupedItemList);
                 // Check if footer comment exist if base node list
-                $footerNodeList = $this->extractNodeFooterList($itemList, $headerNodeList);
-                if (count($headerNodeList)) {
-                    // Remove the comment from the returned list
-                    $groupedItemList = array_slice($groupedItemList, 0, count($groupedItemList)-count($headerNodeList));
-                }
-
-                if (count($footerNodeList)) {
-                    // Remove the comment from the list (no need to manage it anymore)
-                    $itemList = array_slice($itemList, count($footerNodeList));
-                }
+                $footerNodeList = $this->headerFooterHelper->extractNodeFooterList($itemList, $headerNodeList);
+                $itemList = $this->headerFooterHelper->updateListIfFooter($itemList, $footerNodeList);
 
                 $groupedItemList[] = new Block($item, $headerNodeList, $footerNodeList);
             } else {
@@ -161,114 +121,6 @@ abstract class AbstractNodeUpdater
         }
 
         return $groupedItemList;
-    }
-
-    /**
-     * @param UnmanagedNode[]|ConfigurationItemInterface[] $itemList
-     *
-     * @return UnmanagedNode[]
-     */
-    private function extractNodeHeaderList(array $itemList)
-    {
-        // Manage only Header comment => Comment is before the node and comment have new line before and after
-        $potentialEndTextNode = array_pop($itemList);
-        $potentialCommentNode = array_pop($itemList);
-        $potentialStartTextNode = array_pop($itemList);
-        if ($this->isUnmanagedNodeType($potentialEndTextNode, XML_TEXT_NODE)
-            && $this->isUnmanagedNodeType($potentialCommentNode, XML_COMMENT_NODE)
-            && $this->isUnmanagedNodeType($potentialStartTextNode, XML_TEXT_NODE)
-            && false !== strpos($potentialEndTextNode->getValue()->nodeValue, "\n")
-            && false !== strpos($potentialStartTextNode->getValue()->nodeValue, "\n")
-        ) {
-            return [
-                $potentialStartTextNode,
-                $potentialCommentNode,
-                $potentialEndTextNode
-            ];
-        }
-
-        return [];
-    }
-
-    /**
-     * @param UnmanagedNode[]|ConfigurationItemInterface[] $itemList
-     *
-     * @return UnmanagedNode|null
-     */
-    private function extractLeadingSpace(array $itemList)
-    {
-        $potentialEndTextNode = array_pop($itemList);
-        if ($this->isUnmanagedNodeType($potentialEndTextNode, XML_TEXT_NODE)) {
-            return $potentialEndTextNode;
-        }
-
-        return null;
-    }
-
-    /**
-     * @param UnmanagedNode[]|ConfigurationItemInterface[] $itemList
-     * @param UnmanagedNode[]                              $extractedHeaderBlockCommentNodeList
-     *
-     * @return UnmanagedNode[]
-     */
-    private function extractNodeFooterList(array $itemList, array $extractedHeaderBlockCommentNodeList)
-    {
-        // Manage 2 types of footer :
-        // - comment that follow the node without new line between (=inline comment)
-        // - comment that follow the node and with a new line between them (=end block comment)
-        $commentOrText = array_shift($itemList);
-        $potentialComment = array_shift($itemList);
-        // Search for an footer block comment node only if a header exist
-        if ($this->hasHeaderBlockComment($extractedHeaderBlockCommentNodeList)
-            && $this->isUnmanagedNodeType($commentOrText, XML_TEXT_NODE)
-            && $this->isUnmanagedNodeType($potentialComment, XML_COMMENT_NODE)
-            && false !== strpos($commentOrText->getValue()->nodeValue, "\n")
-        ) {
-            return [$commentOrText, $potentialComment];
-        } elseif ($this->isUnmanagedNodeType($commentOrText, XML_COMMENT_NODE)) {
-            return [$commentOrText];
-        } elseif ($this->isUnmanagedNodeType($commentOrText, XML_TEXT_NODE)
-            && $this->isUnmanagedNodeType($potentialComment, XML_COMMENT_NODE)
-        ) {
-            // In case no CR => it's a trailing comment with space(s) before
-            if (false === strpos($commentOrText->getValue()->nodeValue, "\n")) {
-                return [$commentOrText, $potentialComment];
-            } else {
-                //Else, repush the two nodes and check if a header comment could be found
-                // In this case, the comment will be managed later (for the following element node)
-                $newItemList = $itemList;
-                array_unshift($newItemList, $potentialComment);
-                array_unshift($newItemList, $commentOrText);
-                $potentialHeaderList = $this->extractNodeHeaderList($itemList);
-                if (0 === count($potentialHeaderList)) {
-                    // It's not the header block comment of a following element node => so add it as footer
-                    return [$commentOrText, $potentialComment];
-                }
-            }
-        }
-
-        return [];
-    }
-
-    /**
-     * @param ConfigurationItemInterface $baseItem
-     * @param ConfigurationItemInterface $newItem
-     *
-     * @return bool
-     */
-    protected function isSameNodeOrUnmanagedNode(
-        ConfigurationItemInterface $baseItem,
-        ConfigurationItemInterface $newItem
-    ) {
-        if ($newItem instanceof UnmanagedNode && $baseItem instanceof UnmanagedNode) {
-            if ($this->isUnmanagedNodeType($newItem, XML_COMMENT_NODE)) {
-                return ($newItem->getValue()->nodeValue === $baseItem->getValue()->nodeValue);
-            }
-
-            return true;
-        }
-
-        return $this->isSameNode($baseItem, $newItem);
     }
 
     /**
@@ -289,25 +141,6 @@ abstract class AbstractNodeUpdater
         }
 
         return $updater->update([$baseItem, $newItem]);
-    }
-
-    /**
-     * @param ConfigurationItemInterface[] $nodeList
-     *
-     * @return bool|ConfigurationItemInterface
-     */
-    protected function isFollowedByManagedNode(array $nodeList)
-    {
-        foreach ($nodeList as $node) {
-            if ($this->isUnmanagedNodeType($node, XML_TEXT_NODE)) {
-                continue;
-            } elseif ($this->supports($node)) {
-                return $node;
-            }
-            break;
-        }
-
-        return false;
     }
 
     /**
@@ -336,19 +169,17 @@ abstract class AbstractNodeUpdater
     }
 
     /**
-     * @param Block $supportedNewNode
-     * @param Block $groupedBaseNode
-     * @param array $updatedItemList
-     * @return array
+     * @param Block                        $supportedNewNode
+     * @param Block                        $groupedBaseNode
+     * @param ConfigurationItemInterface[] $updatedItemList
+     *
+     * @return ConfigurationItemInterface[]
      */
     protected function mergeBlock(Block $groupedBaseNode, array $updatedItemList, Block $supportedNewNode = null)
     {
-        $updatedItemList = $this->mergeHeaderNodeList(
+        $updatedItemList = $this->headerFooterHelper->mergeHeaderNodeList(
             $groupedBaseNode->getHeaderNodeList(),
-            $groupedBaseNode->getFooterNodeList(),
-            $updatedItemList,
-            $supportedNewNode ? $supportedNewNode->getHeaderNodeList() : [],
-            $supportedNewNode ? $supportedNewNode->getFooterNodeList() : []
+            $updatedItemList
         );
         $updatedItemList[] = $supportedNewNode
             ? $this->mergeNode(
@@ -358,134 +189,86 @@ abstract class AbstractNodeUpdater
             : $groupedBaseNode->getItem();
 
         //return $updatedItemList;
-        return $this->mergeFooterNodeList(
-            $groupedBaseNode->getHeaderNodeList(),
+        return $this->headerFooterHelper->mergeFooterNodeList(
             $groupedBaseNode->getFooterNodeList(),
-            $updatedItemList,
-            $supportedNewNode ? $supportedNewNode->getHeaderNodeList() : [],
-            $supportedNewNode ? $supportedNewNode->getFooterNodeList() : []
+            $updatedItemList
         );
     }
 
     /**
-     * @param UnmanagedNode[]                              $groupedBaseHeaderNodeList
-     * @param UnmanagedNode[]                              $groupedBaseFooterNodeList
-     * @param UnmanagedNode[]|ConfigurationItemInterface[] $updatedItemList
-     * @param UnmanagedNode[]                              $supportedHeaderNewNodeList
-     * @param UnmanagedNode[]                              $supportedFooterNewNodeList
+     * @param Block[]                      $supportedNewNodeList
+     * @param ConfigurationItemInterface[] $updatedItemList
      *
-     * @return UnmanagedNode[]|ConfigurationItemInterface[]
+     * @return ConfigurationItemInterface[]
      */
-    protected function mergeHeaderNodeList(
-        array $groupedBaseHeaderNodeList,
-        array $groupedBaseFooterNodeList,
-        array $updatedItemList,
-        array $supportedHeaderNewNodeList = [],
-        array $supportedFooterNewNodeList = []
-    ) {
-        /*
-        $baseHasBlockComments = $this->hasHeaderBlockComment($groupedBaseHeaderNodeList)
-            && $this->hasPotentialFooterBlockComment($groupedBaseFooterNodeList);
-        $newHasBlockComments = $this->hasHeaderBlockComment($supportedHeaderNewNodeList)
-            && $this->hasPotentialFooterBlockComment($supportedFooterNewNodeList);
-
-        // Merge block comments if defined
-        if ($newHasBlockComments) {
-            // Use the new one if it exist (in case old one exist it is overrided)
-            $nodeList = $supportedHeaderNewNodeList;
-        } elseif ($baseHasBlockComments) {
-            // Keep old one
-            $nodeList = $groupedBaseHeaderNodeList;
-        } else { //No block headers => means that if header exist it's just a text node
-            // Keep old header except if a new one exists
-            $nodeList = count($supportedHeaderNewNodeList)
-                ? $supportedHeaderNewNodeList
-                : $groupedBaseHeaderNodeList
-            ;
+    protected function appendNewNodeList(array $supportedNewNodeList, array $updatedItemList)
+    {
+        // 1 - Remove trailing non block object (spaces and comments)
+        $trailingNonBlockNodeList = [];
+        while ($node = array_pop($updatedItemList)) {
+            if (!$node instanceof \DOMNode
+                || $node->nodeType === XML_ELEMENT_NODE
+            ) {
+                $trailingNonBlockNodeList[] = $node;
+                break;
+            }
+            $trailingNonBlockNodeList[] = $node;
         }
-*/
-        foreach ($groupedBaseHeaderNodeList as $node) {
-            $updatedItemList[] = $node;
+        // 2 - Append remaining new node
+        foreach ($supportedNewNodeList as $supportedNewNode) {
+            $updatedItemList = $this->mergeBlock($supportedNewNode, $updatedItemList);
         }
-
+        // 3 - Re append previously removed trailing non block objects
+        foreach (array_reverse($trailingNonBlockNodeList) as $trailingNonBlockNode) {
+            $updatedItemList[] = $trailingNonBlockNode;
+        }
         return $updatedItemList;
     }
 
     /**
-     * @param UnmanagedNode[]                              $groupedBaseHeaderNodeList
-     * @param UnmanagedNode[]                              $groupedBaseFooterNodeList
-     * @param UnmanagedNode[]|ConfigurationItemInterface[] $updatedItemList
-     * @param UnmanagedNode[]                              $supportedHeaderNewNodeList
-     * @param UnmanagedNode[]                              $supportedFooterNewNodeList
+     * @param Block                        $groupedBaseNode
+     * @param Block[]                      $supportedNewNodeList
+     * @param ConfigurationItemInterface[] $updatedItemList
      *
-     * @return UnmanagedNode[]|ConfigurationItemInterface[]
+     * @return array
      */
-    protected function mergeFooterNodeList(
-        array $groupedBaseHeaderNodeList,
-        array $groupedBaseFooterNodeList,
-        array $updatedItemList,
-        array $supportedHeaderNewNodeList = [],
-        array $supportedFooterNewNodeList = []
+    protected function updateAndMergeBlock(
+        Block $groupedBaseNode,
+        array $supportedNewNodeList,
+        array $updatedItemList
     ) {
-
-        /*
-        $baseHasBlockComments = $this->hasHeaderBlockComment($groupedBaseHeaderNodeList)
-            && $this->hasPotentialFooterBlockComment($groupedBaseFooterNodeList);
-        $newHasBlockComments = $this->hasHeaderBlockComment($supportedHeaderNewNodeList)
-            && $this->hasPotentialFooterBlockComment($supportedFooterNewNodeList);
-
-        // Merge block comments if defined
-        if ($newHasBlockComments) {
-            // Use the new one if it exist (in case old one exist it is overrided)
-            $nodeList = $supportedFooterNewNodeList;
-        } elseif ($baseHasBlockComments) {
-            // Keep old one
-            $nodeList = $groupedBaseFooterNodeList;
-        } else { //No block footers => means that if footer exist it's just a text node or a trailing comment
-            // Keep old footer except if a new one exists
-            $nodeList = count($supportedFooterNewNodeList)
-                ? $supportedFooterNewNodeList
-                : $groupedBaseFooterNodeList
-            ;
-        }
-*/
-        foreach ($groupedBaseFooterNodeList as $node) {
-            $updatedItemList[] = $node;
+        $key = $this->getSameNodeKey($groupedBaseNode, $supportedNewNodeList);
+        if (null !== $key) {
+            $updatedItemList = $this->mergeBlock($groupedBaseNode, $updatedItemList, $supportedNewNodeList[$key]);
+            unset($supportedNewNodeList[$key]);
+        } else {
+            $updatedItemList = $this->mergeBlock($groupedBaseNode, $updatedItemList);
         }
 
-        return $updatedItemList;
+        return [
+            $updatedItemList,
+            $supportedNewNodeList
+        ];
     }
 
     /**
-     * @param mixed $node
-     * @param int   $type
+     * @param Block   $groupedBaseNode
+     * @param Block[] $supportedNewNodeList
      *
-     * @return bool
+     * @return null|int
      */
-    private function isUnmanagedNodeType($node, $type)
+    protected function getSameNodeKey(Block $groupedBaseNode, array $supportedNewNodeList)
     {
-        return $node instanceof UnmanagedNode && $node->getValue()->nodeType === $type;
-    }
-
-    /**
-     * @param UnmanagedNode[] $headerNodeList
-     * @return bool
-     */
-    private function hasHeaderBlockComment(array $headerNodeList)
-    {
-        return 3 === count($headerNodeList)
-            && $this->isUnmanagedNodeType($headerNodeList[1], XML_COMMENT_NODE);
-    }
-
-    /**
-     * @param UnmanagedNode[] $footerNodeList
-     * @return bool
-     */
-    private function hasPotentialFooterBlockComment(array $footerNodeList)
-    {
-        return 2 === count($footerNodeList)
-            && $this->isUnmanagedNodeType($footerNodeList[0], XML_TEXT_NODE)
-            && false !== strpos($footerNodeList[0]->getValue()->nodeValue, "\n")
-        ;
+        $key = null;
+        $updater = $this->getUpdater($groupedBaseNode->getItem(), false);
+        if ($updater) {
+            foreach ($supportedNewNodeList as $supportedNewNodeKey => $potentialNewNode) {
+                if ($updater->isSameNode($groupedBaseNode->getItem(), $potentialNewNode->getItem())) {
+                    $key = $supportedNewNodeKey;
+                    break;
+                }
+            }
+        }
+        return $key;
     }
 }

@@ -50,7 +50,7 @@ class ConfigurationFileNormalizer extends BaseNodeNormalizer
         }
 
         return new ConfigurationFile(
-            $document->version,
+            $document->xmlVersion,
             $document->encoding,
             $nodeList
         );

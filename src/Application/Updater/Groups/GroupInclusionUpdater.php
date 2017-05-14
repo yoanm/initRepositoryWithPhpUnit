@@ -2,18 +2,21 @@
 namespace Yoanm\PhpUnitConfigManager\Application\Updater\Groups;
 
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AbstractNodeUpdater;
+use Yoanm\PhpUnitConfigManager\Application\Updater\Common\HeaderFooterHelper;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Groups\GroupInclusion;
 
 class GroupInclusionUpdater extends AbstractNodeUpdater
 {
     /**
-     * @param GroupItemUpdater $groupItemUpdater
+     * @param GroupItemUpdater   $groupItemUpdater
+     * @param HeaderFooterHelper $headerFooterHelper
      */
     public function __construct(
-        GroupItemUpdater $groupItemUpdater
+        GroupItemUpdater $groupItemUpdater,
+        HeaderFooterHelper $headerFooterHelper
     ) {
-        parent::__construct([$groupItemUpdater]);
+        parent::__construct($headerFooterHelper, [$groupItemUpdater]);
     }
 
     /**

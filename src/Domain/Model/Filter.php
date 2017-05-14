@@ -6,11 +6,11 @@ use Yoanm\PhpUnitConfigManager\Domain\Model\Filter\WhiteList;
 
 class Filter implements ConfigurationItemInterface
 {
-    /** @var WhiteList[]|ConfigurationItemInterface[] */
+    /** @var ConfigurationItemInterface[]|WhiteList[] */
     private $itemList;
 
     /**
-     * @param WhiteList[]|ConfigurationItemInterface[] $itemList
+     * @param ConfigurationItemInterface[]|WhiteList[] $itemList
      */
     public function __construct(array $itemList = [])
     {
@@ -18,7 +18,7 @@ class Filter implements ConfigurationItemInterface
     }
 
     /**
-     * @return WhiteList[]|ConfigurationItemInterface[]
+     * @return ConfigurationItemInterface[]|WhiteList[]
      */
     public function getItemList()
     {

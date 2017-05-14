@@ -166,40 +166,10 @@ class InputTransformer
      */
     protected function extractTestSuites(array $inputList)
     {
-        $rawTestSuiteList = [];
-        foreach ([self::KEY_TEST_SUITE_FILE, self::KEY_TEST_SUITE_DIRECTORY] as $inputKey) {
-            if (isset($inputList[$inputKey]) && is_array($inputList[$inputKey])) {
-                foreach ($inputList[$inputKey] as $inputValue) {
-                    $data = $this->extractDataFromValue($inputValue);
-                    $name = array_shift($data);
-                    $rawTestSuiteList[$name][] = new TestSuiteItem(
-                        self::KEY_TEST_SUITE_FILE === $inputKey
-                            ? FilesystemItem::TYPE_FILE
-                            : FilesystemItem::TYPE_DIRECTORY,
-                        array_shift($data),
-                        $this->convertToAttributeList($data)
-                    );
-                }
-            }
-        }
-        if (isset($inputList[self::KEY_TEST_SUITE_EXCLUDED]) && is_array($inputList[self::KEY_TEST_SUITE_EXCLUDED])) {
-            foreach ($inputList[self::KEY_TEST_SUITE_EXCLUDED] as $inputValue) {
-                $data = $this->extractDataFromValue($inputValue);
-                $name = array_shift($data);
-                $rawTestSuiteList[$name][] = new ExcludedTestSuiteItem(
-                    array_shift($data),
-                    $this->convertToAttributeList($data)
-                );
-            }
-        }
-
-        $testSuiteList = [];
-        foreach ($rawTestSuiteList as $testSuiteName => $testSuiteItemList) {
-            $testSuiteList[] = new TestSuite($testSuiteName, $this->appendNewLineNode($testSuiteItemList));
-        }
+        $testSuiteList = $this->extractSuite($inputList);
 
         if (count($testSuiteList)) {
-            return new TestSuites($this->appendNewLineNode($testSuiteList));
+            return new TestSuites($testSuiteList);
         }
 
         return null;
@@ -212,25 +182,18 @@ class InputTransformer
      */
     protected function extractGroups(array $inputList)
     {
-        $rawGroupInclusionList = [];
-        foreach ([self::KEY_GROUP_EXCLUDE, self::KEY_GROUP_INCLUDE] as $inputKey) {
-            if (isset($inputList[$inputKey]) && is_array($inputList[$inputKey])) {
-                foreach ($inputList[$inputKey] as $inputValue) {
-                    $rawGroupInclusionList[$inputKey][] = new Group($inputValue);
-                }
-            }
-        }
+        $rawGroupInclusionList = $this->extractGroupInclusionList($inputList);
 
         $groupInclusionList = [];
         foreach ($rawGroupInclusionList as $inclusionType => $itemList) {
             $groupInclusionList[] = new GroupInclusion(
-                $this->appendNewLineNode($itemList),
+                $itemList,
                 self::KEY_GROUP_EXCLUDE === $inclusionType
             );
         }
 
         if (count($groupInclusionList)) {
-            return new Groups($this->appendNewLineNode($groupInclusionList));
+            return new Groups($groupInclusionList);
         }
 
         return null;
@@ -243,49 +206,30 @@ class InputTransformer
      */
     protected function extractFilter(array $inputList)
     {
-        $whiteListItemList = [];
-        $whiteListInputKeyList = [self::KEY_FILTER_WHITELIST_DIRECTORY, self::KEY_FILTER_WHITELIST_FILE];
-        foreach ($whiteListInputKeyList as $inputKey) {
-            if (isset($inputList[$inputKey]) && is_array($inputList[$inputKey])) {
-                foreach ($inputList[$inputKey] as $inputValue) {
-                    $data = $this->extractDataFromValue($inputValue);
-                    $whiteListItemList[] = new WhiteListItem(
-                        self::KEY_FILTER_WHITELIST_DIRECTORY == $inputKey
-                            ? FilesystemItem::TYPE_DIRECTORY
-                            : FilesystemItem::TYPE_FILE,
-                        array_shift($data),
-                        $this->convertToAttributeList($data)
-                    );
-                }
-            }
-        }
-        $excludedWhiteListItemList = [];
-        $excludedWhiteListInputKeyList = [
-            self::KEY_FILTER_EXCLUDED_WHITELIST_FILE,
+        $whiteListItemList = $this->extractWhiteListItemList(
+            $inputList,
+            [
+                self::KEY_FILTER_WHITELIST_DIRECTORY,
+                self::KEY_FILTER_WHITELIST_FILE
+            ],
+            self::KEY_FILTER_WHITELIST_DIRECTORY
+        );
+        $excludedWhiteListItemList = $this->extractWhiteListItemList(
+            $inputList,
+            [
+                self::KEY_FILTER_EXCLUDED_WHITELIST_FILE,
+                self::KEY_FILTER_EXCLUDED_WHITELIST_DIRECTORY
+            ],
             self::KEY_FILTER_EXCLUDED_WHITELIST_DIRECTORY
-        ];
-        foreach ($excludedWhiteListInputKeyList as $inputKey) {
-            if (isset($inputList[$inputKey]) && is_array($inputList[$inputKey])) {
-                foreach ($inputList[$inputKey] as $inputValue) {
-                    $data = $this->extractDataFromValue($inputValue);
-                    $excludedWhiteListItemList[] = new WhiteListItem(
-                        self::KEY_FILTER_EXCLUDED_WHITELIST_DIRECTORY == $inputKey
-                            ? FilesystemItem::TYPE_DIRECTORY
-                            : FilesystemItem::TYPE_FILE,
-                        array_shift($data),
-                        $this->convertToAttributeList($data)
-                    );
-                }
-            }
-        }
+        );
 
         if (count($excludedWhiteListItemList)) {
-            $whiteListItemList[] = new ExcludedWhiteList($this->appendNewLineNode($excludedWhiteListItemList));
+            $whiteListItemList[] = new ExcludedWhiteList($excludedWhiteListItemList);
         }
 
         if (count($whiteListItemList)) {
             return new Filter([
-                new WhiteList($this->appendNewLineNode($whiteListItemList))
+                new WhiteList($whiteListItemList)
             ]);
         }
 
@@ -299,24 +243,10 @@ class InputTransformer
      */
     protected function extractLogging(array $inputList)
     {
-        $logEntryList = [];
-        if (isset($inputList[self::KEY_LOG]) && is_array($inputList[self::KEY_LOG])) {
-            foreach ($inputList[self::KEY_LOG] as $inputValue) {
-                $data = $this->extractDataFromValue($inputValue);
-                $type = array_shift($data);
-                $target = array_shift($data);
-                $attributeList = $this->convertToAttributeList($data);
-                array_unshift(
-                    $attributeList,
-                    new Attribute('type', $type),
-                    new Attribute('target', $target)
-                );
-                $logEntryList[] = new Log($attributeList);
-            }
-        }
+        $logEntryList = $this->extractLogEntryList($inputList);
 
         if (count($logEntryList)) {
-            return new Logging($this->appendNewLineNode($logEntryList));
+            return new Logging($logEntryList);
         }
 
         return null;
@@ -338,7 +268,7 @@ class InputTransformer
         }
 
         if (count($listenerList)) {
-            return new Listeners($this->appendNewLineNode($listenerList));
+            return new Listeners($listenerList);
         }
 
         return null;
@@ -354,24 +284,7 @@ class InputTransformer
         $phpItemList = [];
         if (isset($inputList[self::KEY_PHP]) && is_array($inputList[self::KEY_PHP])) {
             foreach ($inputList[self::KEY_PHP] as $inputValue) {
-                $data = $this->extractDataFromValue($inputValue);
-                $name = array_shift($data);
-                $value = null;
-                // Remaining values should come by two (key and value)
-                // In case more values exists, the first one is the item value
-                if (0 !== count($data)%2) {
-                    $value = array_shift($data);
-                }
-                $attributeList = [];
-                $isItemName = true;
-                foreach ($data as $attributeRawValue) {
-                    if (true === $isItemName) {
-                        $attributeList[] = new Attribute('name', $attributeRawValue);
-                        $isItemName = false;
-                    } else {
-                        $attributeList[] = new Attribute('value', $attributeRawValue);
-                    }
-                }
+                list($name, $value, $attributeList) = $this->extractPhpItemDataFromValue($inputValue);
                 $phpItemList[] = new PhpItem(
                     $name,
                     $value,
@@ -381,7 +294,7 @@ class InputTransformer
         }
 
         if (count($phpItemList)) {
-            return new Php($this->appendNewLineNode($phpItemList));
+            return new Php($phpItemList);
         }
 
         return null;
@@ -409,18 +322,6 @@ class InputTransformer
     protected function extractDataFromValue($value)
     {
         return explode(self::SEPARATOR, $value);
-    }
-
-    /**
-     * @param array $itemlist
-     *
-     * @return array
-     */
-    protected function appendNewLineNode(array $itemlist)
-    {
-        //$itemlist[] = new UnmanagedNode($this->getDocument()->createTextNode("\n"));
-
-        return $itemlist;
     }
 
     /**
@@ -455,5 +356,185 @@ class InputTransformer
                 PhpUnitEncoder::PRESERVE_WHITESPACE_CONTEXT_KEY => false
             ]
         );
+    }
+
+    /**
+     * @param array $inputList
+     * @return array
+     */
+    protected function extractGroupInclusionList(array $inputList)
+    {
+        $rawGroupInclusionList = [];
+        foreach ([self::KEY_GROUP_EXCLUDE, self::KEY_GROUP_INCLUDE] as $inputKey) {
+            if ($this->inputValueListExistFor($inputList, $inputKey)) {
+                foreach ($inputList[$inputKey] as $inputValue) {
+                    $rawGroupInclusionList[$inputKey][] = new Group($inputValue);
+                }
+            }
+        }
+        return $rawGroupInclusionList;
+    }
+
+    /**
+     * @param array  $inputList
+     * @param array  $whiteListInputKeyList
+     * @param string $directoryInputKey
+     * @return array
+     */
+    protected function extractWhiteListItemList(array $inputList, array $whiteListInputKeyList, $directoryInputKey)
+    {
+        $whiteListItemList = [];
+        foreach ($whiteListInputKeyList as $inputKey) {
+            if ($this->inputValueListExistFor($inputList, $inputKey)) {
+                foreach ($inputList[$inputKey] as $inputValue) {
+                    $data = $this->extractDataFromValue($inputValue);
+                    $whiteListItemList[] = new WhiteListItem(
+                        $directoryInputKey == $inputKey
+                            ? FilesystemItem::TYPE_DIRECTORY
+                            : FilesystemItem::TYPE_FILE,
+                        array_shift($data),
+                        $this->convertToAttributeList($data)
+                    );
+                }
+            }
+        }
+
+        return $whiteListItemList;
+    }
+
+    /**
+     * @param array $inputList
+     * @return array
+     */
+    protected function extractLogEntryList(array $inputList)
+    {
+        $logEntryList = [];
+        if ($this->inputValueListExistFor($inputList, self::KEY_LOG)) {
+            foreach ($inputList[self::KEY_LOG] as $inputValue) {
+                $data = $this->extractDataFromValue($inputValue);
+                $type = array_shift($data);
+                $target = array_shift($data);
+                $attributeList = $this->convertToAttributeList($data);
+                array_unshift(
+                    $attributeList,
+                    new Attribute('type', $type),
+                    new Attribute('target', $target)
+                );
+                $logEntryList[] = new Log($attributeList);
+            }
+        }
+
+        return $logEntryList;
+    }
+
+    /**
+     * @param array $inputList
+     * @return array
+     */
+    protected function extractSuite(array $inputList)
+    {
+        $rawTestSuiteList = $this->extractSuiteItemList($inputList);
+
+        $rawTestSuiteList = $this->extractExcludedSuiteItem($inputList, $rawTestSuiteList);
+
+        $testSuiteList = [];
+        foreach ($rawTestSuiteList as $testSuiteName => $testSuiteItemList) {
+            $testSuiteList[] = new TestSuite($testSuiteName, $testSuiteItemList);
+        }
+        return $testSuiteList;
+    }
+
+    /**
+     * @param array $inputList
+     * @return array
+     */
+    protected function extractSuiteItemList(array $inputList)
+    {
+        $rawTestSuiteList = [];
+        foreach ([self::KEY_TEST_SUITE_FILE, self::KEY_TEST_SUITE_DIRECTORY] as $inputKey) {
+            if ($this->inputValueListExistFor($inputList, $inputKey)) {
+                foreach ($inputList[$inputKey] as $inputValue) {
+                    $data = $this->extractDataFromValue($inputValue);
+                    $name = array_shift($data);
+                    $rawTestSuiteList[$name][] = new TestSuiteItem(
+                        self::KEY_TEST_SUITE_FILE === $inputKey
+                            ? FilesystemItem::TYPE_FILE
+                            : FilesystemItem::TYPE_DIRECTORY,
+                        array_shift($data),
+                        $this->convertToAttributeList($data)
+                    );
+                }
+            }
+        }
+
+        return $rawTestSuiteList;
+    }
+
+    /**
+     * @param array $inputList
+     * @param array $rawTestSuiteList
+     * @return array
+     */
+    protected function extractExcludedSuiteItem(array $inputList, array $rawTestSuiteList)
+    {
+        if ($this->inputValueListExistFor($inputList, self::KEY_TEST_SUITE_EXCLUDED)) {
+            foreach ($inputList[self::KEY_TEST_SUITE_EXCLUDED] as $inputValue) {
+                $data = $this->extractDataFromValue($inputValue);
+                $name = array_shift($data);
+                $rawTestSuiteList[$name][] = new ExcludedTestSuiteItem(array_shift($data));
+            }
+        }
+
+        return $rawTestSuiteList;
+    }
+
+    /**
+     * @param $inputValue
+     * @return array
+     */
+    protected function extractPhpItemDataFromValue($inputValue)
+    {
+        $data = $this->extractDataFromValue($inputValue);
+        $name = array_shift($data);
+        $value = null;
+        // Remaining values should come by two (key and value)
+        // In case more values exists, the first one is the item value
+        if (0 !== count($data) % 2) {
+            $value = array_shift($data);
+        }
+
+        $attributeList = $this->extractPhpItemAttributeList($data);
+
+        return array($name, $value, $attributeList);
+    }
+
+    /**
+     * @param array  $inputList
+     * @param string $inputKey
+     *
+     * @return bool
+     */
+    private function inputValueListExistFor(array $inputList, $inputKey)
+    {
+        return isset($inputList[$inputKey]) && is_array($inputList[$inputKey]);
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     */
+    protected function extractPhpItemAttributeList(array $data)
+    {
+        $attributeList = [];
+        $isItemName = true;
+        foreach ($data as $attributeRawValue) {
+            if (true === $isItemName) {
+                $attributeList[] = new Attribute('name', $attributeRawValue);
+                $isItemName = false;
+            } else {
+                $attributeList[] = new Attribute('value', $attributeRawValue);
+            }
+        }
+        return $attributeList;
     }
 }

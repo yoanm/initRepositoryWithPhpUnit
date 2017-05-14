@@ -2,6 +2,7 @@
 namespace Yoanm\PhpUnitConfigManager\Application\Updater;
 
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AbstractNodeUpdater;
+use Yoanm\PhpUnitConfigManager\Application\Updater\Common\HeaderFooterHelper;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Filter\WhiteListUpdater;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Filter;
@@ -9,12 +10,14 @@ use Yoanm\PhpUnitConfigManager\Domain\Model\Filter;
 class FilterUpdater extends AbstractNodeUpdater
 {
     /**
-     * @param WhiteListUpdater $groupInclusionUpdater
+     * @param WhiteListUpdater   $groupInclusionUpdater
+     * @param HeaderFooterHelper $headerFooterHelper
      */
     public function __construct(
-        WhiteListUpdater $groupInclusionUpdater
+        WhiteListUpdater $groupInclusionUpdater,
+        HeaderFooterHelper $headerFooterHelper
     ) {
-        parent::__construct([$groupInclusionUpdater]);
+        parent::__construct($headerFooterHelper, [$groupInclusionUpdater]);
     }
 
     /**

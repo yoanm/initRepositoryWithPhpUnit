@@ -2,6 +2,7 @@
 namespace Yoanm\PhpUnitConfigManager\Application\Updater;
 
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AbstractNodeUpdater;
+use Yoanm\PhpUnitConfigManager\Application\Updater\Common\HeaderFooterHelper;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Php\PhpItemUpdater;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Filter;
@@ -10,12 +11,14 @@ use Yoanm\PhpUnitConfigManager\Domain\Model\Php;
 class PhpUpdater extends AbstractNodeUpdater
 {
     /**
-     * @param PhpItemUpdater $phpItemUpdater
+     * @param PhpItemUpdater     $phpItemUpdater
+     * @param HeaderFooterHelper $headerFooterHelper
      */
     public function __construct(
-        PhpItemUpdater $phpItemUpdater
+        PhpItemUpdater $phpItemUpdater,
+        HeaderFooterHelper $headerFooterHelper
     ) {
-        parent::__construct([$phpItemUpdater]);
+        parent::__construct($headerFooterHelper, [$phpItemUpdater]);
     }
 
     /**

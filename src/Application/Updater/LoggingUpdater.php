@@ -2,6 +2,7 @@
 namespace Yoanm\PhpUnitConfigManager\Application\Updater;
 
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AbstractNodeUpdater;
+use Yoanm\PhpUnitConfigManager\Application\Updater\Common\HeaderFooterHelper;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Logging\LogUpdater;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Filter;
@@ -10,12 +11,14 @@ use Yoanm\PhpUnitConfigManager\Domain\Model\Logging;
 class LoggingUpdater extends AbstractNodeUpdater
 {
     /**
-     * @param LogUpdater $logUpdater
+     * @param LogUpdater         $logUpdater
+     * @param HeaderFooterHelper $headerFooterHelper
      */
     public function __construct(
-        LogUpdater $logUpdater
+        LogUpdater $logUpdater,
+        HeaderFooterHelper $headerFooterHelper
     ) {
-        parent::__construct([$logUpdater]);
+        parent::__construct($headerFooterHelper, [$logUpdater]);
     }
 
     /**

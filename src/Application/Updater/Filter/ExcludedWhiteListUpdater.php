@@ -3,6 +3,7 @@ namespace Yoanm\PhpUnitConfigManager\Application\Updater\Filter;
 
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AbstractNodeUpdater;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AttributeUpdater;
+use Yoanm\PhpUnitConfigManager\Application\Updater\Common\HeaderFooterHelper;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Filter\ExcludedWhiteList;
 
@@ -14,12 +15,14 @@ class ExcludedWhiteListUpdater extends AbstractNodeUpdater
     /**
      * @param AttributeUpdater     $attributeUpdater
      * @param WhiteListItemUpdater $whiteListItemUpdater
+     * @param HeaderFooterHelper   $headerFooterHelper
      */
     public function __construct(
         AttributeUpdater $attributeUpdater,
-        WhiteListItemUpdater $whiteListItemUpdater
+        WhiteListItemUpdater $whiteListItemUpdater,
+        HeaderFooterHelper $headerFooterHelper
     ) {
-        parent::__construct([$whiteListItemUpdater]);
+        parent::__construct($headerFooterHelper, [$whiteListItemUpdater]);
         $this->attributeUpdater = $attributeUpdater;
     }
 

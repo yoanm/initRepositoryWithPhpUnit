@@ -2,6 +2,7 @@
 namespace Yoanm\PhpUnitConfigManager\Application\Updater;
 
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AbstractNodeUpdater;
+use Yoanm\PhpUnitConfigManager\Application\Updater\Common\HeaderFooterHelper;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\PlainValueUpdater;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\ConfigurationFile;
@@ -12,12 +13,16 @@ class ConfigurationFileUpdater extends AbstractNodeUpdater
     private $plainValueUpdater;
 
     /**
-     * @param PlainValueUpdater $plainValueUpdater
+     * @param PlainValueUpdater    $plainValueUpdater
      * @param ConfigurationUpdater $configurationUpdater
+     * @param HeaderFooterHelper   $headerFooterHelper
      */
-    public function __construct(PlainValueUpdater $plainValueUpdater, ConfigurationUpdater $configurationUpdater)
-    {
-        parent::__construct([$configurationUpdater]);
+    public function __construct(
+        PlainValueUpdater $plainValueUpdater,
+        ConfigurationUpdater $configurationUpdater,
+        HeaderFooterHelper $headerFooterHelper
+    ) {
+        parent::__construct($headerFooterHelper, [$configurationUpdater]);
         $this->plainValueUpdater = $plainValueUpdater;
     }
 

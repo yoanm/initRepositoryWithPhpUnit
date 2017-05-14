@@ -10,7 +10,6 @@ class TestSuites implements ConfigurationItemInterface
     private $itemList;
 
     /**
-     * @param string                                   $name
      * @param TestSuite[]|ConfigurationItemInterface[] $itemList
      */
     public function __construct(array $itemList = [])

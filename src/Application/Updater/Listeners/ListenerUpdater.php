@@ -2,6 +2,7 @@
 namespace Yoanm\PhpUnitConfigManager\Application\Updater\Listeners;
 
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AbstractNodeUpdater;
+use Yoanm\PhpUnitConfigManager\Application\Updater\Common\HeaderFooterHelper;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\PlainValueUpdater;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Listeners\Listener;
@@ -12,12 +13,14 @@ class ListenerUpdater extends AbstractNodeUpdater
     private $plainValueUpdater;
 
     /**
-     * @param PlainValueUpdater $plainValueUpdater
+     * @param PlainValueUpdater  $plainValueUpdater
+     * @param HeaderFooterHelper $headerFooterHelper
      */
     public function __construct(
-        PlainValueUpdater $plainValueUpdater
+        PlainValueUpdater $plainValueUpdater,
+        HeaderFooterHelper $headerFooterHelper
     ) {
-        parent::__construct();
+        parent::__construct($headerFooterHelper);
         $this->plainValueUpdater = $plainValueUpdater;
     }
 

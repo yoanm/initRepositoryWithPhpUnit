@@ -6,13 +6,13 @@ class FilesystemItem extends AttributeContainer implements ConfigurationItemInte
     const TYPE_FILE = 1;
     const TYPE_DIRECTORY = 2;
 
-    /** @var integer */
+    /** @var int */
     private $type;
     /** @var string */
     private $value;
 
     /**
-     * @param string      $type
+     * @param int         $type
      * @param string      $value
      * @param Attribute[] $attributeList
      */
