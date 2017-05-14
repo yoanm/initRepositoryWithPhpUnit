@@ -24,7 +24,7 @@ class PhpUnitCMContext implements Context
             sprintf(
                 '%s %s',
                 $commandArguments,
-                $options ? $options->getRaw() : ''
+                $options ? str_replace("\n", ' ', $options->getRaw()) : ''
             )
         );
     }

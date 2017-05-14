@@ -1,15 +1,15 @@
 Feature: As user
-  In order to create composer configuration file from a template
+  In order to create composer configuration file from a template, override some value and or add new ones
   I should be able to use the command line
 
-  Scenario: Specify location
+  Scenario: Update some templates attributes and add new ones
     Given I will use configuration template fixture "create_with_template.xml"
-    And I have the folder "custom_folder"
-    When I execute phpunitcm create with "custom_folder" and following options:
+    When I execute phpunitcm create with following options:
     """
     --config-attr "backupGlobals##false"
+    --config-attr "test##./path"
     """
-    Then configuration file at "custom_folder" should contains:
+    Then configuration file should contains:
     """
     <?xml version="1.0" encoding="UTF-8"?>
     <!-- https://phpunit.de/manual/current/en/appendixes.configuration.html -->
@@ -22,50 +22,58 @@ Feature: As user
       printerFile="/path/to/ResultPrinter.php"
       timeoutForLargeTests="60"
       unknowAttribute="true"
+      test="./path"
     >
     """
 
-  Scenario: Full configuration
+  Scenario: Update some template test suite items and add new ones
     Given I will use configuration template fixture "create_with_template.xml"
-    When I execute phpunitcm create
+    When I execute phpunitcm create with following options:
+    """
+    --test-suite-file "suite1##file11"
+    --test-suite-file "My Test Suite##/path/to/MyTest.php##suffix##Plop.php"
+    --test-suite-directory "suite1##directory11"
+    --test-suite-directory "My Test Suite2##/path/to/dir##phpVersion##7.0"
+    --test-suite-excluded "suite1##excluded11"
+    --test-suite-excluded "My Test Suite##excluded21"
+    """
     Then configuration file should contains:
-    """
-    <?xml version="1.0" encoding="UTF-8"?>
-    <!-- https://phpunit.de/manual/current/en/appendixes.configuration.html -->
-    <!-- BLOCK_COMMENT - BEGIN phpunit -->
-    <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.5/phpunit.xsd"
-      backupGlobals="true"
-      bootstrap="/path/to/bootstrap.php"
-      printerClass="PHPUnit_TextUI_ResultPrinter"
-      printerFile="/path/to/ResultPrinter.php"
-      timeoutForLargeTests="60"
-      unknowAttribute="true"
-    >
-    """
-    And configuration file should contains:
     """
       <!-- BLOCK_COMMENT - BEGIN testsuites -->
       <testsuites><!-- INLINE_COMMENT - testsuites -->
         <!-- BLOCK_COMMENT - BEGIN testsuite -->
         <testsuite name="My Test Suite"><!-- INLINE_COMMENT - testsuite -->
           <directory>/path/to/*Test.php files</directory><!-- INLINE_COMMENT - directory -->
-          <file>/path/to/MyTest.php</file>
+          <file suffix="Plop.php">/path/to/MyTest.php</file>
           <exclude>/path/to/exclude</exclude>
           <!-- INLINE_COMMENT_ALONE - testsuite -->
+          <exclude>excluded21</exclude>
         </testsuite>
         <!-- BLOCK_COMMENT - END testsuite -->
         <!-- INLINE_COMMENT_ALONE - testsuites -->
         <!-- BLOCK_COMMENT - BEGIN testsuite2 -->
         <testsuite name="My Test Suite2">
-          <directory suffix="Test.php" phpVersion="5.3.0" phpVersionOperator="&gt;=">/path/to/dir</directory>
+          <directory suffix="Test.php" phpVersion="7.0" phpVersionOperator="&gt;=">/path/to/dir</directory>
           <file phpVersion="5.3.0" phpVersionOperator="&gt;=">/path/to/MyTest.php</file>
         </testsuite>
         <!-- BLOCK_COMMENT - END testsuite2 -->
+        <testsuite name="suite1">
+          <file>file11</file>
+          <directory>directory11</directory>
+          <exclude>excluded11</exclude>
+        </testsuite>
       </testsuites>
       <!-- BLOCK_COMMENT - END testsuites -->
     """
-    And configuration file should contains:
+
+  Scenario: Update some templates groups item and add new ones
+    Given I will use configuration template fixture "create_with_template.xml"
+    When I execute phpunitcm create with following options:
+    """
+    --group-include group1
+    --group-exclude group2
+    """
+    Then configuration file should contains:
     """
       <!-- BLOCK_COMMENT - BEGIN groups -->
       <groups><!-- INLINE_COMMENT - groups -->
@@ -74,6 +82,7 @@ Feature: As user
           <group>name1</group><!-- INLINE_COMMENT - group -->
           <group>name2</group>
           <!-- INLINE_COMMENT_ALONE - include -->
+          <group>group1</group>
         </include>
         <!-- BLOCK_COMMENT - END include -->
         <!-- INLINE_COMMENT_ALONE - groups -->
@@ -82,12 +91,23 @@ Feature: As user
           <group>name3</group><!-- INLINE_COMMENT - group -->
           <group>name4</group>
           <!-- INLINE_COMMENT_ALONE - exclude -->
+          <group>group2</group>
         </exclude>
         <!-- BLOCK_COMMENT - END exclude -->
       </groups>
       <!-- BLOCK_COMMENT - END groups -->
     """
-    And configuration file should contains:
+
+  Scenario: Update some templates filter items and add new ones
+    Given I will use configuration template fixture "create_with_template.xml"
+    When I execute phpunitcm create with following options:
+    """
+    --filter-whitelist-file path1
+    --filter-whitelist-directory path2
+    --filter-whitelist-excluded-file path3
+    --filter-whitelist-excluded-directory path4
+    """
+    Then configuration file should contains:
     """
       <!-- BLOCK_COMMENT - BEGIN filter -->
       <filter><!-- INLINE_COMMENT - filter -->
@@ -96,11 +116,15 @@ Feature: As user
           <directory>src</directory><!-- INLINE_COMMENT - directory -->
           <file>src.php</file>
           <!-- INLINE_COMMENT_ALONE - whitelist -->
+          <directory>path2</directory>
+          <file>path1</file>
           <!-- BLOCK_COMMENT - BEGIN exclude -->
           <exclude><!-- INLINE_COMMENT - exclude -->
             <file>path/to/file.php</file><!-- INLINE_COMMENT - file -->
             <directory>path/to/dir</directory>
             <!-- INLINE_COMMENT_ALONE - exclude -->
+            <file>path3</file>
+            <directory>path4</directory>
           </exclude>
           <!-- BLOCK_COMMENT - END exclude -->
         </whitelist>
@@ -109,18 +133,33 @@ Feature: As user
       </filter>
       <!-- BLOCK_COMMENT - END filter -->
     """
-    And configuration file should contains:
+
+  Scenario: Update some templates logging items and add new ones
+    Given I will use configuration template fixture "create_with_template.xml"
+    When I execute phpunitcm create with following options:
+    """
+    --log "coverage-html##/tmp/report2##lowUpperBound##40"
+    """
+    Then configuration file should contains:
     """
       <!-- BLOCK_COMMENT - BEGIN logging -->
       <logging><!-- INLINE_COMMENT - logging -->
-        <log type="coverage-html" target="/tmp/report" lowUpperBound="35" highLowerBound="70"/><!-- INLINE_COMMENT - log -->
+        <log type="coverage-html" target="/tmp/report2" lowUpperBound="40" highLowerBound="70"/><!-- INLINE_COMMENT - log -->
         <!-- INLINE_COMMENT_ALONE - logging -->
         <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>
         <log type="testdox-html" target="/tmp/testdox.html"/>
       </logging>
       <!-- BLOCK_COMMENT - END logging -->
     """
-    And configuration file should contains:
+
+  Scenario: Update some templates listeners items and add new ones
+    Given I will use configuration template fixture "create_with_template.xml"
+    When I execute phpunitcm create with following options:
+    """
+    --listener "Class1"
+    --listener "Class2##File2"
+    """
+    Then configuration file should contains:
     """
       <!-- BLOCK_COMMENT - BEGIN listeners -->
       <listeners><!-- INLINE_COMMENT - listeners -->
@@ -147,22 +186,29 @@ Feature: As user
         </listener>
         <!-- BLOCK_COMMENT - END listener -->
         <!-- INLINE_COMMENT_ALONE - listeners -->
+        <listener class="Class1"/>
+        <listener class="Class2" file="File2"/>
       </listeners>
       <!-- BLOCK_COMMENT - END listeners -->
     """
-    And configuration file should contains:
+
+  Scenario: Update some templates php items and add new ones
+    Given I will use configuration template fixture "create_with_template.xml"
+    When I execute phpunitcm create with following options:
+    """
+    --php "includePath##../"
+    --php "ini##foo##plop"
+    --php "ini##bar##foo"
+    """
+    Then configuration file should contains:
     """
       <!-- BLOCK_COMMENT - BEGIN php -->
       <php><!-- INLINE_COMMENT - php -->
-        <includePath>.</includePath><!-- INLINE_COMMENT - includePath -->
-        <ini name="foo" value="bar"/><!-- INLINE_COMMENT - ini -->
+        <includePath>../</includePath><!-- INLINE_COMMENT - includePath -->
+        <ini name="foo" value="plop"/><!-- INLINE_COMMENT - ini -->
         <!-- INLINE_COMMENT_ALONE - php -->
         <const name="foo" value="bar"/>
+        <ini name="bar" value="foo"/>
       </php>
       <!-- BLOCK_COMMENT - END php -->
-    """
-    And configuration file should contains:
-    """
-    </phpunit>
-    <!-- BLOCK_COMMENT - END phpunit -->
     """
