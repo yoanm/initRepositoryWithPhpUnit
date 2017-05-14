@@ -50,7 +50,6 @@
             "@composer install --prefer-dist --optimize-autoloader --ansi --no-suggest --no-interaction"
         ],
         "build-ci": [
-            "composer show -p",
             "mkdir -p build/coverage",
             "@composer install --prefer-dist --ansi --no-suggest --no-interaction"
         ],
@@ -73,7 +72,7 @@
         "behat": [
             "rm -Rf build/behat",
             "mkdir -p build/behat",
-            "./vendor/bin/behat --no-snippets --colors --format pretty"
+            "./vendor/bin/behat --no-snippets --colors --format progress"
         ],
         "cs": [
             "./vendor/bin/phpcs"

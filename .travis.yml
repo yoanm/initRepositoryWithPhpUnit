@@ -6,9 +6,15 @@ php:
   - '7.0'
 
 sudo: false
+dist: trusty
 
 matrix:
   fast_finish: true
+
+addons:
+  apt:
+    packages:
+    - libxml2
 
 install:
   - composer build-ci

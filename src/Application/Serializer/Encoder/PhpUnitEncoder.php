@@ -16,16 +16,12 @@ class PhpUnitEncoder
      */
     public function encode(\DOMDocument $document, $formatOutput = null, $preserveWhiteSpace = null)
     {
-        var_dump("ENCODE");
-        var_dump([$document->formatOutput, $document->preserveWhiteSpace]);
         if (null !== $formatOutput) {
             $document->formatOutput = $formatOutput;
         }
         if (null === $preserveWhiteSpace) {
             $document->preserveWhiteSpace = $preserveWhiteSpace;
         }
-        var_dump("ENCODE - AFTER");
-        var_dump([$document->formatOutput, $document->preserveWhiteSpace]);
 
         return $this->embellishes($document->saveXml());
     }
@@ -40,19 +36,13 @@ class PhpUnitEncoder
     public function decode($data, $formatOutput = null, $preserveWhiteSpace = null, $loadOptions = null)
     {
         $document = new \DOMDocument();
-        var_dump("DECODE");
-        var_dump([$document->formatOutput, $document->preserveWhiteSpace]);
         if (null !== $formatOutput) {
             $document->formatOutput = $formatOutput;
         }
         if (null === $preserveWhiteSpace) {
             $document->preserveWhiteSpace = $preserveWhiteSpace;
         }
-        var_dump("DECODE - AFTER");
-        var_dump([$document->formatOutput, $document->preserveWhiteSpace]);
         $document->loadXML($data, $loadOptions);
-        var_dump("DECODE - AFTER 2");
-        var_dump([$document->formatOutput, $document->preserveWhiteSpace]);
         if ($error = libxml_get_last_error()) {
             libxml_clear_errors();
 
