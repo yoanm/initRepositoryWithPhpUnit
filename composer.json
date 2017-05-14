@@ -31,6 +31,7 @@
     },
     "require": {
         "php": ">=5.5",
+        "lib-libxml": ">=2.9.2",
         "symfony/console": "~3.0",
         "symfony/dependency-injection": "^3.2",
         "symfony/serializer": "^3.2",
@@ -49,6 +50,7 @@
             "@composer install --prefer-dist --optimize-autoloader --ansi --no-suggest --no-interaction"
         ],
         "build-ci": [
+            "composer show -p",
             "mkdir -p build/coverage",
             "@composer install --prefer-dist --ansi --no-suggest --no-interaction"
         ],
