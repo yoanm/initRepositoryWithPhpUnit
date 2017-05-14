@@ -1,32 +1,58 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer;
 
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\BaseNodeNormalizer;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\UnmanagedNodeNormalizer;
 use Yoanm\PhpUnitConfigManager\Domain\Model\ConfigurationFile;
 
-class ConfigurationFileNormalizer
+class ConfigurationFileNormalizer extends BaseNodeNormalizer
 {
-    /** @var ConfigurationNormalizer */
-    private $configurationNormalizer;
-
-    public function __construct(ConfigurationNormalizer $configurationNormalizer)
-    {
-        $this->configurationNormalizer = $configurationNormalizer;
+    public function __construct(
+        ConfigurationNormalizer $configurationNormalizer,
+        UnmanagedNodeNormalizer $unmanagedNodeNormalizer
+    ) {
+        parent::__construct([
+            $configurationNormalizer,
+            $unmanagedNodeNormalizer,
+        ]);
     }
 
     public function normalize(ConfigurationFile $configurationFile)
     {
-        $normalizedConfiguration = $this->configurationNormalizer->normalize($configurationFile->getConfiguration());
-        $orderedNormalizedConfiguration = [];
-        foreach ($configurationFile->getKeyList() as $key) {
-            if (isset($normalizedConfiguration[$key])) {
-                $orderedNormalizedConfiguration[$key] = $normalizedConfiguration[$key];
-                unset($normalizedConfiguration[$key]);
-            }
+        $document = new \DOMDocument($configurationFile->getVersion(), $configurationFile->getEncoding());
+
+        foreach ($configurationFile->getNodeList() as $node) {
+            $document->appendChild(
+                $this->getNormalizer($node)->normalize($node, $document)
+            );
         }
-        //append remaining keys
-        return array_merge(
-            $orderedNormalizedConfiguration,
-            $normalizedConfiguration
+
+        return $document;
+    }
+
+    /**
+     * @param \DOMNode $document
+     *
+     * @return ConfigurationFile
+     * @throws \UnexpectedValueException if given object is not a right instance
+     */
+    public function denormalize(\DOMNode $document)
+    {
+        if (!$document instanceof \DOMDocument) {
+            throw new \UnexpectedValueException(sprintf(
+                'Document must be an instance of %s',
+                \DOMDocument::class
+            ));
+        }
+        $nodeList = [];
+        foreach ($this->extractChildNodeList($document) as $itemNode) {
+            $nodeList[] = $this->getDenormalizer($itemNode)->denormalize($itemNode);
+        }
+
+        return new ConfigurationFile(
+            $document->version,
+            $document->encoding,
+            $nodeList
         );
     }
 }

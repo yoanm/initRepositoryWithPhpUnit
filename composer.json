@@ -19,14 +19,14 @@
     },
     "autoload": {
         "psr-4": {
-            "Yoanm\\PhpunitConfigManager\\": "src/"
+            "Yoanm\\PhpUnitConfigManager\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Technical\\Unit\\Yoanm\\PhpunitConfigManager\\": "tests/Technical/Unit",
-            "Technical\\Integration\\Yoanm\\PhpunitConfigManager\\": "tests/Technical/Integration",
-            "Functional\\Yoanm\\PhpunitConfigManager\\BehatContext\\": "features/bootstrap"
+            "Technical\\Unit\\Yoanm\\PhpUnitConfigManager\\": "tests/Technical/Unit",
+            "Technical\\Integration\\Yoanm\\PhpUnitConfigManager\\": "tests/Technical/Integration",
+            "Functional\\Yoanm\\PhpUnitConfigManager\\BehatContext\\": "features/bootstrap"
         }
     },
     "require": {
@@ -71,7 +71,7 @@
         "behat": [
             "rm -Rf build/behat",
             "mkdir -p build/behat",
-            "./vendor/bin/behat --no-snippets --colors --format progress"
+            "./vendor/bin/behat --no-snippets --colors --format pretty"
         ],
         "cs": [
             "./vendor/bin/phpcs"

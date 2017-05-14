@@ -1,5 +1,5 @@
 <?php
-namespace Yoanm\PhpUnitConfigManager\Application\Updater;
+namespace Yoanm\PhpUnitConfigManager\Application\Updater\Common;
 
 class PlainValueUpdater
 {

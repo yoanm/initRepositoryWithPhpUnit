@@ -8,7 +8,6 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Loader\ConfigurationFileLoaderInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\ConfigurationFile;
 use Yoanm\PhpUnitConfigManager\Infrastructure\Serializer\Encoder\PhpUnitEncoder;
-use Yoanm\PhpUnitConfigManager\Infrastructure\Writer\ConfigurationFileWriter;
 
 class ConfigurationFileLoader implements ConfigurationFileLoaderInterface
 {
@@ -65,7 +64,12 @@ class ConfigurationFileLoader implements ConfigurationFileLoaderInterface
         return $this->serializer->deserialize(
             $serializedConfiguration,
             ConfigurationFile::class,
-            PhpUnitEncoder::FORMAT
+            PhpUnitEncoder::FORMAT,
+            [
+                PhpUnitEncoder::FORMAT_OUTPUT_CONTEXT_KEY => true,
+                PhpUnitEncoder::PRESERVE_WHITESPACE_CONTEXT_KEY => true,
+                PhpUnitEncoder::LOAD_OPTIONS_CONTEXT_KEY => null
+            ]
         );
     }
 }

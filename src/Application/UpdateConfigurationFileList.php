@@ -11,18 +11,18 @@ class UpdateConfigurationFileList
     /** @var ConfigurationFileWriterInterface */
     private $configurationWriter;
     /** @var ConfigurationFileUpdater */
-    private $configurationUpdater;
+    private $configurationFileUpdater;
 
     /**
      * @param ConfigurationFileWriterInterface $configurationWriter
-     * @param ConfigurationFileUpdater         $configurationUpdater
+     * @param ConfigurationFileUpdater         $configurationFileUpdater
      */
     public function __construct(
         ConfigurationFileWriterInterface $configurationWriter,
-        ConfigurationFileUpdater $configurationUpdater
+        ConfigurationFileUpdater $configurationFileUpdater
     ) {
         $this->configurationWriter = $configurationWriter;
-        $this->configurationUpdater = $configurationUpdater;
+        $this->configurationFileUpdater = $configurationFileUpdater;
     }
 
     /**
@@ -43,6 +43,6 @@ class UpdateConfigurationFileList
      */
     protected function getConfiguration(UpdateConfigurationFileListRequest $request)
     {
-        return $this->configurationUpdater->update($request->getConfigurationFileList());
+        return $this->configurationFileUpdater->update($request->getConfigurationFileList());
     }
 }

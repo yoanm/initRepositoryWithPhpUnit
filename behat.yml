@@ -7,7 +7,7 @@ default:
   suites:
     default:
       contexts:
-        - Functional\Yoanm\PhpunitConfigManager\BehatContext\CommandRunnerContext: ~
-        - Functional\Yoanm\PhpunitConfigManager\BehatContext\DefaultContext: ~
-        - Functional\Yoanm\PhpunitConfigManager\BehatContext\CreateContext: ~
-        - Functional\Yoanm\PhpunitConfigManager\BehatContext\UpdateContext: ~
+        - Functional\Yoanm\PhpUnitConfigManager\BehatContext\CommandRunnerContext: ~
+        - Functional\Yoanm\PhpUnitConfigManager\BehatContext\DefaultContext: ~
+        - Functional\Yoanm\PhpUnitConfigManager\BehatContext\CreateContext: ~
+        - Functional\Yoanm\PhpUnitConfigManager\BehatContext\UpdateContext: ~

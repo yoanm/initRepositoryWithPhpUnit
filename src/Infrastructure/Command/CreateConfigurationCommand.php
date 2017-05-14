@@ -1,14 +1,14 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Infrastructure\Command;
 
-use InvalidArgumentException;
+use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Yoanm\PhpUnitConfigManager\Application\Loader\ConfigurationFileLoaderInterface;
-use Yoanm\PhpUnitConfigManager\Application\UpdateConfigurationFileList;
 use Yoanm\PhpUnitConfigManager\Application\Request\UpdateConfigurationFileListRequest;
+use Yoanm\PhpUnitConfigManager\Application\UpdateConfigurationFileList;
 use Yoanm\PhpUnitConfigManager\Domain\Model\ConfigurationFile;
 use Yoanm\PhpUnitConfigManager\Infrastructure\Transformer\InputTransformer;
 
@@ -44,7 +44,25 @@ class CreateConfigurationCommand extends AbstractTemplatableCommand
     {
         $this
             ->setName(self::NAME)
-            ->setDescription('Will create a phpunit configuration file')
+            ->setDescription('Will create a phpunit configuration file.')
+            ->setHelp('Separator for command line value is <info>##</info>.'."\n"
+                .'Test suite items formats:'."\n"
+                .'  - "test suite name<info>##</info>path"'."\n"
+                .'  - "test suite name<info>##</info>path'
+                    .'<info>##</info>attr_name1<info>##</info>attr_value1"'
+                    .'<info>##</info>attr_name2<info>##</info>attr_value2<info>##</info>attr...."'."\n"
+                .'Log items formats:'."\n"
+                .'  - "type<info>##</info>target"'."\n"
+                .'  - "type<info>##</info>target'
+                    .'<info>##</info>attr_name1<info>##</info>attr_value1'
+                    .'<info>##</info>attr_name2<info>##</info>attr_value2<info>##</info>attr...."'."\n"
+                .'Php items formats:'."\n"
+                .'  - "name<info>##</info>value"'."\n"
+                .'  - "name<info>##</info>attr_name1<info>##</info>attr_value1"'."\n"
+                .'  - "name<info>##</info>value'
+                    .'<info>##</info>attr_name1<info>##</info>attr_value1'
+                    .'<info>##</info>attr_name2<info>##</info>attr_value2<info>##</info>attr...."'."\n"
+            )
             ->addArgument(
                 self::ARGUMENT_CONFIGURATION_DEST_FOLDER,
                 InputArgument::OPTIONAL,
@@ -52,100 +70,88 @@ class CreateConfigurationCommand extends AbstractTemplatableCommand
                 '.'
             )
             ->addOption(
-                InputTransformer::KEY_TYPE,
-                null,
-                InputOption::VALUE_REQUIRED,
-                'Package type. Ex : "library" / "project"'
-            )
-            ->addOption(
-                InputTransformer::KEY_LICENSE,
-                null,
-                InputOption::VALUE_REQUIRED,
-                'Package license type'
-            )
-            ->addOption(
-                InputTransformer::KEY_PACKAGE_VERSION,
-                null,
-                InputOption::VALUE_REQUIRED,
-                'Package version number. Ex : "X.Y.Z"'
-            )
-            ->addOption(
-                InputTransformer::KEY_DESCRIPTION,
-                null,
-                InputOption::VALUE_REQUIRED,
-                'Package description'
-            )
-            ->addOption(
-                InputTransformer::KEY_KEYWORD,
+                InputTransformer::KEY_CONFIG_ATTR,
                 null,
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                'Package keywords'
+                'Phpunit options. <info>Format </info><comment>"key##value"</comment>'
             )
             ->addOption(
-                InputTransformer::KEY_AUTHOR,
+                InputTransformer::KEY_TEST_SUITE_FILE,
                 null,
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                'Package authors. Format "name[#email[#role]]'
+                'Test suite file entry. <info>Format </info><comment>"test suite name##path[##attr_name##attr_value]"</comment>'
             )
             ->addOption(
-                InputTransformer::KEY_PROVIDED_PACKAGE,
+                InputTransformer::KEY_TEST_SUITE_DIRECTORY,
                 null,
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                'List of packages provided by this one. Ex : "package-name#version"'
+                'Test suite directory entry. <info>Format </info><comment>"test suite name##path[##attr_name##attr_value]"</comment>'
             )
             ->addOption(
-                InputTransformer::KEY_SUGGESTED_PACKAGE,
+                InputTransformer::KEY_TEST_SUITE_EXCLUDED,
                 null,
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                'List of packages suggested by this one. Ex : "package-name#description"'
+                'Test suite excluded entry. <info>Format </info><comment>"test suite name##path[##attr_name##attr_value]"</comment>'
             )
             ->addOption(
-                InputTransformer::KEY_SUPPORT,
+                InputTransformer::KEY_GROUP_INCLUDE,
                 null,
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                'List of package support urls. Ex : "type#url"'
+                'Included group name. <info>Format </info><comment>"group name"</comment>'
             )
             ->addOption(
-                InputTransformer::KEY_AUTOLOAD_PSR0,
+                InputTransformer::KEY_GROUP_EXCLUDE,
                 null,
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                'List of PSR-0 autoload. Ex : "namespace#path"'
+                'Excluded group name. <info>Format </info><comment>"group name"</comment>'
             )
             ->addOption(
-                InputTransformer::KEY_AUTOLOAD_PSR4,
+                InputTransformer::KEY_FILTER_WHITELIST_FILE,
                 null,
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                'List of PSR-4 autoload. Ex : "namespace#path"'
+                'White list file entry. <info>Format </info><comment>"path"</comment>'
             )
             ->addOption(
-                InputTransformer::KEY_AUTOLOAD_DEV_PSR0,
+                InputTransformer::KEY_FILTER_WHITELIST_DIRECTORY,
                 null,
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                'List of PSR-0 dev autoload. Ex : "namespace#path"'
+                'White list directory entry. <info>Format </info><comment>"path"</comment>'
             )
             ->addOption(
-                InputTransformer::KEY_AUTOLOAD_DEV_PSR4,
+                InputTransformer::KEY_FILTER_EXCLUDED_WHITELIST_FILE,
                 null,
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                'List of PSR-4 dev autoload. Ex : "namespace#path"'
+                'White list excluded file entry. <info>Format </info><comment>"path"</comment>'
             )
             ->addOption(
-                InputTransformer::KEY_REQUIRE,
+                InputTransformer::KEY_FILTER_EXCLUDED_WHITELIST_DIRECTORY,
                 null,
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                'List of required packages. Ex "vendor/package-name#~x.y"'
+                'White list excluded directory entry. <info>Format </info><comment>"path"</comment>'
             )
             ->addOption(
-                InputTransformer::KEY_REQUIRE_DEV,
+                InputTransformer::KEY_LOG,
                 null,
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                'List of required dev packages. Ex "vendor/package-name#~x.y"'
+                'Logging item. <info>Format </info><comment>"type##target[##attr_name##attr_value]"</comment>'
             )
             ->addOption(
-                InputTransformer::KEY_SCRIPT,
+                InputTransformer::KEY_LISTENER,
                 null,
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                'List of scripts for the package. Ex : "script-name#command"'
+                'Listener item. <info>Format </info><comment>"class[##file]"</comment>'
+            )
+            ->addOption(
+                InputTransformer::KEY_LISTENER,
+                null,
+                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+                'Listener item. <info>Format </info><comment>"class[##file]"</comment>'
+            )
+            ->addOption(
+                InputTransformer::KEY_PHP,
+                null,
+                InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+                'Php item. <info>Format </info><comment>"name[##node_value][##attr_name##attr_value]"</comment>'
             )
         ;
         parent::configure();
@@ -157,8 +163,11 @@ class CreateConfigurationCommand extends AbstractTemplatableCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $configurationFileList = $this->loadTemplateConfigurationFileList($input);
-        if ($newConfigurationFile = $this->loadConfigurationFile($input, $configurationFileList)) {
+        if ($newConfigurationFile = $this->loadConfigurationFile($input)) {
             $configurationFileList[] = $newConfigurationFile;
+        }
+        if (0 === count($configurationFileList)) {
+            throw new InvalidOptionException('At least one option should be used !');
         }
         $this->updateConfigurationFile->run(
             new UpdateConfigurationFileListRequest(
@@ -169,41 +178,12 @@ class CreateConfigurationCommand extends AbstractTemplatableCommand
     }
 
     /**
-     * @param InputInterface      $input
-     * @param ConfigurationFile[] $configurationFileList
+     * @param InputInterface $input
      *
      * @return null|ConfigurationFile
      */
-    protected function loadConfigurationFile(InputInterface $input, array $configurationFileList)
+    protected function loadConfigurationFile(InputInterface $input)
     {
-        $packageName = $input->getArgument(InputTransformer::KEY_PACKAGE_NAME);
-        $inputList = $input->getOptions();
-        if (null === $packageName) {
-            $hasNameDefined = false;
-            foreach ($configurationFileList as $configurationFile) {
-                if ('' !== trim($configurationFile->getConfiguration()->getPackageName())) {
-                    $hasNameDefined = true;
-                    break;
-                }
-            }
-            if (false === $hasNameDefined) {
-                throw new InvalidArgumentException(
-                    sprintf(
-                        'A package name must be given if no template containing package name is given !',
-                        gettype($packageName)
-                    )
-                );
-            }
-        } else {
-            $inputList = [
-                InputTransformer::KEY_PACKAGE_NAME => $packageName
-            ] + $inputList;
-        }
-
-        if (0 === count($inputList)) {
-            return null;
-        }
-
-        return $this->inputTransformer->fromCommandLine($inputList);
+        return $this->inputTransformer->fromCommandLine($input->getOptions());
     }
 }

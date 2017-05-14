@@ -5,37 +5,87 @@ use Symfony\Component\Serializer\Exception\UnexpectedValueException;
 
 class PhpUnitEncoder
 {
+    const CONFIGURATION_ATTRIBUTE_PATTERN = '/^(?:\s|\t)*<phpunit((?:\s|\t|)+(?:[^=>]+="[^">]*")+)>(?:\s|\t)*$/m';
+
     /**
-     * @param mixed $data
+     * @param \DOMDocument $document
+     * @param bool|null    $formatOutput
+     * @param bool|null    $preserveWhiteSpace
      *
      * @return string
      */
-    public function encode($data)
+    public function encode(\DOMDocument $document, $formatOutput = null, $preserveWhiteSpace = null)
     {
-        $encodedJson = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-
-        if (JSON_ERROR_NONE !== json_last_error()) {
-            throw new UnexpectedValueException(json_last_error_msg());
-        } else {
-            $encodedJson .= "\n";
+        var_dump("ENCODE");
+        var_dump([$document->formatOutput, $document->preserveWhiteSpace]);
+        if (null !== $formatOutput) {
+            $document->formatOutput = $formatOutput;
         }
+        if (null === $preserveWhiteSpace) {
+            $document->preserveWhiteSpace = $preserveWhiteSpace;
+        }
+        var_dump("ENCODE - AFTER");
+        var_dump([$document->formatOutput, $document->preserveWhiteSpace]);
 
-        return $encodedJson;
+        return $this->embellishes($document->saveXml());
     }
 
     /**
-     * @param string $data
+     * @param string    $data
+     * @param bool|null $formatOutput
+     * @param bool|null $preserveWhiteSpace
      *
-     * @return mixed
+     * @return \DOMDocument
      */
-    public function decode($data)
+    public function decode($data, $formatOutput = null, $preserveWhiteSpace = null, $loadOptions = null)
     {
-        $decoded = json_decode($data, true);
+        $document = new \DOMDocument();
+        var_dump("DECODE");
+        var_dump([$document->formatOutput, $document->preserveWhiteSpace]);
+        if (null !== $formatOutput) {
+            $document->formatOutput = $formatOutput;
+        }
+        if (null === $preserveWhiteSpace) {
+            $document->preserveWhiteSpace = $preserveWhiteSpace;
+        }
+        var_dump("DECODE - AFTER");
+        var_dump([$document->formatOutput, $document->preserveWhiteSpace]);
+        $document->loadXML($data, $loadOptions);
+        var_dump("DECODE - AFTER 2");
+        var_dump([$document->formatOutput, $document->preserveWhiteSpace]);
+        if ($error = libxml_get_last_error()) {
+            libxml_clear_errors();
 
-        if (JSON_ERROR_NONE !== json_last_error()) {
-            throw new UnexpectedValueException(json_last_error_msg());
+            throw new UnexpectedValueException($error->message);
         }
 
-        return $decoded;
+        return $document;
+    }
+
+    /**
+     * @param string $content
+     *
+     * @return string
+     */
+    protected function embellishes($content)
+    {
+        // Align configuration attributes for better readability
+        $match = [];
+        preg_match(self::CONFIGURATION_ATTRIBUTE_PATTERN, $content, $match);
+        if (isset($match[1])) {
+            $oldOptions = $options = $match[1];
+            preg_match_all('/(?:\s|\t)+([^=>]+="[^">]*")/', $options, $match);
+            $options = sprintf(
+                "%s\n",
+                implode("\n  ", $match[1])
+            );
+            $content = str_replace(
+                $oldOptions,
+                sprintf(' %s', $options),
+                $content
+            );
+        }
+
+        return $content;
     }
 }

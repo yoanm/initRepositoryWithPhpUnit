@@ -29,7 +29,14 @@ class ConfigurationFileWriter implements ConfigurationFileWriterInterface
      */
     public function write(ConfigurationFile $configurationFile, $destinationPath)
     {
-        $data = $this->serializer->serialize($configurationFile, PhpUnitEncoder::FORMAT);
+        $data = $this->serializer->serialize(
+            $configurationFile,
+            PhpUnitEncoder::FORMAT,
+            [
+                PhpUnitEncoder::FORMAT_OUTPUT_CONTEXT_KEY => true,
+                PhpUnitEncoder::PRESERVE_WHITESPACE_CONTEXT_KEY => false,
+            ]
+        );
 
         $filename = sprintf(
             '%s%s%s',

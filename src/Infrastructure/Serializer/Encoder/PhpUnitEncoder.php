@@ -8,6 +8,9 @@ use Yoanm\PhpUnitConfigManager\Application\Serializer\Encoder\PhpUnitEncoder as 
 class PhpUnitEncoder implements EncoderInterface, DecoderInterface
 {
     const FORMAT = 'phpunit';
+    const FORMAT_OUTPUT_CONTEXT_KEY = 'format-output';
+    const PRESERVE_WHITESPACE_CONTEXT_KEY = 'preserve-whitespace';
+    const LOAD_OPTIONS_CONTEXT_KEY = 'load-options';
 
     /** @var AppEncoder */
     private $appEncoder;
@@ -22,7 +25,16 @@ class PhpUnitEncoder implements EncoderInterface, DecoderInterface
      */
     public function encode($data, $format, array $context = array())
     {
-        return $this->appEncoder->encode($data);
+        return $this->appEncoder->encode(
+            $data,
+            isset($context[self::FORMAT_OUTPUT_CONTEXT_KEY])
+                ? $context[self::FORMAT_OUTPUT_CONTEXT_KEY]
+                : null
+            ,
+            isset($context[self::PRESERVE_WHITESPACE_CONTEXT_KEY])
+                ? $context[self::PRESERVE_WHITESPACE_CONTEXT_KEY]
+                : null
+        );
     }
 
     /**
@@ -38,7 +50,20 @@ class PhpUnitEncoder implements EncoderInterface, DecoderInterface
      */
     public function decode($data, $format, array $context = array())
     {
-        return $this->appEncoder->decode($data);
+        return $this->appEncoder->decode(
+            $data,
+            isset($context[self::FORMAT_OUTPUT_CONTEXT_KEY])
+                ? $context[self::FORMAT_OUTPUT_CONTEXT_KEY]
+                : null
+            ,
+            isset($context[self::PRESERVE_WHITESPACE_CONTEXT_KEY])
+                ? $context[self::PRESERVE_WHITESPACE_CONTEXT_KEY]
+                : null
+            ,
+            isset($context[self::LOAD_OPTIONS_CONTEXT_KEY])
+                ? $context[self::LOAD_OPTIONS_CONTEXT_KEY]
+                : null
+        );
     }
 
     /**

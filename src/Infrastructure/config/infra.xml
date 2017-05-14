@@ -20,7 +20,9 @@
             <argument type="service" id="phpunit_config_manager.infra.loader.configuration_file" />
         </service>
 
-        <service id="phpunit_config_manager.infra.transformer.input" class="Yoanm\PhpUnitConfigManager\Infrastructure\Transformer\InputTransformer" />
+        <service id="phpunit_config_manager.infra.transformer.input" class="Yoanm\PhpUnitConfigManager\Infrastructure\Transformer\InputTransformer">
+            <argument type="service" id="phpunit_config_manager.infra.serializer.configuration_file" />
+        </service>
 
         <service id="phpunit_config_manager.infra.filesystem" class="Symfony\Component\Filesystem\Filesystem" />
         <service id="phpunit_config_manager.infra.finder" class="Symfony\Component\Finder\Finder" />
@@ -38,7 +40,7 @@
         </service>
         <service id="phpunit_config_manager.infra.normalizer.configuration_file" class="Yoanm\PhpUnitConfigManager\Infrastructure\Serializer\Normalizer\ConfigurationFileNormalizer">
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.configuration_file" />
-            <argument type="service" id="phpunit_config_manager.app.serializer.denormalizer.configuration_file" />
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.unmanaged_node" />
         </service>
         <service id="phpunit_config_manager.infra.serializer.configuration_file" class="Symfony\Component\Serializer\Serializer">
             <argument type="collection">

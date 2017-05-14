@@ -1,54 +1,52 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Domain\Model;
 
-class ConfigurationFile
+use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
+
+class ConfigurationFile implements ConfigurationItemInterface
 {
     const FILENAME = 'phpunit.xml.dist';
 
-    const KEY_NAME = 'name';
-    const KEY_TYPE = 'type';
-    const KEY_LICENSE = 'license';
-    const KEY_VERSION = 'version';
-    const KEY_DESCRIPTION = 'description';
-    const KEY_KEYWORDS = 'keywords';
-    const KEY_AUTHORS = 'authors';
-    const KEY_PROVIDE = 'provide';
-    const KEY_SUGGEST = 'suggest';
-    const KEY_SUPPORT = 'support';
-    const KEY_REQUIRE = 'require';
-    const KEY_REQUIRE_DEV = 'require-dev';
-    const KEY_AUTOLOAD = 'autoload';
-    const KEY_AUTOLOAD_DEV = 'autoload-dev';
-    const KEY_SCRIPTS = 'scripts';
-
-    /** @var Configuration */
-    private $configuration;
-    /** @var string[] */
-    private $keyList = [];
+    /** @var string */
+    private $version;
+    /** @var string */
+    private $encoding;
+    /** @var ConfigurationItemInterface[]|Configuration[] */
+    private $nodeList = [];
 
     /**
-     * @param Configuration $configuration
-     * @param string[]      $keyList
+     * @param string          $version
+     * @param string          $encoding
+     * @param ConfigurationItemInterface[]|Configuration[] $nodeList
      */
-    public function __construct(Configuration $configuration, array $keyList)
+    public function __construct($version, $encoding, array $nodeList = [])
     {
-        $this->configuration = $configuration;
-        $this->keyList = $keyList;
+        $this->version = $version;
+        $this->encoding = $encoding;
+        $this->nodeList = $nodeList;
     }
 
     /**
-     * @return Configuration
+     * @return string
      */
-    public function getConfiguration()
+    public function getVersion()
     {
-        return $this->configuration;
+        return $this->version;
     }
 
     /**
-     * @return \string[]
+     * @return string
      */
-    public function getKeyList()
+    public function getEncoding()
     {
-        return $this->keyList;
+        return $this->encoding;
+    }
+
+    /**
+     * @return ConfigurationItemInterface[]|Configuration[]
+     */
+    public function getNodeList()
+    {
+        return $this->nodeList;
     }
 }

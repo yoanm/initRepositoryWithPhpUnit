@@ -1,167 +1,137 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer;
 
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\AttributeNormalizer;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\BaseNodeWithAttributeNormalizer;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NormalizerInterface;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\UnmanagedNodeNormalizer;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Configuration;
-use Yoanm\PhpUnitConfigManager\Domain\Model\ConfigurationFile;
+use Yoanm\PhpUnitConfigManager\Domain\Model\Filter;
+use Yoanm\PhpUnitConfigManager\Domain\Model\Groups;
+use Yoanm\PhpUnitConfigManager\Domain\Model\Listeners;
+use Yoanm\PhpUnitConfigManager\Domain\Model\Logging;
+use Yoanm\PhpUnitConfigManager\Domain\Model\Php;
+use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites;
 
-class ConfigurationNormalizer
+class ConfigurationNormalizer extends BaseNodeWithAttributeNormalizer implements DenormalizerInterface,
+    NormalizerInterface
 {
-    /** @var AuthorListNormalizer */
-    private $authorListNormalizer;
-    /** @var PackageListNormalizer */
-    private $packageListNormalizer;
-    /** @var SuggestedPackageListNormalizer */
-    private $suggestedPackageListNormalizer;
-    /** @var SupportListNormalizer */
-    private $supportListNormalizer;
-    /** @var AutoloadListNormalizer */
-    private $autoloadListNormalizer;
-    /** @var ScriptListNormalizer */
-    private $scriptListNormalizer;
+    const NODE_NAME = 'phpunit';
 
     public function __construct(
-        AuthorListNormalizer $authorListNormalizer,
-        PackageListNormalizer $packageListNormalizer,
-        SuggestedPackageListNormalizer $suggestedPackageListNormalizer,
-        SupportListNormalizer $supportListNormalizer,
-        AutoloadListNormalizer $autoloadListNormalizer,
-        ScriptListNormalizer $scriptListNormalizer
+        AttributeNormalizer $attributeNormalizer,
+        TestSuitesNormalizer $testSuiteListNormalizer,
+        GroupsNormalizer $groupsNormalizer,
+        FilterNormalizer $filterNormalizer,
+        LoggingNormalizer $loggingNormalizer,
+        ListenersNormalizer $listenersNormalizer,
+        PhpNormalizer $phpNormalizer,
+        UnmanagedNodeNormalizer $unmanagedNodeNormalizer
     ) {
-        $this->authorListNormalizer = $authorListNormalizer;
-        $this->packageListNormalizer = $packageListNormalizer;
-        $this->suggestedPackageListNormalizer = $suggestedPackageListNormalizer;
-        $this->supportListNormalizer = $supportListNormalizer;
-        $this->autoloadListNormalizer = $autoloadListNormalizer;
-        $this->scriptListNormalizer = $scriptListNormalizer;
-    }
-
-    public function normalize(Configuration $configuration)
-    {
-        $normalizedConfiguration = [];
-
-        // name
-        $normalizedConfiguration = $this->appendIfDefined(
-            $normalizedConfiguration,
-            $configuration->getPackageName(),
-            ConfigurationFile::KEY_NAME
+        parent::__construct(
+            $attributeNormalizer,
+            [
+                $testSuiteListNormalizer,
+                $groupsNormalizer,
+                $filterNormalizer,
+                $loggingNormalizer,
+                $listenersNormalizer,
+                $phpNormalizer,
+                $unmanagedNodeNormalizer,
+            ]
         );
-        // type
-        $normalizedConfiguration = $this->appendIfDefined(
-            $normalizedConfiguration,
-            $configuration->getType(),
-            ConfigurationFile::KEY_TYPE
-        );
-        // license
-        $normalizedConfiguration = $this->appendIfDefined(
-            $normalizedConfiguration,
-            $configuration->getLicense(),
-            ConfigurationFile::KEY_LICENSE
-        );
-        // package version
-        $normalizedConfiguration = $this->appendIfDefined(
-            $normalizedConfiguration,
-            $configuration->getPackageVersion(),
-            ConfigurationFile::KEY_VERSION
-        );
-        // description
-        $normalizedConfiguration = $this->appendIfDefined(
-            $normalizedConfiguration,
-            $configuration->getDescription(),
-            ConfigurationFile::KEY_DESCRIPTION
-        );
-        // keywords
-        $normalizedConfiguration = $this->appendIfNotEmpty(
-            $normalizedConfiguration,
-            $configuration->getKeywordList(),
-            ConfigurationFile::KEY_KEYWORDS
-        );
-        // authors
-        $normalizedConfiguration = $this->appendIfNotEmpty(
-            $normalizedConfiguration,
-            $this->authorListNormalizer->normalize($configuration->getAuthorList()),
-            ConfigurationFile::KEY_AUTHORS
-        );
-        // provide
-        $normalizedConfiguration = $this->appendIfNotEmpty(
-            $normalizedConfiguration,
-            $this->packageListNormalizer->normalize($configuration->getProvidedPackageList()),
-            ConfigurationFile::KEY_PROVIDE
-        );
-        // suggest
-        $normalizedConfiguration = $this->appendIfNotEmpty(
-            $normalizedConfiguration,
-            $this->suggestedPackageListNormalizer->normalize($configuration->getSuggestedPackageList()),
-            ConfigurationFile::KEY_SUGGEST
-        );
-        // support
-        $normalizedConfiguration = $this->appendIfNotEmpty(
-            $normalizedConfiguration,
-            $this->supportListNormalizer->normalize($configuration->getSupportList()),
-            ConfigurationFile::KEY_SUPPORT
-        );
-        // require
-        $normalizedConfiguration = $this->appendIfNotEmpty(
-            $normalizedConfiguration,
-            $this->packageListNormalizer->normalize($configuration->getRequiredPackageList()),
-            ConfigurationFile::KEY_REQUIRE
-        );
-        // require-dev
-        $normalizedConfiguration = $this->appendIfNotEmpty(
-            $normalizedConfiguration,
-            $this->packageListNormalizer->normalize($configuration->getRequiredDevPackageList()),
-            ConfigurationFile::KEY_REQUIRE_DEV
-        );
-        // autoload
-        $normalizedConfiguration = $this->appendIfNotEmpty(
-            $normalizedConfiguration,
-            $this->autoloadListNormalizer->normalize($configuration->getAutoloadList()),
-            ConfigurationFile::KEY_AUTOLOAD
-        );
-        // autoload-dev
-        $normalizedConfiguration = $this->appendIfNotEmpty(
-            $normalizedConfiguration,
-            $this->autoloadListNormalizer->normalize($configuration->getAutoloadDevList()),
-            ConfigurationFile::KEY_AUTOLOAD_DEV
-        );
-        // script
-        $normalizedConfiguration = $this->appendIfNotEmpty(
-            $normalizedConfiguration,
-            $this->scriptListNormalizer->normalize($configuration->getScriptList()),
-            ConfigurationFile::KEY_SCRIPTS
-        );
-
-        return array_merge($normalizedConfiguration, $configuration->getUnmanagedPropertyList());
     }
 
     /**
-     * @param array  $normalizedConfiguration
-     * @param array  $list
-     * @param string $key
+     * @param Configuration $configuration
+     * @param \DOMDocument $document
      *
-     * @return array
+     * @return \DOMElement
      */
-    protected function appendIfNotEmpty(array $normalizedConfiguration, array $list, $key)
+    public function normalize($configuration, \DOMDocument $document)
     {
-        if (count($list)) {
-            $normalizedConfiguration[$key] = $list;
+        $node = $document->createElement(self::NODE_NAME);
+        $document->appendChild($node);
+
+        $this->appendConfigAttributeList($document, $configuration, $node);
+
+        foreach ($configuration->getItemList() as $item) {
+            $node->appendChild(
+                $this->getNormalizer($item)->normalize($item, $document)
+            );
         }
 
-        return $normalizedConfiguration;
+        return $node;
     }
 
     /**
-     * @param array  $normalizedConfiguration
-     * @param string $value
-     * @param string $key
+     * @param \DOMNode $document
      *
-     * @return array
+     * @return Configuration
      */
-    protected function appendIfDefined(array $normalizedConfiguration, $value, $key)
+    public function denormalize(\DOMNode $document)
     {
-        if ($value) {
-            $normalizedConfiguration[$key] = $value;
+        $itemList = [];
+        foreach ($this->extractChildNodeList($document) as $node) {
+            $itemList[] = $this->getDenormalizer($node)->denormalize($node);
         }
 
-        return $normalizedConfiguration;
+        return new Configuration(
+            $itemList,
+            $this->extractAttributes($document)
+
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function supportsNormalization($item)
+    {
+        return $item instanceOf Configuration;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function supportsDenormalization(\DomNode $node)
+    {
+        return ConfigurationNormalizer::NODE_NAME === $node->nodeName;
+    }
+
+    /**
+     * @param \DOMDocument  $document
+     * @param Configuration $configuration
+     * @param \DOMElement   $node
+     */
+    private function appendConfigAttributeList(\DOMDocument $document, Configuration $configuration, \DOMElement $node)
+    {
+        $xmlnsXsiAttrValue = 'http://www.w3.org/2001/XMLSchema-instance';
+        $noNamespaceLocationAttrValue = 'http://schema.phpunit.de/4.5/phpunit.xsd';
+        $attributeList = $configuration->getAttributeList();
+        foreach ($attributeList as $key => $attribute) {
+            if ('xmlns:xsi' === $attribute->getName()) {
+                $xmlnsXsiAttrValue = $attribute->getValue();
+                unset($attributeList[$key]);
+            } elseif ('xsi:noNamespaceSchemaLocation' === $attribute->getName()) {
+                $noNamespaceLocationAttrValue = $attribute->getValue();
+                unset($attributeList[$key]);
+            }
+        }
+
+        $node->setAttributeNS(
+            'http://www.w3.org/2000/xmlns/',
+            'xmlns:xsi',
+            $xmlnsXsiAttrValue
+        );
+        $node->setAttributeNS(
+            $xmlnsXsiAttrValue,
+            'xsi:noNamespaceSchemaLocation',
+            $noNamespaceLocationAttrValue
+        );
+
+
+        $this->appendAttributes($node, $attributeList, $document);
     }
 }
