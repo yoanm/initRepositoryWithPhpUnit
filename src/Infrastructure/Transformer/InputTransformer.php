@@ -440,6 +440,7 @@ class InputTransformer
 
     private function prettify(ConfigurationFile $configurationFile)
     {
+        var_dump("XML VERSION v".LIBXML_DOTTED_VERSION);
         // Following will add indentation and white space in order to format the configuration
         var_dump("####### prettify ######");
         $final = $this->serializer->deserialize(
