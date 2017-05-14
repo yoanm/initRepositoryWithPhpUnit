@@ -14,7 +14,8 @@ use Yoanm\PhpUnitConfigManager\Domain\Model\Logging;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Php;
 use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites;
 
-class ConfigurationNormalizer extends BaseNodeWithAttributeNormalizer implements DenormalizerInterface,
+class ConfigurationNormalizer extends BaseNodeWithAttributeNormalizer implements
+    DenormalizerInterface,
     NormalizerInterface
 {
     const NODE_NAME = 'phpunit';
@@ -80,7 +81,6 @@ class ConfigurationNormalizer extends BaseNodeWithAttributeNormalizer implements
         return new Configuration(
             $itemList,
             $this->extractAttributes($document)
-
         );
     }
 
@@ -89,7 +89,7 @@ class ConfigurationNormalizer extends BaseNodeWithAttributeNormalizer implements
      */
     public function supportsNormalization($item)
     {
-        return $item instanceOf Configuration;
+        return $item instanceof Configuration;
     }
 
     /**

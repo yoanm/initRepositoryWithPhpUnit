@@ -61,7 +61,7 @@ class FilterNormalizer extends BaseNodeNormalizer implements DenormalizerInterfa
      */
     public function supportsNormalization($item)
     {
-        return $item instanceOf Filter;
+        return $item instanceof Filter;
     }
 
     /**

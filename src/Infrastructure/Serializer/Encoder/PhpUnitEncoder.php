@@ -27,10 +27,7 @@ class PhpUnitEncoder implements EncoderInterface, DecoderInterface
     {
         return $this->appEncoder->encode(
             $data,
-            isset($context[self::FORMAT_OUTPUT_CONTEXT_KEY])
-                ? $context[self::FORMAT_OUTPUT_CONTEXT_KEY]
-                : null
-            ,
+            isset($context[self::FORMAT_OUTPUT_CONTEXT_KEY]) ? $context[self::FORMAT_OUTPUT_CONTEXT_KEY]: null,
             isset($context[self::PRESERVE_WHITESPACE_CONTEXT_KEY])
                 ? $context[self::PRESERVE_WHITESPACE_CONTEXT_KEY]
                 : null
@@ -52,14 +49,10 @@ class PhpUnitEncoder implements EncoderInterface, DecoderInterface
     {
         return $this->appEncoder->decode(
             $data,
-            isset($context[self::FORMAT_OUTPUT_CONTEXT_KEY])
-                ? $context[self::FORMAT_OUTPUT_CONTEXT_KEY]
-                : null
-            ,
+            isset($context[self::FORMAT_OUTPUT_CONTEXT_KEY]) ? $context[self::FORMAT_OUTPUT_CONTEXT_KEY] : null,
             isset($context[self::PRESERVE_WHITESPACE_CONTEXT_KEY])
                 ? $context[self::PRESERVE_WHITESPACE_CONTEXT_KEY]
-                : null
-            ,
+                : null,
             isset($context[self::LOAD_OPTIONS_CONTEXT_KEY])
                 ? $context[self::LOAD_OPTIONS_CONTEXT_KEY]
                 : null

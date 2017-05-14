@@ -40,7 +40,8 @@ class ExcludedWhiteListUpdater extends AbstractNodeUpdater
     /**
      * {@inheritdoc}
      */
-    public function supports(ConfigurationItemInterface $item) {
+    public function supports(ConfigurationItemInterface $item)
+    {
         return $item instanceof ExcludedWhiteList;
     }
 

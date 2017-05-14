@@ -60,7 +60,7 @@ class ListenersNormalizer extends BaseNodeNormalizer implements DenormalizerInte
      */
     public function supportsNormalization($item)
     {
-        return $item instanceOf Listeners;
+        return $item instanceof Listeners;
     }
 
     /**

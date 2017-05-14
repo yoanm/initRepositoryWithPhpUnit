@@ -66,10 +66,10 @@ class InputTransformer
      *
      * @return ConfigurationFile|null
      */
-    public function fromCommandLine($inputList)
+    public function fromCommandLine($inputList, $prettify = false)
     {
         $configurationFile = $this->createConfigurationFile($inputList);
-        return $configurationFile
+        return $configurationFile && true === $prettify
             ? $this->prettify($configurationFile)
             : $configurationFile;
     }
@@ -175,8 +175,7 @@ class InputTransformer
                     $rawTestSuiteList[$name][] = new TestSuiteItem(
                         self::KEY_TEST_SUITE_FILE === $inputKey
                             ? FilesystemItem::TYPE_FILE
-                            : FilesystemItem::TYPE_DIRECTORY
-                        ,
+                            : FilesystemItem::TYPE_DIRECTORY,
                         array_shift($data),
                         $this->convertToAttributeList($data)
                     );
@@ -253,8 +252,7 @@ class InputTransformer
                     $whiteListItemList[] = new WhiteListItem(
                         self::KEY_FILTER_WHITELIST_DIRECTORY == $inputKey
                             ? FilesystemItem::TYPE_DIRECTORY
-                            : FilesystemItem::TYPE_FILE
-                        ,
+                            : FilesystemItem::TYPE_FILE,
                         array_shift($data),
                         $this->convertToAttributeList($data)
                     );
@@ -273,8 +271,7 @@ class InputTransformer
                     $excludedWhiteListItemList[] = new WhiteListItem(
                         self::KEY_FILTER_EXCLUDED_WHITELIST_DIRECTORY == $inputKey
                             ? FilesystemItem::TYPE_DIRECTORY
-                            : FilesystemItem::TYPE_FILE
-                        ,
+                            : FilesystemItem::TYPE_FILE,
                         array_shift($data),
                         $this->convertToAttributeList($data)
                     );

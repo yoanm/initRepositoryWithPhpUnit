@@ -50,7 +50,7 @@ class PhpItemNormalizer extends BaseNodeWithAttributeNormalizer implements Denor
      */
     public function supportsNormalization($item)
     {
-        return $item instanceOf PhpItem;
+        return $item instanceof PhpItem;
     }
 
     /**

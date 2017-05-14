@@ -61,7 +61,7 @@ class PhpNormalizer extends BaseNodeNormalizer implements DenormalizerInterface,
      */
     public function supportsNormalization($item)
     {
-        return $item instanceOf Php;
+        return $item instanceof Php;
     }
 
     /**

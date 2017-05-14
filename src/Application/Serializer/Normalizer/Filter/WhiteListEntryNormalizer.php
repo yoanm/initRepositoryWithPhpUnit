@@ -10,7 +10,8 @@ use Yoanm\PhpUnitConfigManager\Domain\Model\Common\FilesystemItem;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Filter\ExcludedWhiteList;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Filter\WhiteListItem;
 
-class WhiteListEntryNormalizer extends BaseNodeWithAttributeNormalizer implements DenormalizerInterface,
+class WhiteListEntryNormalizer extends BaseNodeWithAttributeNormalizer implements
+    DenormalizerInterface,
     NormalizerInterface
 {
     public function __construct(

@@ -11,7 +11,8 @@ use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites\TestSuite;
 use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites\TestSuite\ExcludedTestSuiteItem;
 use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites\TestSuite\TestSuiteItem;
 
-class TestSuiteItemNormalizer extends BaseNodeWithAttributeNormalizer implements DenormalizerInterface,
+class TestSuiteItemNormalizer extends BaseNodeWithAttributeNormalizer implements
+    DenormalizerInterface,
     NormalizerInterface
 {
     const EXCLUDED_NODE_NAME = 'exclude';
@@ -74,7 +75,7 @@ class TestSuiteItemNormalizer extends BaseNodeWithAttributeNormalizer implements
      */
     public function supportsNormalization($item)
     {
-        return $item instanceOf TestSuiteItem
+        return $item instanceof TestSuiteItem
             || $item instanceof ExcludedTestSuiteItem
         ;
     }

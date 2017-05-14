@@ -45,7 +45,8 @@ class CreateConfigurationCommand extends AbstractTemplatableCommand
         $this
             ->setName(self::NAME)
             ->setDescription('Will create a phpunit configuration file.')
-            ->setHelp('Separator for command line value is <info>##</info>.'."\n"
+            ->setHelp(
+                'Separator for command line value is <info>##</info>.'."\n"
                 .'Test suite items formats:'."\n"
                 .'  - "test suite name<info>##</info>path"'."\n"
                 .'  - "test suite name<info>##</info>path'
@@ -79,19 +80,22 @@ class CreateConfigurationCommand extends AbstractTemplatableCommand
                 InputTransformer::KEY_TEST_SUITE_FILE,
                 null,
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                'Test suite file entry. <info>Format </info><comment>"test suite name##path[##attr_name##attr_value]"</comment>'
+                'Test suite file entry. '.
+                '<info>Format </info><comment>"test suite name##path[##attr_name##attr_value]"</comment>'
             )
             ->addOption(
                 InputTransformer::KEY_TEST_SUITE_DIRECTORY,
                 null,
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                'Test suite directory entry. <info>Format </info><comment>"test suite name##path[##attr_name##attr_value]"</comment>'
+                'Test suite directory entry. '.
+                '<info>Format </info><comment>"test suite name##path[##attr_name##attr_value]"</comment>'
             )
             ->addOption(
                 InputTransformer::KEY_TEST_SUITE_EXCLUDED,
                 null,
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                'Test suite excluded entry. <info>Format </info><comment>"test suite name##path[##attr_name##attr_value]"</comment>'
+                'Test suite excluded entry. '.
+                '<info>Format </info><comment>"test suite name##path[##attr_name##attr_value]"</comment>'
             )
             ->addOption(
                 InputTransformer::KEY_GROUP_INCLUDE,
@@ -163,7 +167,7 @@ class CreateConfigurationCommand extends AbstractTemplatableCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $configurationFileList = $this->loadTemplateConfigurationFileList($input);
-        if ($newConfigurationFile = $this->loadConfigurationFile($input)) {
+        if ($newConfigurationFile = $this->loadConfigurationFile($input, count($configurationFileList) > 0)) {
             $configurationFileList[] = $newConfigurationFile;
         }
         if (0 === count($configurationFileList)) {
@@ -182,8 +186,8 @@ class CreateConfigurationCommand extends AbstractTemplatableCommand
      *
      * @return null|ConfigurationFile
      */
-    protected function loadConfigurationFile(InputInterface $input)
+    protected function loadConfigurationFile(InputInterface $input, $hasTemplates = false)
     {
-        return $this->inputTransformer->fromCommandLine($input->getOptions());
+        return $this->inputTransformer->fromCommandLine($input->getOptions(), $hasTemplates);
     }
 }

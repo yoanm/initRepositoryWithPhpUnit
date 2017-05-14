@@ -89,7 +89,7 @@ class TestSuiteNormalizer extends BaseNodeWithAttributeNormalizer implements Den
      */
     public function supportsNormalization($item)
     {
-        return $item instanceOf TestSuite;
+        return $item instanceof TestSuite;
     }
 
     /**

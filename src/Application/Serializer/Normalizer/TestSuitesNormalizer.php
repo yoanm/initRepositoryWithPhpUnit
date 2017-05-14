@@ -61,7 +61,7 @@ class TestSuitesNormalizer extends BaseNodeNormalizer implements DenormalizerInt
      */
     public function supportsNormalization($item)
     {
-        return $item instanceOf TestSuites;
+        return $item instanceof TestSuites;
     }
 
     /**

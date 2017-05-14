@@ -60,7 +60,7 @@ class LoggingNormalizer extends BaseNodeNormalizer implements DenormalizerInterf
      */
     public function supportsNormalization($item)
     {
-        return $item instanceOf Logging;
+        return $item instanceof Logging;
     }
 
     /**

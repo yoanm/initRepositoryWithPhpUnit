@@ -12,7 +12,8 @@ use Yoanm\PhpUnitConfigManager\Domain\Model\Filter\ExcludedWhiteList;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Filter\WhiteList;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Filter\WhiteListItem;
 
-class ExcludedWhiteListNormalizer extends BaseNodeWithAttributeNormalizer implements DenormalizerInterface,
+class ExcludedWhiteListNormalizer extends BaseNodeWithAttributeNormalizer implements
+    DenormalizerInterface,
     NormalizerInterface
 {
     const NODE_NAME = 'exclude';
@@ -74,7 +75,7 @@ class ExcludedWhiteListNormalizer extends BaseNodeWithAttributeNormalizer implem
      */
     public function supportsNormalization($item)
     {
-        return $item instanceOf ExcludedWhiteList;
+        return $item instanceof ExcludedWhiteList;
     }
 
     /**

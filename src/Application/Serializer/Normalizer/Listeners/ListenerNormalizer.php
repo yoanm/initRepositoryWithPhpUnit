@@ -89,7 +89,7 @@ class ListenerNormalizer extends BaseNodeWithAttributeNormalizer implements Deno
      */
     public function supportsNormalization($item)
     {
-        return $item instanceOf Listener;
+        return $item instanceof Listener;
     }
 
     /**

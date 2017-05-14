@@ -29,7 +29,8 @@ class BaseNodeNormalizer
      * @return NormalizerInterface
      * @throws \Exception
      */
-    public function getNormalizer($item) {
+    public function getNormalizer($item)
+    {
         foreach ($this->normalizerDelegateList as $delegate) {
             if ($delegate->supportsNormalization($item)) {
                 return $delegate;
@@ -48,7 +49,8 @@ class BaseNodeNormalizer
      * @return DenormalizerInterface
      * @throws \Exception
      */
-    public function getDenormalizer(\DOMNode $node) {
+    public function getDenormalizer(\DOMNode $node)
+    {
         foreach ($this->denormalizerDelegateList as $delegate) {
             if ($delegate->supportsDenormalization($node)) {
                 return $delegate;

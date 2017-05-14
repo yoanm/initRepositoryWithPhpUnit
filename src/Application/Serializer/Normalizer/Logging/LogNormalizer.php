@@ -40,7 +40,7 @@ class LogNormalizer extends BaseNodeWithAttributeNormalizer implements Denormali
      */
     public function supportsNormalization($item)
     {
-        return $item instanceOf Log;
+        return $item instanceof Log;
     }
 
     /**

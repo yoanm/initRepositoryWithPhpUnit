@@ -72,7 +72,7 @@ class WhiteListNormalizer extends BaseNodeWithAttributeNormalizer implements Den
      */
     public function supportsNormalization($item)
     {
-        return $item instanceOf WhiteList;
+        return $item instanceof WhiteList;
     }
 
     /**

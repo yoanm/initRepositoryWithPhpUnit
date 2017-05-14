@@ -3,7 +3,8 @@ namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common;
 
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\FilesystemItem;
 
-class FilesystemItemNormalizer extends BaseNodeWithAttributeNormalizer implements DenormalizerInterface,
+class FilesystemItemNormalizer extends BaseNodeWithAttributeNormalizer implements
+    DenormalizerInterface,
     NormalizerInterface
 {
     const FILE_NODE_NAME = 'file';
@@ -48,7 +49,7 @@ class FilesystemItemNormalizer extends BaseNodeWithAttributeNormalizer implement
      */
     public function supportsNormalization($item)
     {
-        return $item instanceOf FilesystemItem;
+        return $item instanceof FilesystemItem;
     }
 
     /**
@@ -60,5 +61,4 @@ class FilesystemItemNormalizer extends BaseNodeWithAttributeNormalizer implement
             || self::DIRECTORY_NODE_NAME === $node->nodeName
         ;
     }
-
 }

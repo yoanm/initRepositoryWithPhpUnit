@@ -32,7 +32,6 @@ class AttributeUpdater
             $item = $baseItem;
             foreach ($newItemList as $newItemKey => $newItem) {
                 if ($newItem->getName() == $baseItem->getName()) {
-
                     $item = $this->mergeItem($baseItem, $newItem);
                     unset($newItemList[$newItemKey]);
                 }

@@ -61,7 +61,7 @@ class GroupsNormalizer extends BaseNodeNormalizer implements DenormalizerInterfa
      */
     public function supportsNormalization($item)
     {
-        return $item instanceOf Groups;
+        return $item instanceof Groups;
     }
 
     /**

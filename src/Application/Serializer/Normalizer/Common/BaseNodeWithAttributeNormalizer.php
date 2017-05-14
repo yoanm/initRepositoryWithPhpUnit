@@ -41,7 +41,7 @@ class BaseNodeWithAttributeNormalizer extends BaseNodeNormalizer
     {
         $attributeList = [];
         $itemCount = $node->attributes->length;
-        for ($counter = 0 ; $counter < $itemCount ; $counter++) {
+        for ($counter = 0; $counter < $itemCount; $counter++) {
             $rawAttribute = $node->attributes->item($counter);
             $attributeList[] = $this->attributeNormalizer->denormalize($rawAttribute);
         }

@@ -17,7 +17,6 @@ abstract class AbstractNodeUpdater
         $this->updateDelegateList = $updaterDelegateList;
     }
 
-
     /**
      * @param ConfigurationItemInterface $baseItem
      * @param ConfigurationItemInterface $newItem
@@ -68,7 +67,7 @@ abstract class AbstractNodeUpdater
         $supportedNewNodeList = $this->groupItemList($newItemList, true);
 
         $updatedItemList = [];
-        while($groupedBaseNode = array_shift($groupedBaseNodeList)) {
+        while ($groupedBaseNode = array_shift($groupedBaseNodeList)) {
             if ($groupedBaseNode instanceof Block) {
                 $newNodeFound = false;
                 $updater = $this->getUpdater($groupedBaseNode->getItem(), false);
@@ -96,7 +95,7 @@ abstract class AbstractNodeUpdater
         if (count($supportedNewNodeList)) {
             // 1 - Remove trailing non block object (spaces and comments)
             $trailingNonBlockNodeList = [];
-            while($node = array_pop($updatedItemList)) {
+            while ($node = array_pop($updatedItemList)) {
                 if (!$node instanceof \DOMNode
                     || $node->nodeType === XML_ELEMENT_NODE
                 ) {
@@ -115,7 +114,6 @@ abstract class AbstractNodeUpdater
             }
         }
 
-
         return $updatedItemList;
     }
 
@@ -128,7 +126,7 @@ abstract class AbstractNodeUpdater
     protected function groupItemList(array $itemList, $supportedOnly = false)
     {
         $groupedItemList = [];
-        while($item = array_shift($itemList)) {
+        while ($item = array_shift($itemList)) {
             if ($this->getUpdater($item, false)) {
                 // Check if header comment exist if previous nodes
                 $headerNodeList = $this->extractNodeHeaderList($groupedItemList);
@@ -258,8 +256,10 @@ abstract class AbstractNodeUpdater
      *
      * @return bool
      */
-    protected function isSameNodeOrUnmanagedNode(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
-    {
+    protected function isSameNodeOrUnmanagedNode(
+        ConfigurationItemInterface $baseItem,
+        ConfigurationItemInterface $newItem
+    ) {
         if ($newItem instanceof UnmanagedNode && $baseItem instanceof UnmanagedNode) {
             if ($this->isUnmanagedNodeType($newItem, XML_COMMENT_NODE)) {
                 return ($newItem->getValue()->nodeValue === $baseItem->getValue()->nodeValue);
@@ -317,7 +317,8 @@ abstract class AbstractNodeUpdater
      *
      * @throws \Exception
      */
-    protected function getUpdater(ConfigurationItemInterface $item, $throwException = true) {
+    protected function getUpdater(ConfigurationItemInterface $item, $throwException = true)
+    {
         foreach ($this->updateDelegateList as $delegate) {
             if ($delegate->supports($item)) {
                 return $delegate;

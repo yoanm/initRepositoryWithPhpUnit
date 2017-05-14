@@ -47,7 +47,8 @@ class WhiteListUpdater extends AbstractNodeUpdater
     /**
      * {@inheritdoc}
      */
-    public function supports(ConfigurationItemInterface $item) {
+    public function supports(ConfigurationItemInterface $item)
+    {
         return $item instanceof WhiteList;
     }
 
@@ -82,7 +83,7 @@ class WhiteListUpdater extends AbstractNodeUpdater
         if ($excludedNodeBlock) {
             // 1 - Remove trailing unmanaged node (spaces and comments)
             $trailingNonBlockNodeList = [];
-            while($node = array_pop($newItemList)) {
+            while ($node = array_pop($newItemList)) {
                 if ($node instanceof UnmanagedNode) {
                     $trailingNonBlockNodeList[] = $node;
                 } else {
@@ -96,7 +97,6 @@ class WhiteListUpdater extends AbstractNodeUpdater
             foreach (array_reverse($trailingNonBlockNodeList) as $trailingNonBlockNode) {
                 $newItemList[] = $trailingNonBlockNode;
             }
-
         }
 
         return $newItemList;

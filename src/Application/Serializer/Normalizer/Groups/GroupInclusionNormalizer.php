@@ -67,7 +67,7 @@ class GroupInclusionNormalizer extends BaseNodeNormalizer implements Denormalize
      */
     public function supportsNormalization($item)
     {
-        return $item instanceOf GroupInclusion;
+        return $item instanceof GroupInclusion;
     }
 
     /**
