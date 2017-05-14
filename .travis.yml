@@ -25,3 +25,4 @@ script:
 cache:
   directories:
     - $HOME/.composer
+    - vendor
