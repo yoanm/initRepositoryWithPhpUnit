@@ -9,356 +9,294 @@ Feature: As user
     """
     <?xml version="1.0" encoding="UTF-8"?>
     <!-- https://phpunit.de/manual/current/en/appendixes.configuration.html -->
-    <!-- BEGIN phpunit -->
+    <!-- BLOCK_COMMENT - BEGIN phpunit -->
     <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.5/phpunit.xsd"
       backupGlobals="true"
-      backupStaticAttributes="false"
       bootstrap="/path/to/bootstrap.php"
-      cacheTokens="false"
-      colors="false"
-      convertErrorsToExceptions="true"
-      convertNoticesToExceptions="true"
-      convertWarningsToExceptions="true"
-      forceCoversAnnotation="false"
-      mapTestClassNameToCoveredClassName="false"
       printerClass="PHPUnit_TextUI_ResultPrinter"
       printerFile="/path/to/ResultPrinter.php"
-      processIsolation="false"
-      stopOnError="false"
-      stopOnFailure="false"
-      stopOnIncomplete="false"
-      stopOnSkipped="false"
-      stopOnRisky="false"
-      testSuiteLoaderClass="PHPUnit_Runner_StandardTestSuiteLoader"
-      testSuiteLoaderFile="/path/to/StandardTestSuiteLoader.php"
-      timeoutForSmallTests="1"
-      timeoutForMediumTests="10"
       timeoutForLargeTests="60"
-      verbose="false"
+      unknowAttribute="true"
     >
     """
     And configuration file should contains:
     """
-      <!-- BEGIN testsuites -->
-      <testsuites><!-- testsuites -->
-        <!-- BEGIN testsuite -->
-        <testsuite name="My Test Suite"><!-- testsuite -->
-          <directory>/path/to/*Test.php files</directory><!-- directory -->
+      <!-- BLOCK_COMMENT - BEGIN testsuites -->
+      <testsuites><!-- INLINE_COMMENT - testsuites -->
+        <!-- BLOCK_COMMENT - BEGIN testsuite -->
+        <testsuite name="My Test Suite"><!-- INLINE_COMMENT - testsuite -->
+          <directory>/path/to/*Test.php files</directory><!-- INLINE_COMMENT - directory -->
           <file>/path/to/MyTest.php</file>
           <exclude>/path/to/exclude</exclude>
-          <!-- testsuite2 -->
+          <!-- INLINE_COMMENT_ALONE - testsuite -->
         </testsuite>
-        <!-- END testsuite -->
-        <!-- testsuites2 -->
-        <!-- BEGIN testsuite2 -->
+        <!-- BLOCK_COMMENT - END testsuite -->
+        <!-- INLINE_COMMENT_ALONE - testsuites -->
+        <!-- BLOCK_COMMENT - BEGIN testsuite2 -->
         <testsuite name="My Test Suite2">
-          <directory suffix="Test.php" phpVersion="5.3.0" phpVersionOperator="&gt;=">/path/to/files</directory>
+          <directory suffix="Test.php" phpVersion="5.3.0" phpVersionOperator="&gt;=">/path/to/dir</directory>
           <file phpVersion="5.3.0" phpVersionOperator="&gt;=">/path/to/MyTest.php</file>
         </testsuite>
-        <!-- END testsuite2 -->
+        <!-- BLOCK_COMMENT - END testsuite2 -->
       </testsuites>
-      <!-- END testsuites -->
+      <!-- BLOCK_COMMENT - END testsuites -->
     """
     And configuration file should contains:
     """
-      <!-- BEGIN groups -->
-      <groups><!-- groups -->
-        <!-- BEGIN include -->
-        <include><!-- include -->
-          <group>name1</group><!-- group -->
+      <!-- BLOCK_COMMENT - BEGIN groups -->
+      <groups><!-- INLINE_COMMENT - groups -->
+        <!-- BLOCK_COMMENT - BEGIN include -->
+        <include><!-- INLINE_COMMENT - include -->
+          <group>name1</group><!-- INLINE_COMMENT - group -->
           <group>name2</group>
-          <!-- include2 -->
+          <!-- INLINE_COMMENT_ALONE - include -->
         </include>
-        <!-- END include -->
-        <!-- groups2 -->
-        <!-- BEGIN exclude -->
-        <exclude><!-- exclude -->
-          <group>name3</group><!-- group -->
+        <!-- BLOCK_COMMENT - END include -->
+        <!-- INLINE_COMMENT_ALONE - groups -->
+        <!-- BLOCK_COMMENT - BEGIN exclude -->
+        <exclude><!-- INLINE_COMMENT - exclude -->
+          <group>name3</group><!-- INLINE_COMMENT - group -->
           <group>name4</group>
-          <!-- exclude2 -->
+          <!-- INLINE_COMMENT_ALONE - exclude -->
         </exclude>
-        <!-- END exclude -->
+        <!-- BLOCK_COMMENT - END exclude -->
       </groups>
-      <!-- END groups -->
+      <!-- BLOCK_COMMENT - END groups -->
     """
     And configuration file should contains:
     """
-      <!-- BEGIN filter -->
-      <filter><!-- filter -->
-        <!-- BEGIN whitelist -->
-        <whitelist><!-- whitelist -->
-          <directory>src</directory><!-- directory -->
+      <!-- BLOCK_COMMENT - BEGIN filter -->
+      <filter><!-- INLINE_COMMENT - filter -->
+        <!-- BLOCK_COMMENT - BEGIN whitelist -->
+        <whitelist><!-- INLINE_COMMENT - whitelist -->
+          <directory>src</directory><!-- INLINE_COMMENT - directory -->
           <file>src.php</file>
-          <!-- whitelist2 -->
-          <!-- BEGIN exclude -->
-          <exclude><!-- exclude -->
-            <file>src/Infrastructure/SfApplication.php</file><!-- file -->
-            <directory>src/Domain/Model</directory>
-            <!-- exclude -->
+          <!-- INLINE_COMMENT_ALONE - whitelist -->
+          <!-- BLOCK_COMMENT - BEGIN exclude -->
+          <exclude><!-- INLINE_COMMENT - exclude -->
+            <file>path/to/file.php</file><!-- INLINE_COMMENT - file -->
+            <directory>path/to/dir</directory>
+            <!-- INLINE_COMMENT_ALONE - exclude -->
           </exclude>
-          <!-- END exclude -->
+          <!-- BLOCK_COMMENT - END exclude -->
         </whitelist>
-        <!-- END whitelist -->
-        <!-- filter2 -->
+        <!-- BLOCK_COMMENT - END whitelist -->
+        <!-- INLINE_COMMENT_ALONE - filter -->
       </filter>
-      <!-- END filter -->
+      <!-- BLOCK_COMMENT - END filter -->
     """
     And configuration file should contains:
     """
-      <!-- BEGIN logging -->
-      <logging><!-- logging -->
-        <log type="coverage-html" target="/tmp/report" lowUpperBound="35" highLowerBound="70"/><!-- log -->
-        <log type="coverage-clover" target="/tmp/coverage.xml"/>
-        <log type="coverage-php" target="/tmp/coverage.serialized"/>
-        <!-- logging2 -->
+      <!-- BLOCK_COMMENT - BEGIN logging -->
+      <logging><!-- INLINE_COMMENT - logging -->
+        <log type="coverage-html" target="/tmp/report" lowUpperBound="35" highLowerBound="70"/><!-- INLINE_COMMENT - log -->
+        <!-- INLINE_COMMENT_ALONE - logging -->
         <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>
-        <log type="junit" target="/tmp/logfile.xml" logIncompleteSkipped="false"/>
         <log type="testdox-html" target="/tmp/testdox.html"/>
-        <log type="testdox-text" target="/tmp/testdox.txt"/>
       </logging>
-      <!-- END logging -->
+      <!-- BLOCK_COMMENT - END logging -->
     """
     And configuration file should contains:
     """
-      <!-- BEGIN listeners -->
-      <listeners><!-- listeners -->
-        <!-- BEGIN listener -->
-        <listener class="MyListener" file="/optional/path/to/MyListener.php"><!-- listener -->
-          <!-- BEGIN arguments -->
-          <arguments><!-- arguments -->
-            <array><!-- array -->
-              <element key="0"><!-- element -->
-                <string>Sebastian</string><!-- string -->
-                <!-- element2 -->
+      <!-- BLOCK_COMMENT - BEGIN listeners -->
+      <listeners><!-- INLINE_COMMENT - listeners -->
+        <!-- BLOCK_COMMENT - BEGIN listener -->
+        <listener class="MyListener" file="/optional/path/to/MyListener.php"><!-- INLINE_COMMENT - listener -->
+          <!-- BLOCK_COMMENT - BEGIN arguments -->
+          <arguments><!-- INLINE_COMMENT - arguments -->
+            <array><!-- INLINE_COMMENT - array -->
+              <element key="0"><!-- INLINE_COMMENT - element -->
+                <string>Sebastian</string><!-- INLINE_COMMENT - string -->
+                <!-- INLINE_COMMENT_ALONE - element -->
               </element>
-              <!-- array2 -->
+              <!-- INLINE_COMMENT_ALONE - array -->
             </array>
-            <!-- arguments2 -->
-            <integer>22</integer><!-- integer -->
+            <!-- INLINE_COMMENT_ALONE - arguments -->
+            <integer>22</integer><!-- INLINE_COMMENT - integer -->
             <string>April</string>
             <double>19.78</double>
             <null/>
             <object class="stdClass"/>
           </arguments>
-          <!-- END arguments -->
-          <!-- listener2 -->
+          <!-- BLOCK_COMMENT - END arguments -->
+          <!-- INLINE_COMMENT_ALONE - listener -->
         </listener>
-        <!-- END listener -->
-        <!-- listeners2 -->
+        <!-- BLOCK_COMMENT - END listener -->
+        <!-- INLINE_COMMENT_ALONE - listeners -->
       </listeners>
-      <!-- END listeners -->
+      <!-- BLOCK_COMMENT - END listeners -->
     """
     And configuration file should contains:
     """
-      <!-- BEGIN php -->
-      <php><!-- php -->
-        <includePath>.</includePath><!-- includePath -->
-        <ini name="foo" value="bar"/><!-- ini -->
+      <!-- BLOCK_COMMENT - BEGIN php -->
+      <php><!-- INLINE_COMMENT - php -->
+        <includePath>.</includePath><!-- INLINE_COMMENT - includePath -->
+        <ini name="foo" value="bar"/><!-- INLINE_COMMENT - ini -->
+        <!-- INLINE_COMMENT_ALONE - php -->
         <const name="foo" value="bar"/>
-        <!-- php2 -->
-        <var name="foo" value="bar"/>
-        <env name="foo" value="bar"/>
-        <post name="foo" value="bar"/>
-        <get name="foo" value="bar"/>
-        <cookie name="foo" value="bar"/>
-        <server name="foo" value="bar"/>
-        <files name="foo" value="bar"/>
-        <request name="foo" value="bar"/>
       </php>
-      <!-- END php -->
+      <!-- BLOCK_COMMENT - END php -->
     """
     And configuration file should contains:
     """
     </phpunit>
-    <!-- END phpunit -->
+    <!-- BLOCK_COMMENT - END phpunit -->
     """
 
-    @yo
   Scenario: Full configuration with added values
     Given I will use configuration template fixture "create_with_template.xml"
     And I have the folder "custom_folder"
     When I execute phpunitcm create with "custom_folder" and following options:
     """
-    --config-attr "backupGlobals##false" --config-attr "test##./path" --test-suite-file "suite1##file11" --test-suite-file "My Test Suite##/path/to/MyTest.php##suffix##Plop.php" --test-suite-directory "suite1##directory11" --test-suite-directory "My Test Suite2##/path/to/files##phpVersion##7.0"  --test-suite-excluded "suite1##excluded11" --test-suite-excluded "My Test Suite##excluded21" --group-include group1 --group-exclude group2 --filter-whitelist-file path1 --filter-whitelist-directory path2 --filter-whitelist-excluded-file path3 --filter-whitelist-excluded-directory path4 --log "coverage-html##/tmp/report2##lowUpperBound##40" --listener "Class1" --listener "Class2##File2" --php "includePath##../" --php "ini##foo##plop" --php "ini##bar##foo"
+    --config-attr "backupGlobals##false" --config-attr "test##./path" --test-suite-file "suite1##file11" --test-suite-file "My Test Suite##/path/to/MyTest.php##suffix##Plop.php" --test-suite-directory "suite1##directory11" --test-suite-directory "My Test Suite2##/path/to/dir##phpVersion##7.0"  --test-suite-excluded "suite1##excluded11" --test-suite-excluded "My Test Suite##excluded21" --group-include group1 --group-exclude group2 --filter-whitelist-file path1 --filter-whitelist-directory path2 --filter-whitelist-excluded-file path3 --filter-whitelist-excluded-directory path4 --log "coverage-html##/tmp/report2##lowUpperBound##40" --listener "Class1" --listener "Class2##File2" --php "includePath##../" --php "ini##foo##plop" --php "ini##bar##foo"
     """
     Then configuration file at "custom_folder" should contains:
     """
     <?xml version="1.0" encoding="UTF-8"?>
     <!-- https://phpunit.de/manual/current/en/appendixes.configuration.html -->
-    <!-- BEGIN phpunit -->
+    <!-- BLOCK_COMMENT - BEGIN phpunit -->
     <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.5/phpunit.xsd"
       backupGlobals="false"
-      backupStaticAttributes="false"
       bootstrap="/path/to/bootstrap.php"
-      cacheTokens="false"
-      colors="false"
-      convertErrorsToExceptions="true"
-      convertNoticesToExceptions="true"
-      convertWarningsToExceptions="true"
-      forceCoversAnnotation="false"
-      mapTestClassNameToCoveredClassName="false"
       printerClass="PHPUnit_TextUI_ResultPrinter"
       printerFile="/path/to/ResultPrinter.php"
-      processIsolation="false"
-      stopOnError="false"
-      stopOnFailure="false"
-      stopOnIncomplete="false"
-      stopOnSkipped="false"
-      stopOnRisky="false"
-      testSuiteLoaderClass="PHPUnit_Runner_StandardTestSuiteLoader"
-      testSuiteLoaderFile="/path/to/StandardTestSuiteLoader.php"
-      timeoutForSmallTests="1"
-      timeoutForMediumTests="10"
       timeoutForLargeTests="60"
-      verbose="false"
+      unknowAttribute="true"
       test="./path"
     >
     """
     And configuration file at "custom_folder" should contains:
     """
-      <!-- BEGIN testsuites -->
-      <testsuites><!-- testsuites -->
-        <!-- BEGIN testsuite -->
-        <testsuite name="My Test Suite"><!-- testsuite -->
-          <directory>/path/to/*Test.php files</directory><!-- directory -->
+      <!-- BLOCK_COMMENT - BEGIN testsuites -->
+      <testsuites><!-- INLINE_COMMENT - testsuites -->
+        <!-- BLOCK_COMMENT - BEGIN testsuite -->
+        <testsuite name="My Test Suite"><!-- INLINE_COMMENT - testsuite -->
+          <directory>/path/to/*Test.php files</directory><!-- INLINE_COMMENT - directory -->
           <file suffix="Plop.php">/path/to/MyTest.php</file>
           <exclude>/path/to/exclude</exclude>
-          <!-- testsuite2 -->
+          <!-- INLINE_COMMENT_ALONE - testsuite -->
           <exclude>excluded21</exclude>
         </testsuite>
-        <!-- END testsuite -->
-        <!-- testsuites2 -->
-        <!-- BEGIN testsuite2 -->
+        <!-- BLOCK_COMMENT - END testsuite -->
+        <!-- INLINE_COMMENT_ALONE - testsuites -->
+        <!-- BLOCK_COMMENT - BEGIN testsuite2 -->
         <testsuite name="My Test Suite2">
-          <directory suffix="Test.php" phpVersion="7.0" phpVersionOperator="&gt;=">/path/to/files</directory>
+          <directory suffix="Test.php" phpVersion="7.0" phpVersionOperator="&gt;=">/path/to/dir</directory>
           <file phpVersion="5.3.0" phpVersionOperator="&gt;=">/path/to/MyTest.php</file>
         </testsuite>
-        <!-- END testsuite2 -->
+        <!-- BLOCK_COMMENT - END testsuite2 -->
         <testsuite name="suite1">
           <file>file11</file>
           <directory>directory11</directory>
           <exclude>excluded11</exclude>
         </testsuite>
       </testsuites>
-      <!-- END testsuites -->
+      <!-- BLOCK_COMMENT - END testsuites -->
     """
     And configuration file at "custom_folder" should contains:
     """
-      <!-- BEGIN groups -->
-      <groups><!-- groups -->
-        <!-- BEGIN include -->
-        <include><!-- include -->
-          <group>name1</group><!-- group -->
+      <!-- BLOCK_COMMENT - BEGIN groups -->
+      <groups><!-- INLINE_COMMENT - groups -->
+        <!-- BLOCK_COMMENT - BEGIN include -->
+        <include><!-- INLINE_COMMENT - include -->
+          <group>name1</group><!-- INLINE_COMMENT - group -->
           <group>name2</group>
-          <!-- include2 -->
+          <!-- INLINE_COMMENT_ALONE - include -->
           <group>group1</group>
         </include>
-        <!-- END include -->
-        <!-- groups2 -->
-        <!-- BEGIN exclude -->
-        <exclude><!-- exclude -->
-          <group>name3</group><!-- group -->
+        <!-- BLOCK_COMMENT - END include -->
+        <!-- INLINE_COMMENT_ALONE - groups -->
+        <!-- BLOCK_COMMENT - BEGIN exclude -->
+        <exclude><!-- INLINE_COMMENT - exclude -->
+          <group>name3</group><!-- INLINE_COMMENT - group -->
           <group>name4</group>
-          <!-- exclude2 -->
+          <!-- INLINE_COMMENT_ALONE - exclude -->
           <group>group2</group>
         </exclude>
-        <!-- END exclude -->
+        <!-- BLOCK_COMMENT - END exclude -->
       </groups>
-      <!-- END groups -->
+      <!-- BLOCK_COMMENT - END groups -->
     """
-# !!! <file>path3</file> and <directory>path4</directory> are not present in excluded node !!!!!!
     And configuration file at "custom_folder" should contains:
     """
-      <!-- BEGIN filter -->
-      <filter><!-- filter -->
-        <!-- BEGIN whitelist -->
-        <whitelist><!-- whitelist -->
-          <directory>src</directory><!-- directory -->
+      <!-- BLOCK_COMMENT - BEGIN filter -->
+      <filter><!-- INLINE_COMMENT - filter -->
+        <!-- BLOCK_COMMENT - BEGIN whitelist -->
+        <whitelist><!-- INLINE_COMMENT - whitelist -->
+          <directory>src</directory><!-- INLINE_COMMENT - directory -->
           <file>src.php</file>
-          <!-- whitelist2 -->
+          <!-- INLINE_COMMENT_ALONE - whitelist -->
           <directory>path2</directory>
           <file>path1</file>
-          <!-- BEGIN exclude -->
-          <exclude><!-- exclude -->
-            <file>src/Infrastructure/SfApplication.php</file><!-- file -->
-            <directory>src/Domain/Model</directory>
-            <!-- exclude -->
+          <!-- BLOCK_COMMENT - BEGIN exclude -->
+          <exclude><!-- INLINE_COMMENT - exclude -->
+            <file>path/to/file.php</file><!-- INLINE_COMMENT - file -->
+            <directory>path/to/dir</directory>
+            <!-- INLINE_COMMENT_ALONE - exclude -->
             <file>path3</file>
             <directory>path4</directory>
           </exclude>
-          <!-- END exclude -->
+          <!-- BLOCK_COMMENT - END exclude -->
         </whitelist>
-        <!-- END whitelist -->
-        <!-- filter2 -->
+        <!-- BLOCK_COMMENT - END whitelist -->
+        <!-- INLINE_COMMENT_ALONE - filter -->
       </filter>
-      <!-- END filter -->
+      <!-- BLOCK_COMMENT - END filter -->
     """
     And configuration file at "custom_folder" should contains:
     """
-      <!-- BEGIN logging -->
-      <logging><!-- logging -->
-        <log type="coverage-html" target="/tmp/report2" lowUpperBound="40" highLowerBound="70"/><!-- log -->
-        <log type="coverage-clover" target="/tmp/coverage.xml"/>
-        <log type="coverage-php" target="/tmp/coverage.serialized"/>
-        <!-- logging2 -->
+      <!-- BLOCK_COMMENT - BEGIN logging -->
+      <logging><!-- INLINE_COMMENT - logging -->
+        <log type="coverage-html" target="/tmp/report2" lowUpperBound="40" highLowerBound="70"/><!-- INLINE_COMMENT - log -->
+        <!-- INLINE_COMMENT_ALONE - logging -->
         <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>
-        <log type="junit" target="/tmp/logfile.xml" logIncompleteSkipped="false"/>
         <log type="testdox-html" target="/tmp/testdox.html"/>
-        <log type="testdox-text" target="/tmp/testdox.txt"/>
       </logging>
-      <!-- END logging -->
+      <!-- BLOCK_COMMENT - END logging -->
     """
     And configuration file at "custom_folder" should contains:
     """
-      <!-- BEGIN listeners -->
-      <listeners><!-- listeners -->
-        <!-- BEGIN listener -->
-        <listener class="MyListener" file="/optional/path/to/MyListener.php"><!-- listener -->
-          <!-- BEGIN arguments -->
-          <arguments><!-- arguments -->
-            <array><!-- array -->
-              <element key="0"><!-- element -->
-                <string>Sebastian</string><!-- string -->
-                <!-- element2 -->
+      <!-- BLOCK_COMMENT - BEGIN listeners -->
+      <listeners><!-- INLINE_COMMENT - listeners -->
+        <!-- BLOCK_COMMENT - BEGIN listener -->
+        <listener class="MyListener" file="/optional/path/to/MyListener.php"><!-- INLINE_COMMENT - listener -->
+          <!-- BLOCK_COMMENT - BEGIN arguments -->
+          <arguments><!-- INLINE_COMMENT - arguments -->
+            <array><!-- INLINE_COMMENT - array -->
+              <element key="0"><!-- INLINE_COMMENT - element -->
+                <string>Sebastian</string><!-- INLINE_COMMENT - string -->
+                <!-- INLINE_COMMENT_ALONE - element -->
               </element>
-              <!-- array2 -->
+              <!-- INLINE_COMMENT_ALONE - array -->
             </array>
-            <!-- arguments2 -->
-            <integer>22</integer><!-- integer -->
+            <!-- INLINE_COMMENT_ALONE - arguments -->
+            <integer>22</integer><!-- INLINE_COMMENT - integer -->
             <string>April</string>
             <double>19.78</double>
             <null/>
             <object class="stdClass"/>
           </arguments>
-          <!-- END arguments -->
-          <!-- listener2 -->
+          <!-- BLOCK_COMMENT - END arguments -->
+          <!-- INLINE_COMMENT_ALONE - listener -->
         </listener>
-        <!-- END listener -->
-        <!-- listeners2 -->
+        <!-- BLOCK_COMMENT - END listener -->
+        <!-- INLINE_COMMENT_ALONE - listeners -->
         <listener class="Class1"/>
         <listener class="Class2" file="File2"/>
       </listeners>
-      <!-- END listeners -->
+      <!-- BLOCK_COMMENT - END listeners -->
     """
     And configuration file at "custom_folder" should contains:
     """
-      <!-- BEGIN php -->
-      <php><!-- php -->
-        <includePath>../</includePath><!-- includePath -->
-        <ini name="foo" value="plop"/><!-- ini -->
+      <!-- BLOCK_COMMENT - BEGIN php -->
+      <php><!-- INLINE_COMMENT - php -->
+        <includePath>../</includePath><!-- INLINE_COMMENT - includePath -->
+        <ini name="foo" value="plop"/><!-- INLINE_COMMENT - ini -->
+        <!-- INLINE_COMMENT_ALONE - php -->
         <const name="foo" value="bar"/>
-        <!-- php2 -->
-        <var name="foo" value="bar"/>
-        <env name="foo" value="bar"/>
-        <post name="foo" value="bar"/>
-        <get name="foo" value="bar"/>
-        <cookie name="foo" value="bar"/>
-        <server name="foo" value="bar"/>
-        <files name="foo" value="bar"/>
-        <request name="foo" value="bar"/>
         <ini name="bar" value="foo"/>
       </php>
-      <!-- END php -->
+      <!-- BLOCK_COMMENT - END php -->
     """

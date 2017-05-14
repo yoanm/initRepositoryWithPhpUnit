@@ -1,5 +1,5 @@
 Feature: As user
-  In order to create composer configuration file
+  In order to create phpunit configuration file
   I should be able to use the command line
 
   Scenario: No options
@@ -7,12 +7,12 @@ Feature: As user
     Then an exception must have been thrown
 
   Scenario: Specify location
-    Given I have the folder "./build/test"
-    When I execute phpunitcm create with "./build/test" and following options:
+    Given I have the folder "test"
+    When I execute phpunitcm create with "test" and following options:
     """
     --config-attr "attr1##true"
     """
-    Then I should have a configuration file at "./build/test"
+    Then I should have a configuration file at "test"
 
   Scenario: Full configuration
     Given I execute phpunitcm create with following options:
