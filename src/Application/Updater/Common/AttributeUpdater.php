@@ -2,7 +2,6 @@
 namespace Yoanm\PhpUnitConfigManager\Application\Updater\Common;
 
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Attribute;
-use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites;
 
 class AttributeUpdater
