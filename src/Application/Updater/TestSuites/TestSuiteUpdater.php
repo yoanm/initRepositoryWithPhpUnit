@@ -16,18 +16,20 @@ class TestSuiteUpdater extends AbstractNodeUpdater
     private $attributeUpdater;
 
     /**
-     * @param AttributeUpdater     $attributeUpdater
-     * @param PlainValueUpdater    $plainValueUpdater
-     * @param TestSuiteItemUpdater $testSuiteItemUpdater
-     * @param HeaderFooterHelper   $headerFooterHelper
+     * @param AttributeUpdater             $attributeUpdater
+     * @param PlainValueUpdater            $plainValueUpdater
+     * @param TestSuiteItemUpdater         $testSuiteItemUpdater
+     * @param ExcludedTestSuiteItemUpdater $excludedTestSuiteItemUpdater
+     * @param HeaderFooterHelper           $headerFooterHelper
      */
     public function __construct(
         AttributeUpdater $attributeUpdater,
         PlainValueUpdater $plainValueUpdater,
         TestSuiteItemUpdater $testSuiteItemUpdater,
+        ExcludedTestSuiteItemUpdater $excludedTestSuiteItemUpdater,
         HeaderFooterHelper $headerFooterHelper
     ) {
-        parent::__construct($headerFooterHelper, [$testSuiteItemUpdater]);
+        parent::__construct($headerFooterHelper, [$testSuiteItemUpdater, $excludedTestSuiteItemUpdater]);
         $this->plainValueUpdater = $plainValueUpdater;
         $this->attributeUpdater = $attributeUpdater;
     }

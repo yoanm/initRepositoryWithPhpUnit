@@ -13,7 +13,7 @@ class WhiteListItemUpdater extends AbstractNodeUpdater
     private $attributeUpdater;
 
     /**
-     * @param AttributeUpdater   $attributeUpdater,
+     * @param AttributeUpdater   $attributeUpdater
      * @param HeaderFooterHelper $headerFooterHelper
      */
     public function __construct(

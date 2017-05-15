@@ -6,9 +6,7 @@ use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AttributeUpdater;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\HeaderFooterHelper;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\PlainValueUpdater;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
-use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites\TestSuite\ExcludedTestSuiteItem;
 use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites\TestSuite\TestSuiteItem;
-use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites\TestSuite\TestSuiteItemInterface;
 
 class TestSuiteItemUpdater extends AbstractNodeUpdater
 {
@@ -52,7 +50,7 @@ class TestSuiteItemUpdater extends AbstractNodeUpdater
      */
     public function supports(ConfigurationItemInterface $item)
     {
-        return $item instanceof TestSuiteItemInterface;
+        return $item instanceof TestSuiteItem;
     }
 
     /**
@@ -62,18 +60,8 @@ class TestSuiteItemUpdater extends AbstractNodeUpdater
     {
         return $this->supports($newItem)
             && get_class($baseItem) === get_class($newItem)
-            && (
-                (
-                    $newItem instanceof TestSuiteItem
-                    && $newItem->getType() === $baseItem->getType()
-                    && $newItem->getValue() === $baseItem->getValue()
-                )
-                ||
-                (
-                    $newItem instanceof ExcludedTestSuiteItem
-                    && $newItem->getValue() === $baseItem->getValue()
-                )
-            )
+            && $newItem->getType() === $baseItem->getType()
+            && $newItem->getValue() === $baseItem->getValue()
         ;
     }
 }

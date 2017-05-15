@@ -25,10 +25,14 @@
             <argument type="service" id="phpunit_config_manager.app.updater.common.plain_value" />
             <argument type="service" id="phpunit_config_manager.app.updater.helper.header_footer" />
         </service>
+        <service id="phpunit_config_manager.app.updater.test_suites.suite.excluded_item" class="Yoanm\PhpUnitConfigManager\Application\Updater\TestSuites\ExcludedTestSuiteItemUpdater">
+            <argument type="service" id="phpunit_config_manager.app.updater.helper.header_footer" />
+        </service>
         <service id="phpunit_config_manager.app.updater.test_suites.suite" class="Yoanm\PhpUnitConfigManager\Application\Updater\TestSuites\TestSuiteUpdater">
             <argument type="service" id="phpunit_config_manager.app.updater.common.attribute"/>
             <argument type="service" id="phpunit_config_manager.app.updater.common.plain_value" />
             <argument type="service" id="phpunit_config_manager.app.updater.test_suites.suite.item"/>
+            <argument type="service" id="phpunit_config_manager.app.updater.test_suites.suite.excluded_item"/>
             <argument type="service" id="phpunit_config_manager.app.updater.helper.header_footer" />
         </service>
         <service id="phpunit_config_manager.app.updater.test_suites" class="Yoanm\PhpUnitConfigManager\Application\Updater\TestSuitesUpdater">
