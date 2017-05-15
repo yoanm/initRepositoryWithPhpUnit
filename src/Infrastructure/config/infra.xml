@@ -20,10 +20,6 @@
             <argument type="service" id="phpunit_config_manager.infra.loader.configuration_file" />
         </service>
 
-        <service id="phpunit_config_manager.infra.transformer.input" class="Yoanm\PhpUnitConfigManager\Infrastructure\Transformer\InputTransformer">
-            <argument type="service" id="phpunit_config_manager.infra.serializer.configuration_file" />
-        </service>
-
         <service id="phpunit_config_manager.infra.filesystem" class="Symfony\Component\Filesystem\Filesystem" />
         <service id="phpunit_config_manager.infra.finder" class="Symfony\Component\Finder\Finder" />
 
@@ -49,6 +45,24 @@
             <argument type="collection">
                 <argument type="service" id="phpunit_config_manager.infra.encoder.phpunit" />
             </argument>
+        </service>
+
+        <!-- input transformer -->
+        <service id="phpunit_config_manager.infra.transformer.item.test_suites" class="Yoanm\PhpUnitConfigManager\Infrastructure\Transformer\TestSuitesInputItemTransformer" />
+        <service id="phpunit_config_manager.infra.transformer.item.groups" class="Yoanm\PhpUnitConfigManager\Infrastructure\Transformer\GroupsInputItemTransformer" />
+        <service id="phpunit_config_manager.infra.transformer.item.filter" class="Yoanm\PhpUnitConfigManager\Infrastructure\Transformer\FilterInputItemTransformer" />
+        <service id="phpunit_config_manager.infra.transformer.item.logging" class="Yoanm\PhpUnitConfigManager\Infrastructure\Transformer\LoggingInputItemTransformer" />
+        <service id="phpunit_config_manager.infra.transformer.item.listeners" class="Yoanm\PhpUnitConfigManager\Infrastructure\Transformer\ListenersInputItemTransformer" />
+        <service id="phpunit_config_manager.infra.transformer.item.php" class="Yoanm\PhpUnitConfigManager\Infrastructure\Transformer\PhpInputItemTransformer" />
+
+        <service id="phpunit_config_manager.infra.transformer.input" class="Yoanm\PhpUnitConfigManager\Infrastructure\Transformer\InputTransformer">
+            <argument type="service" id="phpunit_config_manager.infra.transformer.item.test_suites" />
+            <argument type="service" id="phpunit_config_manager.infra.transformer.item.groups" />
+            <argument type="service" id="phpunit_config_manager.infra.transformer.item.filter" />
+            <argument type="service" id="phpunit_config_manager.infra.transformer.item.logging" />
+            <argument type="service" id="phpunit_config_manager.infra.transformer.item.listeners" />
+            <argument type="service" id="phpunit_config_manager.infra.transformer.item.php" />
+            <argument type="service" id="phpunit_config_manager.infra.serializer.configuration_file" />
         </service>
     </services>
 </container>
