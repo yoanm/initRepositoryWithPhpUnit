@@ -10,7 +10,7 @@ class LoggingInputItemTransformer extends AbstractTransformer
     /**
      * @param array $inputList
      *
-     * @return array
+     * @return Logging|null
      */
     public function extract(array $inputList)
     {

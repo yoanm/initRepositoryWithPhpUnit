@@ -4,6 +4,7 @@ namespace Yoanm\PhpUnitConfigManager\Application\Updater\TestSuites;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AbstractNodeUpdater;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AttributeUpdater;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\HeaderFooterHelper;
+use Yoanm\PhpUnitConfigManager\Application\Updater\Common\NodeUpdaterHelper;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\PlainValueUpdater;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites\TestSuite\TestSuiteItem;
@@ -18,14 +19,14 @@ class TestSuiteItemUpdater extends AbstractNodeUpdater
     /**
      * @param AttributeUpdater   $attributeUpdater
      * @param PlainValueUpdater  $plainValueUpdater
-     * @param HeaderFooterHelper $headerFooterHelper
+     * @param NodeUpdaterHelper $nodeUpdaterHelper
      */
     public function __construct(
         AttributeUpdater $attributeUpdater,
         PlainValueUpdater $plainValueUpdater,
-        HeaderFooterHelper $headerFooterHelper
+        NodeUpdaterHelper $nodeUpdaterHelper
     ) {
-        parent::__construct($headerFooterHelper);
+        parent::__construct($nodeUpdaterHelper);
         $this->plainValueUpdater = $plainValueUpdater;
         $this->attributeUpdater = $attributeUpdater;
     }

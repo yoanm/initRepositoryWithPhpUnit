@@ -82,14 +82,14 @@ Feature: As user
     Then configuration file should contains:
     """
       <groups>
-        <exclude>
-          <group>group2</group>
-          <group>group4</group>
-        </exclude>
         <include>
           <group>group1</group>
           <group>group3</group>
         </include>
+        <exclude>
+          <group>group2</group>
+          <group>group4</group>
+        </exclude>
       </groups>
     """
 
@@ -109,10 +109,10 @@ Feature: As user
     """
       <filter>
         <whitelist>
-          <directory>path3</directory>
-          <directory>path4</directory>
           <file>path1</file>
           <file>path2</file>
+          <directory>path3</directory>
+          <directory>path4</directory>
           <exclude>
             <file>path5</file>
             <file>path6</file>

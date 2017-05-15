@@ -3,6 +3,7 @@ namespace Yoanm\PhpUnitConfigManager\Application\Updater\Groups;
 
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AbstractNodeUpdater;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\HeaderFooterHelper;
+use Yoanm\PhpUnitConfigManager\Application\Updater\Common\NodeUpdaterHelper;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Groups\GroupInclusion;
 
@@ -10,13 +11,13 @@ class GroupInclusionUpdater extends AbstractNodeUpdater
 {
     /**
      * @param GroupItemUpdater   $groupItemUpdater
-     * @param HeaderFooterHelper $headerFooterHelper
+     * @param NodeUpdaterHelper $nodeUpdaterHelper
      */
     public function __construct(
         GroupItemUpdater $groupItemUpdater,
-        HeaderFooterHelper $headerFooterHelper
+        NodeUpdaterHelper $nodeUpdaterHelper
     ) {
-        parent::__construct($headerFooterHelper, [$groupItemUpdater]);
+        parent::__construct($nodeUpdaterHelper, [$groupItemUpdater]);
     }
 
     /**
@@ -28,7 +29,11 @@ class GroupInclusionUpdater extends AbstractNodeUpdater
     public function merge(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
     {
         return new GroupInclusion(
-            $this->mergeItemList($baseItem->getItemList(), $newItem->getItemList()),
+            $this->getNodeUpdaterHelper()->mergeItemList(
+                $baseItem->getItemList(),
+                $newItem->getItemList(),
+                $this
+            ),
             $baseItem->isExcluded()
         );
     }

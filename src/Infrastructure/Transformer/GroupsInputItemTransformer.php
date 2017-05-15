@@ -10,7 +10,7 @@ class GroupsInputItemTransformer extends AbstractTransformer
     /**
      * @param array $inputList
      *
-     * @return array
+     * @return Groups|null
      */
     public function extract(array $inputList)
     {
@@ -38,7 +38,7 @@ class GroupsInputItemTransformer extends AbstractTransformer
     protected function extractGroupInclusionList(array $inputList)
     {
         $rawGroupInclusionList = [];
-        foreach ([InputTransformer::KEY_GROUP_EXCLUDE, InputTransformer::KEY_GROUP_INCLUDE] as $inputKey) {
+        foreach ([InputTransformer::KEY_GROUP_INCLUDE, InputTransformer::KEY_GROUP_EXCLUDE] as $inputKey) {
             if ($this->inputValueListExistFor($inputList, $inputKey)) {
                 foreach ($inputList[$inputKey] as $inputValue) {
                     $rawGroupInclusionList[$inputKey][] = new Group($inputValue);

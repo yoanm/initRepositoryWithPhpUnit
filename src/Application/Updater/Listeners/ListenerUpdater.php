@@ -3,6 +3,7 @@ namespace Yoanm\PhpUnitConfigManager\Application\Updater\Listeners;
 
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AbstractNodeUpdater;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\HeaderFooterHelper;
+use Yoanm\PhpUnitConfigManager\Application\Updater\Common\NodeUpdaterHelper;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\PlainValueUpdater;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Listeners\Listener;
@@ -13,14 +14,14 @@ class ListenerUpdater extends AbstractNodeUpdater
     private $plainValueUpdater;
 
     /**
-     * @param PlainValueUpdater  $plainValueUpdater
-     * @param HeaderFooterHelper $headerFooterHelper
+     * @param PlainValueUpdater $plainValueUpdater
+     * @param NodeUpdaterHelper $nodeUpdaterHelper
      */
     public function __construct(
         PlainValueUpdater $plainValueUpdater,
-        HeaderFooterHelper $headerFooterHelper
+        NodeUpdaterHelper $nodeUpdaterHelper
     ) {
-        parent::__construct($headerFooterHelper);
+        parent::__construct($nodeUpdaterHelper);
         $this->plainValueUpdater = $plainValueUpdater;
     }
 
@@ -35,7 +36,11 @@ class ListenerUpdater extends AbstractNodeUpdater
         return new Listener(
             $baseItem->getClass(),
             $this->plainValueUpdater->update($newItem->getFile(), $baseItem->getFile()),
-            $this->mergeItemList($baseItem->getItemList(), $newItem->getItemList())
+            $this->getNodeUpdaterHelper()->mergeItemList(
+                $baseItem->getItemList(),
+                $newItem->getItemList(),
+                $this
+            )
         );
     }
 

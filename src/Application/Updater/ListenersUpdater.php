@@ -3,6 +3,7 @@ namespace Yoanm\PhpUnitConfigManager\Application\Updater;
 
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AbstractNodeUpdater;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\HeaderFooterHelper;
+use Yoanm\PhpUnitConfigManager\Application\Updater\Common\NodeUpdaterHelper;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Listeners\ListenerUpdater;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Filter;
@@ -11,14 +12,14 @@ use Yoanm\PhpUnitConfigManager\Domain\Model\Listeners;
 class ListenersUpdater extends AbstractNodeUpdater
 {
     /**
-     * @param ListenerUpdater    $listenerUpdater
-     * @param HeaderFooterHelper $headerFooterHelper
+     * @param ListenerUpdater   $listenerUpdater
+     * @param NodeUpdaterHelper $nodeUpdaterHelper
      */
     public function __construct(
         ListenerUpdater $listenerUpdater,
-        HeaderFooterHelper $headerFooterHelper
+        NodeUpdaterHelper $nodeUpdaterHelper
     ) {
-        parent::__construct($headerFooterHelper, [$listenerUpdater]);
+        parent::__construct($nodeUpdaterHelper, [$listenerUpdater]);
     }
 
     /**
@@ -29,7 +30,13 @@ class ListenersUpdater extends AbstractNodeUpdater
      */
     public function merge(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
     {
-        return new Listeners($this->mergeItemList($baseItem->getItemList(), $newItem->getItemList()));
+        return new Listeners(
+            $this->getNodeUpdaterHelper()->mergeItemList(
+                $baseItem->getItemList(),
+                $newItem->getItemList(),
+                $this
+            )
+        );
     }
 
     /**

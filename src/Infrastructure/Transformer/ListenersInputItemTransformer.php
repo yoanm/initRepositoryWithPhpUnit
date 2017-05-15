@@ -1,21 +1,15 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Infrastructure\Transformer;
 
-use Yoanm\PhpUnitConfigManager\Domain\Model\Filter;
-use Yoanm\PhpUnitConfigManager\Domain\Model\Groups;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Listeners;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Listeners\Listener;
-use Yoanm\PhpUnitConfigManager\Domain\Model\Logging;
-use Yoanm\PhpUnitConfigManager\Domain\Model\Php;
-use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites;
-use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites\TestSuite;
 
 class ListenersInputItemTransformer extends AbstractTransformer
 {
     /**
      * @param array $inputList
      *
-     * @return array
+     * @return Listeners|null
      */
     public function extract(array $inputList)
     {

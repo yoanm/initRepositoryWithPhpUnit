@@ -12,15 +12,15 @@ class FilterInputItemTransformer extends AbstractTransformer
     /**
      * @param array $inputList
      *
-     * @return array
+     * @return Filter|null
      */
     public function extract(array $inputList)
     {
         $whiteListItemList = $this->extractWhiteListItemList(
             $inputList,
             [
+                InputTransformer::KEY_FILTER_WHITELIST_FILE,
                 InputTransformer::KEY_FILTER_WHITELIST_DIRECTORY,
-                InputTransformer::KEY_FILTER_WHITELIST_FILE
             ],
             InputTransformer::KEY_FILTER_WHITELIST_DIRECTORY
         );
@@ -28,7 +28,7 @@ class FilterInputItemTransformer extends AbstractTransformer
             $inputList,
             [
                 InputTransformer::KEY_FILTER_EXCLUDED_WHITELIST_FILE,
-                InputTransformer::KEY_FILTER_EXCLUDED_WHITELIST_DIRECTORY
+                InputTransformer::KEY_FILTER_EXCLUDED_WHITELIST_DIRECTORY,
             ],
             InputTransformer::KEY_FILTER_EXCLUDED_WHITELIST_DIRECTORY
         );
@@ -47,10 +47,11 @@ class FilterInputItemTransformer extends AbstractTransformer
     }
 
     /**
-     * @param array  $inputList
-     * @param array  $whiteListInputKeyList
-     * @param string $directoryInputKey
-     * @return array
+     * @param array    $inputList
+     * @param string[] $whiteListInputKeyList
+     * @param string   $directoryInputKey
+     *
+     * @return WhiteListItem[]
      */
     protected function extractWhiteListItemList(array $inputList, array $whiteListInputKeyList, $directoryInputKey)
     {

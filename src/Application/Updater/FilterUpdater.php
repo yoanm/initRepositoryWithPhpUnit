@@ -3,6 +3,7 @@ namespace Yoanm\PhpUnitConfigManager\Application\Updater;
 
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AbstractNodeUpdater;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\HeaderFooterHelper;
+use Yoanm\PhpUnitConfigManager\Application\Updater\Common\NodeUpdaterHelper;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Filter\WhiteListUpdater;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Filter;
@@ -11,13 +12,13 @@ class FilterUpdater extends AbstractNodeUpdater
 {
     /**
      * @param WhiteListUpdater   $groupInclusionUpdater
-     * @param HeaderFooterHelper $headerFooterHelper
+     * @param NodeUpdaterHelper $nodeUpdaterHelper
      */
     public function __construct(
         WhiteListUpdater $groupInclusionUpdater,
-        HeaderFooterHelper $headerFooterHelper
+        NodeUpdaterHelper $nodeUpdaterHelper
     ) {
-        parent::__construct($headerFooterHelper, [$groupInclusionUpdater]);
+        parent::__construct($nodeUpdaterHelper, [$groupInclusionUpdater]);
     }
 
     /**
@@ -28,7 +29,13 @@ class FilterUpdater extends AbstractNodeUpdater
      */
     public function merge(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
     {
-        return new Filter($this->mergeItemList($baseItem->getItemList(), $newItem->getItemList()));
+        return new Filter(
+            $this->getNodeUpdaterHelper()->mergeItemList(
+                $baseItem->getItemList(),
+                $newItem->getItemList(),
+                $this
+            )
+        );
     }
 
     /**

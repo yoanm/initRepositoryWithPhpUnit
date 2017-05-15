@@ -2,7 +2,7 @@
 namespace Yoanm\PhpUnitConfigManager\Application\Updater;
 
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AbstractNodeUpdater;
-use Yoanm\PhpUnitConfigManager\Application\Updater\Common\HeaderFooterHelper;
+use Yoanm\PhpUnitConfigManager\Application\Updater\Common\NodeUpdaterHelper;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\PlainValueUpdater;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\ConfigurationFile;
@@ -15,14 +15,14 @@ class ConfigurationFileUpdater extends AbstractNodeUpdater
     /**
      * @param PlainValueUpdater    $plainValueUpdater
      * @param ConfigurationUpdater $configurationUpdater
-     * @param HeaderFooterHelper   $headerFooterHelper
+     * @param NodeUpdaterHelper    $nodeUpdaterHelper
      */
     public function __construct(
         PlainValueUpdater $plainValueUpdater,
         ConfigurationUpdater $configurationUpdater,
-        HeaderFooterHelper $headerFooterHelper
+        NodeUpdaterHelper $nodeUpdaterHelper
     ) {
-        parent::__construct($headerFooterHelper, [$configurationUpdater]);
+        parent::__construct($nodeUpdaterHelper, [$configurationUpdater]);
         $this->plainValueUpdater = $plainValueUpdater;
     }
 
@@ -37,7 +37,11 @@ class ConfigurationFileUpdater extends AbstractNodeUpdater
         return new ConfigurationFile(
             $this->plainValueUpdater->update($baseItem->getVersion(), $newItem->getVersion()),
             $this->plainValueUpdater->update($baseItem->getEncoding(), $newItem->getEncoding()),
-            $this->mergeItemList($baseItem->getNodeList(), $newItem->getNodeList())
+            $this->getNodeUpdaterHelper()->mergeItemList(
+                $baseItem->getNodeList(),
+                $newItem->getNodeList(),
+                $this
+            )
         );
     }
 

@@ -3,6 +3,7 @@ namespace Yoanm\PhpUnitConfigManager\Infrastructure\Transformer;
 
 use Symfony\Component\Serializer\SerializerInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Attribute;
+use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Configuration;
 use Yoanm\PhpUnitConfigManager\Domain\Model\ConfigurationFile;
 use Yoanm\PhpUnitConfigManager\Infrastructure\Serializer\Encoder\PhpUnitEncoder;
@@ -87,7 +88,6 @@ class InputTransformer extends AbstractTransformer
     protected function createConfigurationFile(array $inputList)
     {
         $defaultKeyList = [
-            self::SEPARATOR,
             self::KEY_CONFIG_ATTR,
             self::KEY_TEST_SUITE_FILE,
             self::KEY_TEST_SUITE_DIRECTORY,
@@ -128,7 +128,7 @@ class InputTransformer extends AbstractTransformer
     /**
      * @param array $inputList
      *
-     * @return array
+     * @return ConfigurationItemInterface[]
      */
     protected function extractConfigurationNode(array $inputList)
     {
@@ -148,7 +148,7 @@ class InputTransformer extends AbstractTransformer
     /**
      * @param array $inputList
      *
-     * @return array
+     * @return Attribute[]
      */
     protected function extractPhpUnitOptions(array $inputList)
     {

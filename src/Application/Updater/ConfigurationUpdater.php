@@ -4,6 +4,7 @@ namespace Yoanm\PhpUnitConfigManager\Application\Updater;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AbstractNodeUpdater;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AttributeUpdater;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\HeaderFooterHelper;
+use Yoanm\PhpUnitConfigManager\Application\Updater\Common\NodeUpdaterHelper;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Configuration;
 use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites;
@@ -11,14 +12,14 @@ use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites;
 class ConfigurationUpdater extends AbstractNodeUpdater
 {
     /**
-     * @param AttributeUpdater   $attributeUpdater
-     * @param TestSuitesUpdater  $testSuitesUpdater
-     * @param GroupsUpdater      $groupsUpdater
-     * @param FilterUpdater      $filterUpdater
-     * @param LoggingUpdater     $loggingUpdater
-     * @param ListenersUpdater   $listenersUpdater
-     * @param PhpUpdater         $phpUpdater
-     * @param HeaderFooterHelper $headerFooterHelper
+     * @param AttributeUpdater  $attributeUpdater
+     * @param TestSuitesUpdater $testSuitesUpdater
+     * @param GroupsUpdater     $groupsUpdater
+     * @param FilterUpdater     $filterUpdater
+     * @param LoggingUpdater    $loggingUpdater
+     * @param ListenersUpdater  $listenersUpdater
+     * @param PhpUpdater        $phpUpdater
+     * @param NodeUpdaterHelper $nodeUpdaterHelper
      */
     public function __construct(
         AttributeUpdater $attributeUpdater,
@@ -28,10 +29,10 @@ class ConfigurationUpdater extends AbstractNodeUpdater
         LoggingUpdater $loggingUpdater,
         ListenersUpdater $listenersUpdater,
         PhpUpdater $phpUpdater,
-        HeaderFooterHelper $headerFooterHelper
+        NodeUpdaterHelper $nodeUpdaterHelper
     ) {
         parent::__construct(
-            $headerFooterHelper,
+            $nodeUpdaterHelper,
             [
                 $testSuitesUpdater,
                 $groupsUpdater,
@@ -56,7 +57,11 @@ class ConfigurationUpdater extends AbstractNodeUpdater
     public function merge(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
     {
         return new Configuration(
-            $this->mergeItemList($baseItem->getItemList(), $newItem->getItemList()),
+            $this->getNodeUpdaterHelper()->mergeItemList(
+                $baseItem->getItemList(),
+                $newItem->getItemList(),
+                $this
+            ),
             $this->attributeUpdater->update(
                 $baseItem->getAttributeList(),
                 $newItem->getAttributeList()

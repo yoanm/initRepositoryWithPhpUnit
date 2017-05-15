@@ -12,7 +12,7 @@ class TestSuitesInputItemTransformer extends AbstractTransformer
     /**
      * @param array $inputList
      *
-     * @return array
+     * @return TestSuites|null
      */
     public function extract(array $inputList)
     {

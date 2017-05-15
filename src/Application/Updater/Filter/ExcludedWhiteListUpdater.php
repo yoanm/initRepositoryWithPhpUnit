@@ -4,6 +4,7 @@ namespace Yoanm\PhpUnitConfigManager\Application\Updater\Filter;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AbstractNodeUpdater;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AttributeUpdater;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\HeaderFooterHelper;
+use Yoanm\PhpUnitConfigManager\Application\Updater\Common\NodeUpdaterHelper;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Filter\ExcludedWhiteList;
 
@@ -15,14 +16,14 @@ class ExcludedWhiteListUpdater extends AbstractNodeUpdater
     /**
      * @param AttributeUpdater     $attributeUpdater
      * @param WhiteListItemUpdater $whiteListItemUpdater
-     * @param HeaderFooterHelper   $headerFooterHelper
+     * @param NodeUpdaterHelper    $nodeUpdaterHelper
      */
     public function __construct(
         AttributeUpdater $attributeUpdater,
         WhiteListItemUpdater $whiteListItemUpdater,
-        HeaderFooterHelper $headerFooterHelper
+        NodeUpdaterHelper $nodeUpdaterHelper
     ) {
-        parent::__construct($headerFooterHelper, [$whiteListItemUpdater]);
+        parent::__construct($nodeUpdaterHelper, [$whiteListItemUpdater]);
         $this->attributeUpdater = $attributeUpdater;
     }
 
@@ -35,7 +36,11 @@ class ExcludedWhiteListUpdater extends AbstractNodeUpdater
     public function merge(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
     {
         return new ExcludedWhiteList(
-            $this->mergeItemList($baseItem->getItemList(), $newItem->getItemList()),
+            $this->getNodeUpdaterHelper()->mergeItemList(
+                $baseItem->getItemList(),
+                $newItem->getItemList(),
+                $this
+            ),
             $this->attributeUpdater->update($baseItem->getAttributeList(), $newItem->getAttributeList())
         );
     }

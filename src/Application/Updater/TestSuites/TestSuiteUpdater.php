@@ -4,6 +4,7 @@ namespace Yoanm\PhpUnitConfigManager\Application\Updater\TestSuites;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AbstractNodeUpdater;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AttributeUpdater;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\HeaderFooterHelper;
+use Yoanm\PhpUnitConfigManager\Application\Updater\Common\NodeUpdaterHelper;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\PlainValueUpdater;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites\TestSuite;
@@ -20,16 +21,16 @@ class TestSuiteUpdater extends AbstractNodeUpdater
      * @param PlainValueUpdater            $plainValueUpdater
      * @param TestSuiteItemUpdater         $testSuiteItemUpdater
      * @param ExcludedTestSuiteItemUpdater $excludedTestSuiteItemUpdater
-     * @param HeaderFooterHelper           $headerFooterHelper
+     * @param NodeUpdaterHelper            $nodeUpdaterHelper
      */
     public function __construct(
         AttributeUpdater $attributeUpdater,
         PlainValueUpdater $plainValueUpdater,
         TestSuiteItemUpdater $testSuiteItemUpdater,
         ExcludedTestSuiteItemUpdater $excludedTestSuiteItemUpdater,
-        HeaderFooterHelper $headerFooterHelper
+        NodeUpdaterHelper $nodeUpdaterHelper
     ) {
-        parent::__construct($headerFooterHelper, [$testSuiteItemUpdater, $excludedTestSuiteItemUpdater]);
+        parent::__construct($nodeUpdaterHelper, [$testSuiteItemUpdater, $excludedTestSuiteItemUpdater]);
         $this->plainValueUpdater = $plainValueUpdater;
         $this->attributeUpdater = $attributeUpdater;
     }
@@ -44,7 +45,11 @@ class TestSuiteUpdater extends AbstractNodeUpdater
     {
         return new TestSuite(
             $baseItem->getName(),
-            $this->mergeItemList($baseItem->getItemList(), $newItem->getItemList()),
+            $this->getNodeUpdaterHelper()->mergeItemList(
+                $baseItem->getItemList(),
+                $newItem->getItemList(),
+                $this
+            ),
             $this->attributeUpdater->update($baseItem->getAttributeList(), $newItem->getAttributeList())
         );
     }

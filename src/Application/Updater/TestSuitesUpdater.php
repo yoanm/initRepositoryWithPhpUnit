@@ -3,6 +3,7 @@ namespace Yoanm\PhpUnitConfigManager\Application\Updater;
 
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AbstractNodeUpdater;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\HeaderFooterHelper;
+use Yoanm\PhpUnitConfigManager\Application\Updater\Common\NodeUpdaterHelper;
 use Yoanm\PhpUnitConfigManager\Application\Updater\TestSuites\TestSuiteUpdater;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites;
@@ -10,14 +11,14 @@ use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites;
 class TestSuitesUpdater extends AbstractNodeUpdater
 {
     /**
-     * @param TestSuiteUpdater   $testSuiteUpdater
-     * @param HeaderFooterHelper $headerFooterHelper
+     * @param TestSuiteUpdater  $testSuiteUpdater
+     * @param NodeUpdaterHelper $nodeUpdaterHelper
      */
     public function __construct(
         TestSuiteUpdater $testSuiteUpdater,
-        HeaderFooterHelper $headerFooterHelper
+        NodeUpdaterHelper $nodeUpdaterHelper
     ) {
-        parent::__construct($headerFooterHelper, [$testSuiteUpdater]);
+        parent::__construct($nodeUpdaterHelper, [$testSuiteUpdater]);
     }
 
     /**
@@ -28,7 +29,13 @@ class TestSuitesUpdater extends AbstractNodeUpdater
      */
     public function merge(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
     {
-        return new TestSuites($this->mergeItemList($baseItem->getItemList(), $newItem->getItemList()));
+        return new TestSuites(
+            $this->getNodeUpdaterHelper()->mergeItemList(
+                $baseItem->getItemList(),
+                $newItem->getItemList(),
+                $this
+            )
+        );
     }
 
     /**

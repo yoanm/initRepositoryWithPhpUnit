@@ -10,7 +10,7 @@ class PhpInputItemTransformer extends AbstractTransformer
     /**
      * @param array $inputList
      *
-     * @return array
+     * @return Php|null
      */
     public function extract(array $inputList)
     {

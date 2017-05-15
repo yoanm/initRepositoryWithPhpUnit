@@ -3,6 +3,7 @@ namespace Yoanm\PhpUnitConfigManager\Application\Updater;
 
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AbstractNodeUpdater;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\HeaderFooterHelper;
+use Yoanm\PhpUnitConfigManager\Application\Updater\Common\NodeUpdaterHelper;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Php\PhpItemUpdater;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Filter;
@@ -11,14 +12,14 @@ use Yoanm\PhpUnitConfigManager\Domain\Model\Php;
 class PhpUpdater extends AbstractNodeUpdater
 {
     /**
-     * @param PhpItemUpdater     $phpItemUpdater
-     * @param HeaderFooterHelper $headerFooterHelper
+     * @param PhpItemUpdater    $phpItemUpdater
+     * @param NodeUpdaterHelper $nodeUpdaterHelper
      */
     public function __construct(
         PhpItemUpdater $phpItemUpdater,
-        HeaderFooterHelper $headerFooterHelper
+        NodeUpdaterHelper $nodeUpdaterHelper
     ) {
-        parent::__construct($headerFooterHelper, [$phpItemUpdater]);
+        parent::__construct($nodeUpdaterHelper, [$phpItemUpdater]);
     }
 
     /**
@@ -29,7 +30,13 @@ class PhpUpdater extends AbstractNodeUpdater
      */
     public function merge(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
     {
-        return new Php($this->mergeItemList($baseItem->getItemList(), $newItem->getItemList()));
+        return new Php(
+            $this->getNodeUpdaterHelper()->mergeItemList(
+                $baseItem->getItemList(),
+                $newItem->getItemList(),
+                $this
+            )
+        );
     }
 
     /**

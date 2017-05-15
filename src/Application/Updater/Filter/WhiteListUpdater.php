@@ -5,6 +5,7 @@ use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AbstractNodeUpdater;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AttributeUpdater;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\Block;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\HeaderFooterHelper;
+use Yoanm\PhpUnitConfigManager\Application\Updater\Common\NodeUpdaterHelper;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\UnmanagedNode;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Filter\ExcludedWhiteList;
@@ -19,15 +20,15 @@ class WhiteListUpdater extends AbstractNodeUpdater
      * @param AttributeUpdater         $attributeUpdater
      * @param WhiteListItemUpdater     $whiteListItemUpdater
      * @param ExcludedWhiteListUpdater $excludedWhiteListUpdater
-     * @param HeaderFooterHelper       $headerFooterHelper
+     * @param NodeUpdaterHelper        $nodeUpdaterHelper
      */
     public function __construct(
         AttributeUpdater $attributeUpdater,
         WhiteListItemUpdater $whiteListItemUpdater,
         ExcludedWhiteListUpdater $excludedWhiteListUpdater,
-        HeaderFooterHelper $headerFooterHelper
+        NodeUpdaterHelper $nodeUpdaterHelper
     ) {
-        parent::__construct($headerFooterHelper, [$whiteListItemUpdater, $excludedWhiteListUpdater]);
+        parent::__construct($nodeUpdaterHelper, [$whiteListItemUpdater, $excludedWhiteListUpdater]);
         $this->attributeUpdater = $attributeUpdater;
     }
 
@@ -39,7 +40,11 @@ class WhiteListUpdater extends AbstractNodeUpdater
      */
     public function merge(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
     {
-        $itemList = $this->mergeItemList($baseItem->getItemList(), $newItem->getItemList());
+        $itemList = $this->getNodeUpdaterHelper()->mergeItemList(
+            $baseItem->getItemList(),
+            $newItem->getItemList(),
+            $this
+        );
 
         return new WhiteList(
             $this->reorder($itemList),
@@ -70,63 +75,89 @@ class WhiteListUpdater extends AbstractNodeUpdater
      */
     private function reorder(array $itemList)
     {
+        $groupedItemList = $this->getNodeUpdaterHelper()->groupItemList($itemList, $this);
         // Try to move excluded node at end
-        $groupedItemList = $this->groupItemList($itemList);
-        list($newItemList, $excludedNodeBlock) = $this->extractItemListAndExcluded($groupedItemList);
+        list($blockList, $excludedNodeBlock) = $this->extractItemListAndExcluded($groupedItemList);
         if ($excludedNodeBlock) {
-            $newItemList = $this->appendExcludedNodeBlock($newItemList, $excludedNodeBlock);
+            return $this->recomputeBlockList(
+                $this->appendExcludedNodeBlock($blockList, $excludedNodeBlock)
+            );
         }
 
-        return $newItemList;
+        return $itemList;
     }
 
     /**
-     * @param array $newItemList
-     * @param Block $excludedNodeBlock
-     *
-     * @return ConfigurationItemInterface[]
-     */
-    private function appendExcludedNodeBlock(array $newItemList, Block $excludedNodeBlock)
-    {
-        // 1 - Remove trailing unmanaged node (spaces and comments)
-        $trailingNonBlockNodeList = [];
-        while ($node = array_pop($newItemList)) {
-            if ($node instanceof UnmanagedNode) {
-                $trailingNonBlockNodeList[] = $node;
-            } else {
-                $newItemList[] = $node;
-                break;
-            }
-        }
-        // 2 - Append node
-        $newItemList = $this->mergeBlock($excludedNodeBlock, $newItemList);
-        // 3 - Re append previously removed trailing non block objects
-        foreach (array_reverse($trailingNonBlockNodeList) as $trailingNonBlockNode) {
-            $newItemList[] = $trailingNonBlockNode;
-        }
-        return $newItemList;
-    }
-
-    /**
-     * @param Block[] $groupedItemList
+     * @param \DOMNode[]|Block[] $groupedItemList
      *
      * @return array
      */
     private function extractItemListAndExcluded(array $groupedItemList)
     {
         $excludedNodeBlock = null;
-        $newItemList = [];
+        $blockList = [];
         foreach ($groupedItemList as $block) {
-            if ($block instanceof Block) {
-                if ($block->getItem() instanceof ExcludedWhiteList) {
-                    $excludedNodeBlock = $block;
-                } else {
-                    $newItemList = $this->mergeBlock($block, $newItemList);
-                }
+            if ($block instanceof Block && $block->getItem() instanceof ExcludedWhiteList) {
+                $excludedNodeBlock = $block;
             } else {
-                $newItemList[] = $block;
+                $blockList[] = $block;
             }
         }
-        return array($newItemList, $excludedNodeBlock);
+
+        return [
+            $blockList,
+            $excludedNodeBlock,
+        ];
+    }
+
+    /**
+     * @param \DOMNode[]|Block[] $blockList
+     * @param Block              $excludedNodeBlock
+     *
+     * @return \DOMNode[]|Block[]
+     */
+    private function appendExcludedNodeBlock(array $blockList, Block $excludedNodeBlock)
+    {
+        // 1 - Remove trailing unmanaged node (spaces and comments)
+        $trailingNonBlockNodeList = [];
+        while ($node = array_pop($blockList)) {
+            if (!$node instanceof Block) {
+                $trailingNonBlockNodeList[] = $node;
+            } else {
+                $blockList[] = $node;
+                break;
+            }
+        }
+        // 2 - Append node
+        $blockList[] = $excludedNodeBlock;
+        // 3 - Re append previously removed trailing non block objects
+        foreach (array_reverse($trailingNonBlockNodeList) as $trailingNonBlockNode) {
+            $blockList[] = $trailingNonBlockNode;
+        }
+
+        return $blockList;
+    }
+
+    /**
+     * @param \DOMNode[]|Block[] $blockList
+     *
+     * @return \DOMNode[]
+     */
+    private function recomputeBlockList(array $blockList)
+    {
+        $list = [];
+        foreach ($blockList as $block) {
+            if ($block instanceof Block) {
+                $list = $this->getNodeUpdaterHelper()->mergeBlock(
+                    $block,
+                    $list,
+                    $this
+                );
+            } else {
+                $list[] = $block;
+            }
+        }
+
+        return $list;
     }
 }

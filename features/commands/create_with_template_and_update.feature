@@ -116,8 +116,8 @@ Feature: As user
           <directory>src</directory><!-- INLINE_COMMENT - directory -->
           <file>src.php</file>
           <!-- INLINE_COMMENT_ALONE - whitelist -->
-          <directory>path2</directory>
           <file>path1</file>
+          <directory>path2</directory>
           <!-- BLOCK_COMMENT - BEGIN exclude -->
           <exclude><!-- INLINE_COMMENT - exclude -->
             <file>path/to/file.php</file><!-- INLINE_COMMENT - file -->
