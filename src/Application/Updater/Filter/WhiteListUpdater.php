@@ -3,11 +3,9 @@ namespace Yoanm\PhpUnitConfigManager\Application\Updater\Filter;
 
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AbstractNodeUpdater;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AttributeUpdater;
-use Yoanm\PhpUnitConfigManager\Application\Updater\Common\Block;
-use Yoanm\PhpUnitConfigManager\Application\Updater\Common\HeaderFooterHelper;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\NodeUpdaterHelper;
+use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Block;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
-use Yoanm\PhpUnitConfigManager\Domain\Model\Common\UnmanagedNode;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Filter\ExcludedWhiteList;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Filter\WhiteList;
 

@@ -3,7 +3,7 @@ namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common;
 
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\FilesystemItem;
 
-class FilesystemItemNormalizer extends BaseNodeWithAttributeNormalizer implements
+class FilesystemItemNormalizer extends NodeWithAttributeNormalizer implements
     DenormalizerInterface,
     NormalizerInterface
 {

@@ -1,14 +1,14 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer;
 
-use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\BaseNodeNormalizer;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DelegatedNodeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\UnmanagedNodeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Filter\WhiteListNormalizer;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Filter;
 
-class FilterNormalizer extends BaseNodeNormalizer implements DenormalizerInterface, NormalizerInterface
+class FilterNormalizer extends DelegatedNodeNormalizer implements DenormalizerInterface, NormalizerInterface
 {
     const NODE_NAME = 'filter';
 

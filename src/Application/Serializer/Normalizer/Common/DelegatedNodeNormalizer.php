@@ -1,7 +1,7 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common;
 
-class BaseNodeNormalizer
+class DelegatedNodeNormalizer
 {
     /** @var NormalizerInterface[] */
     private $normalizerDelegateList = [];

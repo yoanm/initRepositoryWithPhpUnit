@@ -1,11 +1,11 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer;
 
-use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\BaseNodeNormalizer;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DelegatedNodeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\UnmanagedNodeNormalizer;
 use Yoanm\PhpUnitConfigManager\Domain\Model\ConfigurationFile;
 
-class ConfigurationFileNormalizer extends BaseNodeNormalizer
+class ConfigurationFileNormalizer extends DelegatedNodeNormalizer
 {
     public function __construct(
         ConfigurationNormalizer $configurationNormalizer,

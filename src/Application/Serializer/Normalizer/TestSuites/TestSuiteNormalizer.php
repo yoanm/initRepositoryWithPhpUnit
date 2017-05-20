@@ -2,7 +2,7 @@
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\TestSuites;
 
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\AttributeNormalizer;
-use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\BaseNodeWithAttributeNormalizer;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeWithAttributeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\UnmanagedNodeNormalizer;
@@ -10,7 +10,7 @@ use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\TestSuites\Test
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Attribute;
 use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites\TestSuite;
 
-class TestSuiteNormalizer extends BaseNodeWithAttributeNormalizer implements DenormalizerInterface, NormalizerInterface
+class TestSuiteNormalizer extends NodeWithAttributeNormalizer implements DenormalizerInterface, NormalizerInterface
 {
     const NODE_NAME = 'testsuite';
 

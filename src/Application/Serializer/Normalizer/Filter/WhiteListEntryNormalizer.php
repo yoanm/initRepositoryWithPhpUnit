@@ -2,7 +2,7 @@
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Filter;
 
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\AttributeNormalizer;
-use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\BaseNodeWithAttributeNormalizer;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeWithAttributeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\FilesystemItemNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NormalizerInterface;
@@ -10,7 +10,7 @@ use Yoanm\PhpUnitConfigManager\Domain\Model\Common\FilesystemItem;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Filter\ExcludedWhiteList;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Filter\WhiteListItem;
 
-class WhiteListEntryNormalizer extends BaseNodeWithAttributeNormalizer implements
+class WhiteListEntryNormalizer extends NodeWithAttributeNormalizer implements
     DenormalizerInterface,
     NormalizerInterface
 {

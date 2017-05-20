@@ -1,7 +1,7 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer;
 
-use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\BaseNodeNormalizer;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DelegatedNodeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\UnmanagedNodeNormalizer;
@@ -9,7 +9,7 @@ use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Php\PhpItemNorm
 use Yoanm\PhpUnitConfigManager\Domain\Model\Php;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Php\PhpItem;
 
-class PhpNormalizer extends BaseNodeNormalizer implements DenormalizerInterface, NormalizerInterface
+class PhpNormalizer extends DelegatedNodeNormalizer implements DenormalizerInterface, NormalizerInterface
 {
     const NODE_NAME = 'php';
 

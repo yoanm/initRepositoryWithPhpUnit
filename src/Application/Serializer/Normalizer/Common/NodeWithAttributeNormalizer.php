@@ -3,7 +3,7 @@ namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common;
 
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Attribute;
 
-class BaseNodeWithAttributeNormalizer extends BaseNodeNormalizer
+class NodeWithAttributeNormalizer extends DelegatedNodeNormalizer
 {
     /** @var AttributeNormalizer */
     private $attributeNormalizer;

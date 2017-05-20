@@ -2,7 +2,7 @@
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer;
 
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\AttributeNormalizer;
-use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\BaseNodeWithAttributeNormalizer;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeWithAttributeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\UnmanagedNodeNormalizer;
@@ -14,7 +14,7 @@ use Yoanm\PhpUnitConfigManager\Domain\Model\Logging;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Php;
 use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites;
 
-class ConfigurationNormalizer extends BaseNodeWithAttributeNormalizer implements
+class ConfigurationNormalizer extends NodeWithAttributeNormalizer implements
     DenormalizerInterface,
     NormalizerInterface
 {

@@ -1,14 +1,14 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer;
 
-use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\BaseNodeNormalizer;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DelegatedNodeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\UnmanagedNodeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Listeners\ListenerNormalizer;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Listeners;
 
-class ListenersNormalizer extends BaseNodeNormalizer implements DenormalizerInterface, NormalizerInterface
+class ListenersNormalizer extends DelegatedNodeNormalizer implements DenormalizerInterface, NormalizerInterface
 {
     const NODE_NAME = 'listeners';
 

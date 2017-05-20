@@ -1,13 +1,13 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Groups;
 
-use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\BaseNodeNormalizer;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DelegatedNodeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\UnmanagedNodeNormalizer;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Groups\GroupInclusion;
 
-class GroupInclusionNormalizer extends BaseNodeNormalizer implements DenormalizerInterface, NormalizerInterface
+class GroupInclusionNormalizer extends DelegatedNodeNormalizer implements DenormalizerInterface, NormalizerInterface
 {
     const INCLUDED_NODE_NAME = 'include';
     const EXCLUDED_NODE_NAME = 'exclude';

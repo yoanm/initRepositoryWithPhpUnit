@@ -2,13 +2,13 @@
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Filter;
 
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\AttributeNormalizer;
-use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\BaseNodeWithAttributeNormalizer;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeWithAttributeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\UnmanagedNodeNormalizer;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Filter\WhiteList;
 
-class WhiteListNormalizer extends BaseNodeWithAttributeNormalizer implements DenormalizerInterface, NormalizerInterface
+class WhiteListNormalizer extends NodeWithAttributeNormalizer implements DenormalizerInterface, NormalizerInterface
 {
     const NODE_NAME = 'whitelist';
     const EXCLUDED_ITEM_LIST_NODE_NAME = 'exclude';
