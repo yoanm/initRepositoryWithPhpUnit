@@ -57,7 +57,7 @@ class GroupInclusionNormalizer extends NodeNormalizer implements DenormalizerInt
     public function denormalize(\DOMNode $node)
     {
         return new GroupInclusion(
-            $this->getHelper()->denormalizeChildNode($node, $this),
+            $this->denormalizeChildNode($node),
             self::EXCLUDED_NODE_NAME === $node->nodeName
         );
     }

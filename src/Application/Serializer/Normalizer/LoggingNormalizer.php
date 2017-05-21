@@ -54,7 +54,7 @@ class LoggingNormalizer extends NodeNormalizer implements DenormalizerInterface,
      */
     public function denormalize(\DOMNode $node)
     {
-        return new Logging($this->getHelper()->denormalizeChildNode($node, $this));
+        return new Logging($this->denormalizeChildNode($node));
     }
 
     /**

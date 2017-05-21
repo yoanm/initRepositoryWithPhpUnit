@@ -81,7 +81,7 @@ class TestSuiteNormalizer extends NodeWithAttributeNormalizer implements Denorma
 
         return new TestSuite(
             $testSuiteName,
-            $this->getHelper()->denormalizeChildNode($node, $this),
+            $this->denormalizeChildNode($node),
             $attributeList
         );
     }

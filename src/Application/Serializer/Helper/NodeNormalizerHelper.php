@@ -21,18 +21,18 @@ class NodeNormalizerHelper
     }
 
     /**
-     * @param \DomNode                         $node
+     * @param \DOMNode[]                       $nodeList
      * @param DelegatedNodeNormalizerInterface $delegatedNodeNormalizer
      *
      * @return Block[]
      *
      * @throws \Exception
      */
-    public function denormalizeChildNode(\DomNode $node, DelegatedNodeNormalizerInterface $delegatedNodeNormalizer)
+    public function denormalizeChildNodeList(array $nodeList, DelegatedNodeNormalizerInterface $delegatedNodeNormalizer)
     {
         $itemList = [];
-        foreach ($this->extractChildNodeList($node) as $itemNode) {
-            $itemList[] = $delegatedNodeNormalizer->getDenormalizer($itemNode)->denormalize($itemNode);
+        foreach ($nodeList as $node) {
+            $itemList[] = $delegatedNodeNormalizer->getDenormalizer($node)->denormalize($node);
         }
 
         return $this->blockListCreator->create($itemList);
@@ -56,22 +56,6 @@ class NodeNormalizerHelper
         }
 
         return $list;
-    }
-
-    /**
-     * @param \DOMNode $domNode
-     *
-     * @return \DOMNode[]
-     */
-    public function extractChildNodeList(\DOMNode $domNode)
-    {
-        $domNodeItemList = [];
-        $itemCount = $domNode->childNodes->length;
-        for ($counter = 0; $counter < $itemCount; $counter++) {
-            $domNodeItemList[] = $domNode->childNodes->item($counter);
-        }
-
-        return $domNodeItemList;
     }
 
     /**

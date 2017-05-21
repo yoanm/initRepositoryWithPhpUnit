@@ -59,7 +59,7 @@ class ConfigurationFileNormalizer extends NodeNormalizer
         return new ConfigurationFile(
             $document->xmlVersion,
             $document->encoding,
-            $this->getHelper()->denormalizeChildNode($document, $this)
+            $this->denormalizeChildNode($document)
         );
     }
 
@@ -83,7 +83,7 @@ class ConfigurationFileNormalizer extends NodeNormalizer
                 foreach ($normalizedNode->getNodeAttributeNSList() as $attributeNS) {
                     $node->setAttributeNS(
                         $attributeNS->getNamespaceURI(),
-                        $attributeNS->getName(),
+                        $attributeNS->getQualifiedName(),
                         $attributeNS->getValue()
                     );
                 }

@@ -62,7 +62,7 @@ class ExcludedWhiteListNormalizer extends NodeWithAttributeNormalizer implements
     {
         return new ExcludedWhiteList(
             $this->extractAttributes($node),
-            $this->getHelper()->denormalizeChildNode($node, $this)
+            $this->denormalizeChildNode($node)
         );
     }
 

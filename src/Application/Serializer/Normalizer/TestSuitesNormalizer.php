@@ -55,7 +55,7 @@ class TestSuitesNormalizer extends NodeNormalizer implements DenormalizerInterfa
      */
     public function denormalize(\DomNode $node)
     {
-        return new TestSuites($this->getHelper()->denormalizeChildNode($node, $this));
+        return new TestSuites($this->denormalizeChildNode($node));
     }
 
     /**

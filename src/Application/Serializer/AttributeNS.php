@@ -3,7 +3,7 @@ namespace Yoanm\PhpUnitConfigManager\Application\Serializer;
 
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Attribute;
 
-class AttributeNS extends Attribute
+class AttributeNS
 {
     /** @var string */
     private $namespaceURI;
@@ -19,8 +19,25 @@ class AttributeNS extends Attribute
      */
     public function __construct($namespaceURI, $qualifiedName, $value)
     {
-        parent::__construct($qualifiedName, $value);
         $this->namespaceURI = $namespaceURI;
+        $this->qualifiedName = $qualifiedName;
+        $this->value = $value;
+    }
+
+    /**
+     * @return string
+     */
+    public function getQualifiedName()
+    {
+        return $this->qualifiedName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getValue()
+    {
+        return $this->value;
     }
 
     /**

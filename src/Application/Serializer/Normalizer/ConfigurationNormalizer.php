@@ -87,7 +87,7 @@ class ConfigurationNormalizer extends NodeWithAttributeNormalizer implements
     {
         return new Configuration(
             $this->extractAttributes($node),
-            $this->getHelper()->denormalizeChildNode($node, $this)
+            $this->denormalizeChildNode($node)
         );
     }
 

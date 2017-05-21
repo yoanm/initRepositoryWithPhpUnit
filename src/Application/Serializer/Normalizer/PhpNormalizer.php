@@ -55,7 +55,7 @@ class PhpNormalizer extends NodeNormalizer implements DenormalizerInterface, Nor
      */
     public function denormalize(\DOMNode $node)
     {
-        return new Php($this->getHelper()->denormalizeChildNode($node, $this));
+        return new Php($this->denormalizeChildNode($node));
     }
 
     /**

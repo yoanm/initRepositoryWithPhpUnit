@@ -71,9 +71,8 @@ class ListenerNormalizer extends NodeWithAttributeNormalizer implements Denormal
      */
     public function denormalize(\DOMNode $node)
     {
-        $attributeList = $this->extractAttributes($node);
         $class = $file = null;
-        foreach ($attributeList as $attribute) {
+        foreach ($this->extractAttributes($node) as $attribute) {
             if (self::CLASS_ATTRIBUTE === $attribute->getName()) {
                 $class = $attribute->getValue();
             } elseif (self::FILE_ATTRIBUTE === $attribute->getName()) {
@@ -82,7 +81,7 @@ class ListenerNormalizer extends NodeWithAttributeNormalizer implements Denormal
         }
 
         $itemList = [];
-        foreach ($this->getHelper()->extractChildNodeList($node) as $childNode) {
+        foreach ($this->extractChildNodeList($node) as $childNode) {
             $itemList[] = new Block($this->unmanagedNodeNormalizer->denormalize($childNode));
         }
 

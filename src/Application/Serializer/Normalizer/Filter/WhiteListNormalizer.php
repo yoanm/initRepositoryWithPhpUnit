@@ -63,7 +63,7 @@ class WhiteListNormalizer extends NodeWithAttributeNormalizer implements Denorma
     {
         return new WhiteList(
             $this->extractAttributes($node),
-            $this->getHelper()->denormalizeChildNode($node, $this)
+            $this->denormalizeChildNode($node)
         );
     }
 

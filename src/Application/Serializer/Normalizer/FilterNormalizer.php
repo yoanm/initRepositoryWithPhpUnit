@@ -54,7 +54,7 @@ class FilterNormalizer extends NodeNormalizer implements DenormalizerInterface, 
      */
     public function denormalize(\DOMNode $node)
     {
-        return new Filter($this->getHelper()->denormalizeChildNode($node, $this));
+        return new Filter($this->denormalizeChildNode($node));
     }
 
     /**

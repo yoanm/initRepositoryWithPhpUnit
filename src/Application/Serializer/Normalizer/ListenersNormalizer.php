@@ -54,7 +54,7 @@ class ListenersNormalizer extends NodeNormalizer implements DenormalizerInterfac
      */
     public function denormalize(\DOMNode $node)
     {
-        return new Listeners($this->getHelper()->denormalizeChildNode($node, $this));
+        return new Listeners($this->denormalizeChildNode($node));
     }
 
     /**

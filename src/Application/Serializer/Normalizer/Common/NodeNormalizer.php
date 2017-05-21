@@ -80,4 +80,35 @@ class NodeNormalizer implements DelegatedNodeNormalizerInterface
             $domNode->nodeValue
         ));
     }
+
+    /**
+     * @param \DomNode $node
+     *
+     * @return Block[]
+     *
+     * @throws \Exception
+     */
+    protected function denormalizeChildNode(\DomNode $node)
+    {
+        return $this->getHelper()->denormalizeChildNodeList(
+            $this->extractChildNodeList($node),
+            $this
+        );
+    }
+
+    /**
+     * @param \DOMNode $domNode
+     *
+     * @return \DOMNode[]
+     */
+    protected function extractChildNodeList(\DOMNode $domNode)
+    {
+        $domNodeItemList = [];
+        $itemCount = $domNode->childNodes->length;
+        for ($counter = 0; $counter < $itemCount; $counter++) {
+            $domNodeItemList[] = $domNode->childNodes->item($counter);
+        }
+
+        return $domNodeItemList;
+    }
 }
