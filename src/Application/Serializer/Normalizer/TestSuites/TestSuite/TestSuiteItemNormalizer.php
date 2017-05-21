@@ -2,6 +2,7 @@
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\TestSuites\TestSuite;
 
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Helper\NodeNormalizerHelper;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\NormalizedNode;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\AttributeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\FilesystemItemNormalizer;
@@ -34,13 +35,12 @@ class TestSuiteItemNormalizer extends NodeWithAttributeNormalizer implements
 
     /**
      * @param TestSuiteItem $item
-     * @param \DOMDocument  $document
      *
-     * @return \DomElement
+     * @return NormalizedNode
      */
-    public function normalize($item, \DOMDocument $document)
+    public function normalize($item)
     {
-        return $this->filesystemItemNormalizer->normalize($item, $document);
+        return $this->filesystemItemNormalizer->normalize($item);
     }
 
     /**

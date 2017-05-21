@@ -1,6 +1,7 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer;
 
+use Yoanm\PhpUnitConfigManager\Application\Serializer\NormalizedNode;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Helper\NodeNormalizerHelper;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\UnmanagedNodeNormalizer;
@@ -31,7 +32,11 @@ class ConfigurationFileNormalizer extends NodeNormalizer
     {
         $document = new \DOMDocument($configurationFile->getVersion(), $configurationFile->getEncoding());
 
-        $this->getHelper()->normalizeAndAppendBlockList($document, $configurationFile, $document, $this);
+        $this->appendNormalizedNodeList(
+            $document,
+            $document,
+            $this->getHelper()->normalizeBlockList($configurationFile, $this)
+        );
 
         return $document;
     }
@@ -56,5 +61,41 @@ class ConfigurationFileNormalizer extends NodeNormalizer
             $document->encoding,
             $this->getHelper()->denormalizeChildNode($document, $this)
         );
+    }
+
+    /**
+     * @param \DOMNode         $rootNode
+     * @param NormalizedNode[] $normalizedNodeList
+     */
+    private function appendNormalizedNodeList(\DOMDocument $rootDocument, \DOMNode $rootNode, array $normalizedNodeList)
+    {
+        foreach ($normalizedNodeList as $normalizedNode) {
+            if ($normalizedNode->getNodeContent() instanceof \DOMNode) {
+                $rootNode->appendChild(
+                    $rootDocument->importNode($normalizedNode->getNodeContent(), true)
+                );
+            } else {
+                $node = $rootDocument->createElement(
+                    $normalizedNode->getNodeName(),
+                    $normalizedNode->getNodeContent()
+                );
+
+                foreach ($normalizedNode->getNodeAttributeNSList() as $attributeNS) {
+                    $node->setAttributeNS(
+                        $attributeNS->getNamespaceURI(),
+                        $attributeNS->getName(),
+                        $attributeNS->getValue()
+                    );
+                }
+
+                foreach ($normalizedNode->getNodeAttributeList() as $attribute) {
+                    $node->setAttribute($attribute->getName(), $attribute->getValue());
+                }
+
+                $this->appendNormalizedNodeList($rootDocument, $node, $normalizedNode->getNodeChildList());
+
+                $rootNode->appendChild($node);
+            }
+        }
     }
 }

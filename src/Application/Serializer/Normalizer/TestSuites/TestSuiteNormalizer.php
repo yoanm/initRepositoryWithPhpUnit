@@ -2,6 +2,7 @@
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\TestSuites;
 
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Helper\NodeNormalizerHelper;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\NormalizedNode;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\AttributeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeWithAttributeNormalizer;
@@ -44,24 +45,21 @@ class TestSuiteNormalizer extends NodeWithAttributeNormalizer implements Denorma
     }
 
     /**
-     * @param TestSuite    $testSuite
-     * @param \DOMDocument $document
+     * @param TestSuite $testSuite
      *
      * @return \DomElement
      */
-    public function normalize($testSuite, \DOMDocument $document)
+    public function normalize($testSuite)
     {
-        $domNode = $this->createElementNode($document, self::NODE_NAME);
-
         // Append attributes
         $attributeList = $testSuite->getAttributeList();
         $attributeList[] = new Attribute(self::NAME_ATTRIBUTE, $testSuite->getName());
 
-        $this->appendAttributes($domNode, $attributeList, $document);
-
-        $this->getHelper()->normalizeAndAppendBlockList($domNode, $testSuite, $document, $this);
-
-        return $domNode;
+        return new NormalizedNode(
+            $attributeList,
+            $this->getHelper()->normalizeBlockList($testSuite, $this),
+            self::NODE_NAME
+        );
     }
 
     /**

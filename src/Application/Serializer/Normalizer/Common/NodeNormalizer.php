@@ -80,16 +80,4 @@ class NodeNormalizer implements DelegatedNodeNormalizerInterface
             $domNode->nodeValue
         ));
     }
-
-    /**
-     * @param \DOMDocument $document
-     * @param string       $name
-     * @param string|null  $value
-     *
-     * @return \DOMElement
-     */
-    protected function createElementNode(\DOMDocument $document, $name, $value = null)
-    {
-        return $document->createElement($name, $value);
-    }
 }

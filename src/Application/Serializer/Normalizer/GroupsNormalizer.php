@@ -1,6 +1,7 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer;
 
+use Yoanm\PhpUnitConfigManager\Application\Serializer\NormalizedNode;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Helper\NodeNormalizerHelper;
@@ -33,18 +34,17 @@ class GroupsNormalizer extends NodeNormalizer implements DenormalizerInterface, 
     }
 
     /**
-     * @param Groups       $groups
-     * @param \DOMDocument $document
+     * @param Groups $groups
      *
-     * @return \DOMElement
+     * @return NormalizedNode
      */
-    public function normalize($groups, \DOMDocument $document)
+    public function normalize($groups)
     {
-        $domNode = $this->createElementNode($document, self::NODE_NAME);
-
-        $this->getHelper()->normalizeAndAppendBlockList($domNode, $groups, $document, $this);
-
-        return $domNode;
+        return new NormalizedNode(
+            [],
+            $this->getHelper()->normalizeBlockList($groups, $this),
+            self::NODE_NAME
+        );
     }
 
     /**

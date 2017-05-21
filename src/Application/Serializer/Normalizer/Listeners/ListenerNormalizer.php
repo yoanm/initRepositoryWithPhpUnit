@@ -2,6 +2,7 @@
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Listeners;
 
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Helper\NodeNormalizerHelper;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\NormalizedNode;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\AttributeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeWithAttributeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
@@ -35,12 +36,11 @@ class ListenerNormalizer extends NodeWithAttributeNormalizer implements Denormal
     }
 
     /**
-     * @param Listener     $listener
-     * @param \DOMDocument $document
+     * @param Listener $listener
      *
-     * @return \DOMElement
+     * @return NormalizedNode
      */
-    public function normalize($listener, \DOMDocument $document)
+    public function normalize($listener)
     {
         $attributeList = [];
         if (null !== $listener->getClass()) {
@@ -50,17 +50,18 @@ class ListenerNormalizer extends NodeWithAttributeNormalizer implements Denormal
             $attributeList[] = new Attribute(self::FILE_ATTRIBUTE, $listener->getFile());
         }
 
-        $domNode = $this->createElementNode($document, self::NODE_NAME);
+        $blockNormalizer = $this->unmanagedNodeNormalizer;
 
-        $this->appendAttributes($domNode, $attributeList, $document);
-
-        foreach ($listener->getBlockList() as $item) {
-            $domNode->appendChild(
-                $this->unmanagedNodeNormalizer->normalize($item->getItem(), $document)
-            );
-        }
-
-        return $domNode;
+        return new NormalizedNode(
+            $attributeList,
+            array_map(
+                function (Block $block) use ($blockNormalizer) {
+                    return $blockNormalizer->normalize($block->getItem());
+                },
+                $listener->getBlockList()
+            ),
+            self::NODE_NAME
+        );
     }
 
     /**

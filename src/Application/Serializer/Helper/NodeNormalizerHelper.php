@@ -2,6 +2,7 @@
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Helper;
 
 use Yoanm\PhpUnitConfigManager\Application\Creator\BlockListCreator;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\NormalizedNode;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DelegatedNodeNormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Block;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Node;
@@ -38,22 +39,23 @@ class NodeNormalizerHelper
     }
 
     /**
-     * @param \DOMNode                         $domNode
      * @param Node                             $configurationNode
-     * @param \DOMDocument                     $document
      * @param DelegatedNodeNormalizerInterface $delegatedNodeNormalizer
+     *
+     * @return NormalizedNode[]
      */
-    public function normalizeAndAppendBlockList(
-        \DOMNode $domNode,
+    public function normalizeBlockList(
         Node $configurationNode,
-        \DOMDocument $document,
         DelegatedNodeNormalizerInterface $delegatedNodeNormalizer
     ) {
+        $list = [];
         foreach ($configurationNode->getBlockList() as $block) {
-            foreach ($this->normalizeBlock($document, $block, $delegatedNodeNormalizer) as $childNode) {
-                $domNode->appendChild($childNode);
+            foreach ($this->normalizeBlock($block, $delegatedNodeNormalizer) as $childNode) {
+                $list[] = $childNode;
             }
         }
+
+        return $list;
     }
 
     /**
@@ -73,29 +75,24 @@ class NodeNormalizerHelper
     }
 
     /**
-     * @param \DOMDocument                     $document
      * @param Block                            $block
      * @param DelegatedNodeNormalizerInterface $delegatedNodeNormalizer
      *
-     * @return \DOMNode
+     * @return NormalizedNode[]
      */
     protected function normalizeBlock(
-        \DOMDocument $document,
         Block $block,
         DelegatedNodeNormalizerInterface $delegatedNodeNormalizer
     ) {
         $list = [];
         foreach ($block->getHeaderNodeList() as $header) {
-            $list[] = $delegatedNodeNormalizer->getNormalizer($header)
-                ->normalize($header, $document);
+            $list[] = $delegatedNodeNormalizer->getNormalizer($header)->normalize($header);
         }
         if ($block->getItem()) {
-            $list[] = $delegatedNodeNormalizer->getNormalizer($block->getItem())
-                ->normalize($block->getItem(), $document);
+            $list[] = $delegatedNodeNormalizer->getNormalizer($block->getItem())->normalize($block->getItem());
         }
         foreach ($block->getFooterNodeList() as $footer) {
-            $list[] = $delegatedNodeNormalizer->getNormalizer($footer)
-                ->normalize($footer, $document);
+            $list[] = $delegatedNodeNormalizer->getNormalizer($footer)->normalize($footer);
         }
 
         return $list;

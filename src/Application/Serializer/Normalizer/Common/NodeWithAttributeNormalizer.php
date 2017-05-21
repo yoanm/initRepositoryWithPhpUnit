@@ -24,20 +24,6 @@ class NodeWithAttributeNormalizer extends NodeNormalizer
     }
 
     /**
-     * @param \DomNode     $domNode
-     * @param Attribute[]  $attributeList
-     * @param \DOMDocument $document
-     */
-    protected function appendAttributes(\DomNode $domNode, array $attributeList, \DOMDocument $document)
-    {
-        foreach ($attributeList as $attribute) {
-            $domNode->appendChild(
-                $this->attributeNormalizer->normalize($attribute, $document)
-            );
-        }
-    }
-
-    /**
      * @param \DOMNode $domNode
      *
      * @return Attribute[]

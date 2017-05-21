@@ -2,6 +2,7 @@
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Filter;
 
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Helper\NodeNormalizerHelper;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\NormalizedNode;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\AttributeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeWithAttributeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
@@ -40,20 +41,17 @@ class WhiteListNormalizer extends NodeWithAttributeNormalizer implements Denorma
     }
 
     /**
-     * @param WhiteList    $whiteList
-     * @param \DOMDocument $document
+     * @param WhiteList $whiteList
      *
-     * @return \DOMElement
+     * @return NormalizedNode
      */
-    public function normalize($whiteList, \DOMDocument $document)
+    public function normalize($whiteList)
     {
-        $domNode = $this->createElementNode($document, self::NODE_NAME);
-
-        $this->appendAttributes($domNode, $whiteList->getAttributeList(), $document);
-
-        $this->getHelper()->normalizeAndAppendBlockList($domNode, $whiteList, $document, $this);
-
-        return $domNode;
+        return new NormalizedNode(
+            $whiteList->getAttributeList(),
+            $this->getHelper()->normalizeBlockList($whiteList, $this),
+            self::NODE_NAME
+        );
     }
 
     /**

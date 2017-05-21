@@ -1,6 +1,7 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer;
 
+use Yoanm\PhpUnitConfigManager\Application\Serializer\NormalizedNode;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Helper\NodeNormalizerHelper;
@@ -33,18 +34,17 @@ class FilterNormalizer extends NodeNormalizer implements DenormalizerInterface, 
     }
 
     /**
-     * @param Filter       $filter
-     * @param \DOMDocument $document
+     * @param Filter $filter
      *
-     * @return \DOMElement
+     * @return NormalizedNode
      */
-    public function normalize($filter, \DOMDocument $document)
+    public function normalize($filter)
     {
-        $domNode = $this->createElementNode($document, self::NODE_NAME);
-
-        $this->getHelper()->normalizeAndAppendBlockList($domNode, $filter, $document, $this);
-
-        return $domNode;
+        return new NormalizedNode(
+            [],
+            $this->getHelper()->normalizeBlockList($filter, $this),
+            self::NODE_NAME
+        );
     }
 
     /**

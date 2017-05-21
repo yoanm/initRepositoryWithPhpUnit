@@ -1,6 +1,7 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer;
 
+use Yoanm\PhpUnitConfigManager\Application\Serializer\NormalizedNode;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Helper\NodeNormalizerHelper;
@@ -34,24 +35,23 @@ class PhpNormalizer extends NodeNormalizer implements DenormalizerInterface, Nor
     }
 
     /**
-     * @param Php          $php
-     * @param \DOMDocument $document
+     * @param Php $php
      *
-     * @return \DOMElement
+     * @return NormalizedNode
      */
-    public function normalize($php, \DOMDocument $document)
+    public function normalize($php)
     {
-        $domNode = $this->createElementNode($document, self::NODE_NAME);
-
-        $this->getHelper()->normalizeAndAppendBlockList($domNode, $php, $document, $this);
-
-        return $domNode;
+        return new NormalizedNode(
+            [],
+            $this->getHelper()->normalizeBlockList($php, $this),
+            self::NODE_NAME
+        );
     }
 
     /**
      * @param \DOMNode $node
      *
-     * @return PhpItem[]
+     * @return Php
      */
     public function denormalize(\DOMNode $node)
     {

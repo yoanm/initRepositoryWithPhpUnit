@@ -1,6 +1,7 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\TestSuites\TestSuite;
 
+use Yoanm\PhpUnitConfigManager\Application\Serializer\NormalizedNode;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeWithAttributeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NormalizerInterface;
@@ -16,14 +17,14 @@ class ExcludedTestSuiteItemNormalizer extends NodeWithAttributeNormalizer implem
 
     /**
      * @param ExcludedTestSuiteItem $item
-     * @param \DOMDocument          $document
      *
-     * @return \DomElement
+     * @return NormalizedNode
      */
-    public function normalize($item, \DOMDocument $document)
+    public function normalize($item)
     {
-        return $this->createElementNode(
-            $document,
+        return new NormalizedNode(
+            [],
+            [],
             self::NODE_NAME,
             $item->getValue()
         );

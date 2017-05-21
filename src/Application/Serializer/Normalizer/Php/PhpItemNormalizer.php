@@ -1,6 +1,7 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Php;
 
+use Yoanm\PhpUnitConfigManager\Application\Serializer\NormalizedNode;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeWithAttributeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NormalizerInterface;
@@ -9,25 +10,21 @@ use Yoanm\PhpUnitConfigManager\Domain\Model\Php\PhpItem;
 class PhpItemNormalizer extends NodeWithAttributeNormalizer implements DenormalizerInterface, NormalizerInterface
 {
     /**
-     * @param PhpItem      $phpItem
-     * @param \DOMDocument $document
+     * @param PhpItem $phpItem
      *
-     * @return \DOMElement
+     * @return NormalizedNode
      */
-    public function normalize($phpItem, \DOMDocument $document)
+    public function normalize($phpItem)
     {
         $value = trim($phpItem->getValue());
         $value = strlen($value) ? $value : null;
 
-        $element = $this->createElementNode(
-            $document,
+        return new NormalizedNode(
+            $phpItem->getAttributeList(),
+            [],
             $phpItem->getName(),
             $value
         );
-
-        $this->appendAttributes($element, $phpItem->getAttributeList(), $document);
-
-        return $element;
     }
 
     /**

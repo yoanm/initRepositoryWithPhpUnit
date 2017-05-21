@@ -2,6 +2,7 @@
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Filter;
 
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Helper\NodeNormalizerHelper;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\NormalizedNode;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\AttributeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeWithAttributeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
@@ -40,21 +41,16 @@ class ExcludedWhiteListNormalizer extends NodeWithAttributeNormalizer implements
 
     /**
      * @param ExcludedWhiteList $whiteList
-     * @param \DOMDocument      $document
      *
-     * @return \DOMElement
+     * @return NormalizedNode
      */
-    public function normalize($whiteList, \DOMDocument $document)
+    public function normalize($whiteList)
     {
-        $domNode = $this->createElementNode(
-            $document,
+        return new NormalizedNode(
+            [],
+            $this->getHelper()->normalizeBlockList($whiteList, $this),
             self::NODE_NAME
         );
-
-
-        $this->getHelper()->normalizeAndAppendBlockList($domNode, $whiteList, $document, $this);
-
-        return $domNode;
     }
 
     /**

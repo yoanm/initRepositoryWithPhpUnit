@@ -13,7 +13,7 @@ class AttributeNormalizer
      */
     public function normalize(Attribute $attribute, \DOMDocument $document)
     {
-        $attributeNode = $document->createAttribute($attribute->getName());
+        $attributeNode = (new \DOMDocument())->createAttribute($attribute->getName());
         $attributeNode->value = $attribute->getValue();
 
         return $attributeNode;

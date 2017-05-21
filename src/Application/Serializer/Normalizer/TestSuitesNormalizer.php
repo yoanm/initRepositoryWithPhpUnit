@@ -1,6 +1,7 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer;
 
+use Yoanm\PhpUnitConfigManager\Application\Serializer\NormalizedNode;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Helper\NodeNormalizerHelper;
@@ -35,23 +36,22 @@ class TestSuitesNormalizer extends NodeNormalizer implements DenormalizerInterfa
 
     /**
      * @param TestSuites   $testSuites
-     * @param \DOMDocument $document
      *
      * @return \DomElement
      */
-    public function normalize($testSuites, \DOMDocument $document)
+    public function normalize($testSuites)
     {
-        $domNode = $this->createElementNode($document, self::NODE_NAME);
-
-        $this->getHelper()->normalizeAndAppendBlockList($domNode, $testSuites, $document, $this);
-
-        return $domNode;
+        return new NormalizedNode(
+            [],
+            $this->getHelper()->normalizeBlockList($testSuites, $this),
+            self::NODE_NAME
+        );
     }
 
     /**
      * @param \DomNode $node
      *
-     * @return TestSuite[]
+     * @return TestSuites
      */
     public function denormalize(\DomNode $node)
     {

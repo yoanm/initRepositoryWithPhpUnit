@@ -1,6 +1,7 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Logging;
 
+use Yoanm\PhpUnitConfigManager\Application\Serializer\NormalizedNode;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeWithAttributeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NormalizerInterface;
@@ -11,18 +12,17 @@ class LogNormalizer extends NodeWithAttributeNormalizer implements DenormalizerI
     const NODE_NAME = 'log';
 
     /**
-     * @param Log      $logItem
-     * @param \DOMDocument $document
+     * @param Log $logItem
      *
-     * @return \DOMElement
+     * @return NormalizedNode
      */
-    public function normalize($logItem, \DOMDocument $document)
+    public function normalize($logItem)
     {
-        $element = $this->createElementNode($document, self::NODE_NAME, null);
-
-        $this->appendAttributes($element, $logItem->getAttributeList(), $document);
-
-        return $element;
+        return new NormalizedNode(
+            $logItem->getAttributeList(),
+            [],
+            self::NODE_NAME
+        );
     }
 
     /**

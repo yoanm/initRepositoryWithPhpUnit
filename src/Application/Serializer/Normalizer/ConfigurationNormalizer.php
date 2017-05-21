@@ -1,6 +1,8 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer;
 
+use Yoanm\PhpUnitConfigManager\Application\Serializer\AttributeNS;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\NormalizedNode;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\AttributeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Helper\NodeNormalizerHelper;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeWithAttributeNormalizer;
@@ -60,20 +62,20 @@ class ConfigurationNormalizer extends NodeWithAttributeNormalizer implements
 
     /**
      * @param Configuration $configuration
-     * @param \DOMDocument $document
      *
-     * @return \DOMElement
+     * @return NormalizedNode
      */
-    public function normalize($configuration, \DOMDocument $document)
+    public function normalize($configuration)
     {
-        $domNode = $document->createElement(self::NODE_NAME);
-        $document->appendChild($domNode);
+        list ($attributeList, $attributeNSList) = $this->splitAttributeList($configuration);
 
-        $this->appendConfigAttributeList($document, $configuration, $domNode);
-
-        $this->getHelper()->normalizeAndAppendBlockList($domNode, $configuration, $document, $this);
-
-        return $domNode;
+        return new NormalizedNode(
+            $attributeList,
+            $this->getHelper()->normalizeBlockList($configuration, $this),
+            self::NODE_NAME,
+            null,
+            $attributeNSList
+        );
     }
 
     /**
@@ -106,11 +108,11 @@ class ConfigurationNormalizer extends NodeWithAttributeNormalizer implements
     }
 
     /**
-     * @param \DOMDocument  $document
      * @param Configuration $configuration
-     * @param \DOMElement   $node
+     *
+     * @return array
      */
-    private function appendConfigAttributeList(\DOMDocument $document, Configuration $configuration, \DOMElement $node)
+    private function splitAttributeList(Configuration $configuration)
     {
         $xmlnsXsiAttrValue = 'http://www.w3.org/2001/XMLSchema-instance';
         $noNamespaceLocationAttrValue = 'http://schema.phpunit.de/4.5/phpunit.xsd';
@@ -125,18 +127,20 @@ class ConfigurationNormalizer extends NodeWithAttributeNormalizer implements
             }
         }
 
-        $node->setAttributeNS(
-            'http://www.w3.org/2000/xmlns/',
-            'xmlns:xsi',
-            $xmlnsXsiAttrValue
-        );
-        $node->setAttributeNS(
-            $xmlnsXsiAttrValue,
-            'xsi:noNamespaceSchemaLocation',
-            $noNamespaceLocationAttrValue
-        );
+        $attributeNSList = [
+            new AttributeNS(
+                'http://www.w3.org/2000/xmlns/',
+                'xmlns:xsi',
+                $xmlnsXsiAttrValue
+            ),
+            new AttributeNS(
+                $xmlnsXsiAttrValue,
+                'xsi:noNamespaceSchemaLocation',
+                $noNamespaceLocationAttrValue
+            )
+        ];
 
 
-        $this->appendAttributes($node, $attributeList, $document);
+        return [$attributeList, $attributeNSList];
     }
 }

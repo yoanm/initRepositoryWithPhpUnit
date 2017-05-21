@@ -1,6 +1,7 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common;
 
+use Yoanm\PhpUnitConfigManager\Application\Serializer\NormalizedNode;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\UnmanagedNode;
 
 class UnmanagedNodeNormalizer implements DenormalizerInterface, NormalizerInterface
@@ -8,13 +9,16 @@ class UnmanagedNodeNormalizer implements DenormalizerInterface, NormalizerInterf
     /**
      * @param UnmanagedNode $unmanagedNode
      *
-     * @return mixed
+     * @return NormalizedNode
      */
-    public function normalize($unmanagedNode, \DOMDocument $document)
+    public function normalize($unmanagedNode)
     {
-        $node = $unmanagedNode->getValue();
-        //$node = $document->createTextNode('**'.$unmanagedNode->getValue()->nodeName);
-        return $document->importNode($node, true);
+        return new NormalizedNode(
+            [],
+            [],
+            null,
+            $unmanagedNode->getValue()
+        );
     }
 
     /**

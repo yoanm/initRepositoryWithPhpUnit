@@ -1,6 +1,7 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common;
 
+use Yoanm\PhpUnitConfigManager\Application\Serializer\NormalizedNode;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\FilesystemItem;
 
 class FilesystemItemNormalizer extends NodeWithAttributeNormalizer implements
@@ -12,22 +13,22 @@ class FilesystemItemNormalizer extends NodeWithAttributeNormalizer implements
 
     /**
      * @param FilesystemItem $item
-     * @param \DOMDocument   $document
      *
-     * @return \DOMElement
+     * @return NormalizedNode
      */
-    public function normalize($item, \DOMDocument $document)
+    public function normalize($item)
     {
         $nodeName = self::FILE_NODE_NAME;
         if ($item->getType() == FilesystemItem::TYPE_DIRECTORY) {
             $nodeName = self::DIRECTORY_NODE_NAME;
         }
 
-        $itemNode = $this->createElementNode($document, $nodeName, $item->getValue());
-
-        $this->appendAttributes($itemNode, $item->getAttributeList(), $document);
-
-        return $itemNode;
+        return new NormalizedNode(
+            $item->getAttributeList(),
+            $this->getHelper()->normalizeBlockList($item, $this),
+            $nodeName,
+            $item->getValue()
+        );
     }
 
     /**

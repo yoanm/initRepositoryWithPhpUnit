@@ -1,17 +1,17 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common;
 
+use Yoanm\PhpUnitConfigManager\Application\Serializer\NormalizedNode;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
 
 interface NormalizerInterface
 {
     /**
      * @param ConfigurationItemInterface $item
-     * @param \DOMDocument               $document
      *
-     * @return \DOMNode
+     * @return NormalizedNode
      */
-    public function normalize($item, \DOMDocument $document);
+    public function normalize($item);
 
     /**
      * @param mixed $item
