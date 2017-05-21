@@ -1,12 +1,14 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Listeners;
 
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Helper\NodeNormalizerHelper;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\AttributeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeWithAttributeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\UnmanagedNodeNormalizer;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Attribute;
+use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Block;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Listeners\Listener;
 
 class ListenerNormalizer extends NodeWithAttributeNormalizer implements DenormalizerInterface, NormalizerInterface
@@ -19,14 +21,16 @@ class ListenerNormalizer extends NodeWithAttributeNormalizer implements Denormal
     private $unmanagedNodeNormalizer;
 
     /**
+     * @param NodeNormalizerHelper    $nodeNormalizerHelper
      * @param AttributeNormalizer     $attributeNormalizer
      * @param UnmanagedNodeNormalizer $unmanagedNodeNormalizer
      */
     public function __construct(
+        NodeNormalizerHelper $nodeNormalizerHelper,
         AttributeNormalizer $attributeNormalizer,
         UnmanagedNodeNormalizer $unmanagedNodeNormalizer
     ) {
-        parent::__construct($attributeNormalizer);
+        parent::__construct($nodeNormalizerHelper, $attributeNormalizer);
         $this->unmanagedNodeNormalizer = $unmanagedNodeNormalizer;
     }
 
@@ -38,8 +42,6 @@ class ListenerNormalizer extends NodeWithAttributeNormalizer implements Denormal
      */
     public function normalize($listener, \DOMDocument $document)
     {
-
-        $element = $this->createElementNode($document, self::NODE_NAME);
         $attributeList = [];
         if (null !== $listener->getClass()) {
             $attributeList[] = new Attribute(self::CLASS_ATTRIBUTE, $listener->getClass());
@@ -48,15 +50,17 @@ class ListenerNormalizer extends NodeWithAttributeNormalizer implements Denormal
             $attributeList[] = new Attribute(self::FILE_ATTRIBUTE, $listener->getFile());
         }
 
-        $this->appendAttributes($element, $attributeList, $document);
+        $domNode = $this->createElementNode($document, self::NODE_NAME);
 
-        foreach ($listener->getItemList() as $item) {
-            $element->appendChild(
-                $this->unmanagedNodeNormalizer->normalize($item, $document)
+        $this->appendAttributes($domNode, $attributeList, $document);
+
+        foreach ($listener->getBlockList() as $item) {
+            $domNode->appendChild(
+                $this->unmanagedNodeNormalizer->normalize($item->getItem(), $document)
             );
         }
 
-        return $element;
+        return $domNode;
     }
 
     /**
@@ -77,8 +81,8 @@ class ListenerNormalizer extends NodeWithAttributeNormalizer implements Denormal
         }
 
         $itemList = [];
-        foreach ($this->extractChildNodeList($node) as $node) {
-            $itemList[] = $this->unmanagedNodeNormalizer->denormalize($node);
+        foreach ($this->getHelper()->extractChildNodeList($node) as $childNode) {
+            $itemList[] = new Block($this->unmanagedNodeNormalizer->denormalize($childNode));
         }
 
         return new Listener($class, $file, $itemList);

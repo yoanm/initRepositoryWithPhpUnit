@@ -1,25 +1,35 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer;
 
-use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DelegatedNodeNormalizer;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Helper\NodeNormalizerHelper;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\UnmanagedNodeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Groups\GroupInclusionNormalizer;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Groups;
 
-class GroupsNormalizer extends DelegatedNodeNormalizer implements DenormalizerInterface, NormalizerInterface
+class GroupsNormalizer extends NodeNormalizer implements DenormalizerInterface, NormalizerInterface
 {
     const NODE_NAME = 'groups';
 
+    /**
+     * @param NodeNormalizerHelper     $nodeNormalizerHelper
+     * @param GroupInclusionNormalizer $groupInclusionNormalizer
+     * @param UnmanagedNodeNormalizer  $unmanagedNodeNormalizer
+     */
     public function __construct(
+        NodeNormalizerHelper $nodeNormalizerHelper,
         GroupInclusionNormalizer $groupInclusionNormalizer,
         UnmanagedNodeNormalizer $unmanagedNodeNormalizer
     ) {
-        parent::__construct([
-            $groupInclusionNormalizer,
-            $unmanagedNodeNormalizer,
-        ]);
+        parent::__construct(
+            $nodeNormalizerHelper,
+            [
+                $groupInclusionNormalizer,
+                $unmanagedNodeNormalizer,
+            ]
+        );
     }
 
     /**
@@ -30,15 +40,11 @@ class GroupsNormalizer extends DelegatedNodeNormalizer implements DenormalizerIn
      */
     public function normalize($groups, \DOMDocument $document)
     {
-        $groupListNode = $this->createElementNode($document, self::NODE_NAME);
+        $domNode = $this->createElementNode($document, self::NODE_NAME);
 
-        foreach ($groups->getItemList() as $item) {
-            $groupListNode->appendChild(
-                $this->getNormalizer($item)->normalize($item, $document)
-            );
-        }
+        $this->getHelper()->normalizeAndAppendBlockList($domNode, $groups, $document, $this);
 
-        return $groupListNode;
+        return $domNode;
     }
 
     /**
@@ -48,12 +54,7 @@ class GroupsNormalizer extends DelegatedNodeNormalizer implements DenormalizerIn
      */
     public function denormalize(\DOMNode $node)
     {
-        $itemList = [];
-        foreach ($this->extractChildNodeList($node) as $itemNode) {
-            $itemList[] = $this->getDenormalizer($itemNode)->denormalize($itemNode);
-        }
-
-        return new Groups($itemList);
+        return new Groups($this->getHelper()->denormalizeChildNode($node, $this));
     }
 
     /**

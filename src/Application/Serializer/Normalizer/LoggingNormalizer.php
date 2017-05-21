@@ -1,25 +1,35 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer;
 
-use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DelegatedNodeNormalizer;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Helper\NodeNormalizerHelper;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\UnmanagedNodeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Logging\LogNormalizer;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Logging;
 
-class LoggingNormalizer extends DelegatedNodeNormalizer implements DenormalizerInterface, NormalizerInterface
+class LoggingNormalizer extends NodeNormalizer implements DenormalizerInterface, NormalizerInterface
 {
     const NODE_NAME = 'logging';
 
+    /**
+     * @param NodeNormalizerHelper    $nodeNormalizerHelper
+     * @param LogNormalizer           $logNormalizer
+     * @param UnmanagedNodeNormalizer $unmanagedNodeNormalizer
+     */
     public function __construct(
+        NodeNormalizerHelper $nodeNormalizerHelper,
         LogNormalizer $logNormalizer,
         UnmanagedNodeNormalizer $unmanagedNodeNormalizer
     ) {
-        parent::__construct([
-            $logNormalizer,
-            $unmanagedNodeNormalizer,
-        ]);
+        parent::__construct(
+            $nodeNormalizerHelper,
+            [
+                $logNormalizer,
+                $unmanagedNodeNormalizer,
+            ]
+        );
     }
 
     /**
@@ -30,14 +40,11 @@ class LoggingNormalizer extends DelegatedNodeNormalizer implements DenormalizerI
      */
     public function normalize($logging, \DOMDocument $document)
     {
-        $logItemListNode = $this->createElementNode($document, self::NODE_NAME);
-        foreach ($logging->getItemList() as $item) {
-            $logItemListNode->appendChild(
-                $this->getNormalizer($item)->normalize($item, $document)
-            );
-        }
+        $domNode = $this->createElementNode($document, self::NODE_NAME);
 
-        return $logItemListNode;
+        $this->getHelper()->normalizeAndAppendBlockList($domNode, $logging, $document, $this);
+
+        return $domNode;
     }
 
     /**
@@ -47,12 +54,7 @@ class LoggingNormalizer extends DelegatedNodeNormalizer implements DenormalizerI
      */
     public function denormalize(\DOMNode $node)
     {
-        $itemList = [];
-        foreach ($this->extractChildNodeList($node) as $itemNode) {
-            $itemList[] = $this->getDenormalizer($itemNode)->denormalize($itemNode);
-        }
-
-        return new Logging($itemList);
+        return new Logging($this->getHelper()->denormalizeChildNode($node, $this));
     }
 
     /**

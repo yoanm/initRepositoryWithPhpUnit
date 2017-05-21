@@ -1,48 +1,53 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common;
 
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Helper\NodeNormalizerHelper;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Attribute;
 
-class NodeWithAttributeNormalizer extends DelegatedNodeNormalizer
+class NodeWithAttributeNormalizer extends NodeNormalizer
 {
     /** @var AttributeNormalizer */
     private $attributeNormalizer;
 
     /**
      * @param AttributeNormalizer                           $attributeNormalizer
+     * @param NodeNormalizerHelper                          $nodeNormalizerHelper
      * @param NormalizerInterface[]|DenormalizerInterface[] $delegateList
      */
-    public function __construct(AttributeNormalizer $attributeNormalizer, array $delegateList = [])
-    {
-        parent::__construct($delegateList);
+    public function __construct(
+        NodeNormalizerHelper $nodeNormalizerHelper,
+        AttributeNormalizer $attributeNormalizer,
+        array $delegateList = []
+    ) {
+        parent::__construct($nodeNormalizerHelper, $delegateList);
         $this->attributeNormalizer = $attributeNormalizer;
     }
 
     /**
-     * @param \DomNode     $node
+     * @param \DomNode     $domNode
      * @param Attribute[]  $attributeList
      * @param \DOMDocument $document
      */
-    protected function appendAttributes(\DomNode $node, array $attributeList, \DOMDocument $document)
+    protected function appendAttributes(\DomNode $domNode, array $attributeList, \DOMDocument $document)
     {
         foreach ($attributeList as $attribute) {
-            $node->appendChild(
+            $domNode->appendChild(
                 $this->attributeNormalizer->normalize($attribute, $document)
             );
         }
     }
 
     /**
-     * @param \DOMNode $node
+     * @param \DOMNode $domNode
      *
      * @return Attribute[]
      */
-    protected function extractAttributes(\DOMNode $node)
+    protected function extractAttributes(\DOMNode $domNode)
     {
         $attributeList = [];
-        $itemCount = $node->attributes->length;
+        $itemCount = $domNode->attributes->length;
         for ($counter = 0; $counter < $itemCount; $counter++) {
-            $rawAttribute = $node->attributes->item($counter);
+            $rawAttribute = $domNode->attributes->item($counter);
             $attributeList[] = $this->attributeNormalizer->denormalize($rawAttribute);
         }
 

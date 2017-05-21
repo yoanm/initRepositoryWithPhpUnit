@@ -1,6 +1,7 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Infrastructure\Transformer;
 
+use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Block;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\FilesystemItem;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Filter;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Filter\ExcludedWhiteList;
@@ -12,7 +13,7 @@ class FilterInputItemTransformer extends AbstractTransformer
     /**
      * @param array $inputList
      *
-     * @return Filter|null
+     * @return Block|null
      */
     public function extract(array $inputList)
     {
@@ -34,13 +35,15 @@ class FilterInputItemTransformer extends AbstractTransformer
         );
 
         if (count($excludedWhiteListItemList)) {
-            $whiteListItemList[] = new ExcludedWhiteList($excludedWhiteListItemList);
+            $whiteListItemList[] = new Block(new ExcludedWhiteList([], $excludedWhiteListItemList));
         }
 
         if (count($whiteListItemList)) {
-            return new Filter([
-                new WhiteList($whiteListItemList)
-            ]);
+            return new Block(
+                new Filter([
+                    new Block(new WhiteList([], $whiteListItemList))
+                ])
+            );
         }
 
         return null;
@@ -60,12 +63,14 @@ class FilterInputItemTransformer extends AbstractTransformer
             if ($this->inputValueListExistFor($inputList, $inputKey)) {
                 foreach ($inputList[$inputKey] as $inputValue) {
                     $data = $this->extractDataFromValue($inputValue);
-                    $whiteListItemList[] = new WhiteListItem(
-                        $directoryInputKey == $inputKey
-                            ? FilesystemItem::TYPE_DIRECTORY
-                            : FilesystemItem::TYPE_FILE,
-                        array_shift($data),
-                        $this->convertToAttributeList($data)
+                    $whiteListItemList[] = new Block(
+                        new WhiteListItem(
+                            $directoryInputKey == $inputKey
+                                ? FilesystemItem::TYPE_DIRECTORY
+                                : FilesystemItem::TYPE_FILE,
+                            array_shift($data),
+                            $this->convertToAttributeList($data)
+                        )
                     );
                 }
             }

@@ -1,31 +1,37 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer;
 
-use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DelegatedNodeNormalizer;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeNormalizer;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Helper\NodeNormalizerHelper;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\UnmanagedNodeNormalizer;
 use Yoanm\PhpUnitConfigManager\Domain\Model\ConfigurationFile;
 
-class ConfigurationFileNormalizer extends DelegatedNodeNormalizer
+class ConfigurationFileNormalizer extends NodeNormalizer
 {
+    /**
+     * @param NodeNormalizerHelper    $nodeNormalizerHelper
+     * @param ConfigurationNormalizer $configurationNormalizer
+     * @param UnmanagedNodeNormalizer $unmanagedNodeNormalizer
+     */
     public function __construct(
+        NodeNormalizerHelper $nodeNormalizerHelper,
         ConfigurationNormalizer $configurationNormalizer,
         UnmanagedNodeNormalizer $unmanagedNodeNormalizer
     ) {
-        parent::__construct([
-            $configurationNormalizer,
-            $unmanagedNodeNormalizer,
-        ]);
+        parent::__construct(
+            $nodeNormalizerHelper,
+            [
+                $configurationNormalizer,
+                $unmanagedNodeNormalizer,
+            ]
+        );
     }
 
     public function normalize(ConfigurationFile $configurationFile)
     {
         $document = new \DOMDocument($configurationFile->getVersion(), $configurationFile->getEncoding());
 
-        foreach ($configurationFile->getNodeList() as $node) {
-            $document->appendChild(
-                $this->getNormalizer($node)->normalize($node, $document)
-            );
-        }
+        $this->getHelper()->normalizeAndAppendBlockList($document, $configurationFile, $document, $this);
 
         return $document;
     }
@@ -44,15 +50,11 @@ class ConfigurationFileNormalizer extends DelegatedNodeNormalizer
                 \DOMDocument::class
             ));
         }
-        $nodeList = [];
-        foreach ($this->extractChildNodeList($document) as $itemNode) {
-            $nodeList[] = $this->getDenormalizer($itemNode)->denormalize($itemNode);
-        }
 
         return new ConfigurationFile(
             $document->xmlVersion,
             $document->encoding,
-            $nodeList
+            $this->getHelper()->denormalizeChildNode($document, $this)
         );
     }
 }

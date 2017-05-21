@@ -22,6 +22,7 @@ class FilesystemItemNormalizer extends NodeWithAttributeNormalizer implements
         if ($item->getType() == FilesystemItem::TYPE_DIRECTORY) {
             $nodeName = self::DIRECTORY_NODE_NAME;
         }
+
         $itemNode = $this->createElementNode($document, $nodeName, $item->getValue());
 
         $this->appendAttributes($itemNode, $item->getAttributeList(), $document);

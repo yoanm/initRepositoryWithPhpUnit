@@ -3,8 +3,9 @@ namespace Yoanm\PhpUnitConfigManager\Domain\Model\Php;
 
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Attribute;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\AttributeContainer;
+use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
 
-class PhpItem extends AttributeContainer
+class PhpItem extends AttributeContainer implements ConfigurationItemInterface
 {
     /** @var string */
     private $name;

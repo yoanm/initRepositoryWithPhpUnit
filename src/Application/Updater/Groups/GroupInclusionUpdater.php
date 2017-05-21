@@ -29,9 +29,9 @@ class GroupInclusionUpdater extends AbstractNodeUpdater
     public function merge(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
     {
         return new GroupInclusion(
-            $this->getNodeUpdaterHelper()->mergeItemList(
-                $baseItem->getItemList(),
-                $newItem->getItemList(),
+            $this->getNodeUpdaterHelper()->mergeBlockList(
+                $baseItem->getBlockList(),
+                $newItem->getBlockList(),
                 $this
             ),
             $baseItem->isExcluded()

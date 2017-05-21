@@ -1,52 +1,46 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\TestSuites\TestSuite;
 
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Helper\NodeNormalizerHelper;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\AttributeNormalizer;
-use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeWithAttributeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\FilesystemItemNormalizer;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeWithAttributeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites\TestSuite;
-use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites\TestSuite\ExcludedTestSuiteItem;
 use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites\TestSuite\TestSuiteItem;
 
 class TestSuiteItemNormalizer extends NodeWithAttributeNormalizer implements
     DenormalizerInterface,
     NormalizerInterface
 {
-    const EXCLUDED_NODE_NAME = 'exclude';
-
     /** @var FilesystemItemNormalizer */
     private $filesystemItemNormalizer;
 
+    /**
+     * @param NodeNormalizerHelper     $nodeNormalizerHelper
+     * @param AttributeNormalizer      $attributeNormalizer
+     * @param FilesystemItemNormalizer $filesystemItemNormalizer
+     */
     public function __construct(
+        NodeNormalizerHelper $nodeNormalizerHelper,
         AttributeNormalizer $attributeNormalizer,
         FilesystemItemNormalizer $filesystemItemNormalizer
     ) {
-        parent::__construct($attributeNormalizer);
+        parent::__construct($nodeNormalizerHelper, $attributeNormalizer);
         $this->filesystemItemNormalizer = $filesystemItemNormalizer;
     }
 
     /**
-     * @param ExcludedTestSuiteItem|TestSuiteItem $item
-     * @param \DOMDocument                        $document
+     * @param TestSuiteItem $item
+     * @param \DOMDocument  $document
      *
      * @return \DomElement
      */
     public function normalize($item, \DOMDocument $document)
     {
-        if ($item instanceof ExcludedTestSuiteItem) {
-            $itemNode = $this->createElementNode(
-                $document,
-                self::EXCLUDED_NODE_NAME,
-                $item->getValue()
-            );
-        } else {
-            $itemNode = $this->filesystemItemNormalizer->normalize($item, $document);
-        }
-
-        return $itemNode;
+        return $this->filesystemItemNormalizer->normalize($item, $document);
     }
 
     /**
@@ -56,18 +50,13 @@ class TestSuiteItemNormalizer extends NodeWithAttributeNormalizer implements
      */
     public function denormalize(\DomNode $itemNode)
     {
-        if (self::EXCLUDED_NODE_NAME === $itemNode->nodeName) {
-            $item = new ExcludedTestSuiteItem($itemNode->nodeValue);
-        } else {
-            $fsItem = $this->filesystemItemNormalizer->denormalize($itemNode);
-            $item = new TestSuiteItem(
-                $fsItem->getType(),
-                $fsItem->getValue(),
-                $this->extractAttributes($itemNode)
-            );
-        }
+        $fsItem = $this->filesystemItemNormalizer->denormalize($itemNode);
 
-        return $item;
+        return new TestSuiteItem(
+            $fsItem->getType(),
+            $fsItem->getValue(),
+            $this->extractAttributes($itemNode)
+        );
     }
 
     /**
@@ -75,9 +64,7 @@ class TestSuiteItemNormalizer extends NodeWithAttributeNormalizer implements
      */
     public function supportsNormalization($item)
     {
-        return $item instanceof TestSuiteItem
-            || $item instanceof ExcludedTestSuiteItem
-        ;
+        return $item instanceof TestSuiteItem;
     }
 
     /**
@@ -85,8 +72,6 @@ class TestSuiteItemNormalizer extends NodeWithAttributeNormalizer implements
      */
     public function supportsDenormalization(\DomNode $node)
     {
-        return self::EXCLUDED_NODE_NAME === $node->nodeName
-            || $this->filesystemItemNormalizer->supportsDenormalization($node)
-        ;
+        return $this->filesystemItemNormalizer->supportsDenormalization($node);
     }
 }

@@ -1,11 +1,13 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\TestSuites;
 
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Helper\NodeNormalizerHelper;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\AttributeNormalizer;
-use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeWithAttributeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeWithAttributeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\UnmanagedNodeNormalizer;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\TestSuites\TestSuite\ExcludedTestSuiteItemNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\TestSuites\TestSuite\TestSuiteItemNormalizer;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Attribute;
 use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites\TestSuite;
@@ -16,14 +18,25 @@ class TestSuiteNormalizer extends NodeWithAttributeNormalizer implements Denorma
 
     const NAME_ATTRIBUTE = 'name';
 
+    /**
+     * @param NodeNormalizerHelper            $nodeNormalizerHelper
+     * @param AttributeNormalizer             $attributeNormalizer
+     * @param TestSuiteItemNormalizer         $testSuiteItemNormalizer
+     * @param ExcludedTestSuiteItemNormalizer $excludedTestSuiteItemNormalizer
+     * @param UnmanagedNodeNormalizer         $unmanagedNodeNormalizer
+     */
     public function __construct(
+        NodeNormalizerHelper $nodeNormalizerHelper,
         AttributeNormalizer $attributeNormalizer,
         TestSuiteItemNormalizer $testSuiteItemNormalizer,
+        ExcludedTestSuiteItemNormalizer $excludedTestSuiteItemNormalizer,
         UnmanagedNodeNormalizer $unmanagedNodeNormalizer
     ) {
         parent::__construct(
+            $nodeNormalizerHelper,
             $attributeNormalizer,
             [
+                $excludedTestSuiteItemNormalizer,
                 $testSuiteItemNormalizer,
                 $unmanagedNodeNormalizer,
             ]
@@ -38,21 +51,17 @@ class TestSuiteNormalizer extends NodeWithAttributeNormalizer implements Denorma
      */
     public function normalize($testSuite, \DOMDocument $document)
     {
-        $element = $this->createElementNode($document, self::NODE_NAME);
+        $domNode = $this->createElementNode($document, self::NODE_NAME);
 
         // Append attributes
         $attributeList = $testSuite->getAttributeList();
         $attributeList[] = new Attribute(self::NAME_ATTRIBUTE, $testSuite->getName());
-        $this->appendAttributes($element, $attributeList, $document);
 
-        // Append content
-        foreach ($testSuite->getItemList() as $item) {
-            $element->appendChild(
-                $this->getNormalizer($item)->normalize($item, $document)
-            );
-        }
+        $this->appendAttributes($domNode, $attributeList, $document);
 
-        return $element;
+        $this->getHelper()->normalizeAndAppendBlockList($domNode, $testSuite, $document, $this);
+
+        return $domNode;
     }
 
     /**
@@ -62,7 +71,6 @@ class TestSuiteNormalizer extends NodeWithAttributeNormalizer implements Denorma
      */
     public function denormalize(\DomNode $node)
     {
-        $itemList = [];
         $attributeList = $this->extractAttributes($node);
         $testSuiteName = null;
 
@@ -73,13 +81,9 @@ class TestSuiteNormalizer extends NodeWithAttributeNormalizer implements Denorma
             }
         }
 
-        foreach ($this->extractChildNodeList($node) as $nodeItem) {
-            $itemList[] = $this->getDenormalizer($nodeItem)->denormalize($nodeItem);
-        }
-
         return new TestSuite(
             $testSuiteName,
-            $itemList,
+            $this->getHelper()->denormalizeChildNode($node, $this),
             $attributeList
         );
     }

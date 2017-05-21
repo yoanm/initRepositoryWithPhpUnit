@@ -1,9 +1,11 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Domain\Model;
 
+use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Block;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
+use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Node;
 
-class ConfigurationFile implements ConfigurationItemInterface
+class ConfigurationFile extends Node implements ConfigurationItemInterface
 {
     const FILENAME = 'phpunit.xml.dist';
 
@@ -11,19 +13,17 @@ class ConfigurationFile implements ConfigurationItemInterface
     private $version;
     /** @var string */
     private $encoding;
-    /** @var ConfigurationItemInterface[]|Configuration[] */
-    private $nodeList = [];
 
     /**
-     * @param string          $version
-     * @param string          $encoding
-     * @param ConfigurationItemInterface[]|Configuration[] $nodeList
+     * @param string  $version
+     * @param string  $encoding
+     * @param Block[] $itemList
      */
-    public function __construct($version, $encoding, array $nodeList = [])
+    public function __construct($version, $encoding, array $itemList = [])
     {
+        parent::__construct($itemList);
         $this->version = $version;
         $this->encoding = $encoding;
-        $this->nodeList = $nodeList;
     }
 
     /**
@@ -40,13 +40,5 @@ class ConfigurationFile implements ConfigurationItemInterface
     public function getEncoding()
     {
         return $this->encoding;
-    }
-
-    /**
-     * @return ConfigurationItemInterface[]|Configuration[]
-     */
-    public function getNodeList()
-    {
-        return $this->nodeList;
     }
 }

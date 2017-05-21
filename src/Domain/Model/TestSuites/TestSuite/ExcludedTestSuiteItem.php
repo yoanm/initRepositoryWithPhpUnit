@@ -1,7 +1,9 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites\TestSuite;
 
-class ExcludedTestSuiteItem implements TestSuiteItemInterface
+use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Node;
+
+class ExcludedTestSuiteItem extends Node implements TestSuiteItemInterface
 {
     /** @var string */
     private $value;
@@ -11,6 +13,7 @@ class ExcludedTestSuiteItem implements TestSuiteItemInterface
      */
     public function __construct($value)
     {
+        parent::__construct();
         $this->value = $value;
     }
 

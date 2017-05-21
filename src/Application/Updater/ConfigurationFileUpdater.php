@@ -37,9 +37,9 @@ class ConfigurationFileUpdater extends AbstractNodeUpdater
         return new ConfigurationFile(
             $this->plainValueUpdater->update($baseItem->getVersion(), $newItem->getVersion()),
             $this->plainValueUpdater->update($baseItem->getEncoding(), $newItem->getEncoding()),
-            $this->getNodeUpdaterHelper()->mergeItemList(
-                $baseItem->getNodeList(),
-                $newItem->getNodeList(),
+            $this->getNodeUpdaterHelper()->mergeBlockList(
+                $baseItem->getBlockList(),
+                $newItem->getBlockList(),
                 $this
             )
         );

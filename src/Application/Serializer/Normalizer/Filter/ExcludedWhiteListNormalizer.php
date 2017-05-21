@@ -1,6 +1,7 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Filter;
 
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Helper\NodeNormalizerHelper;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\AttributeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeWithAttributeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
@@ -15,12 +16,20 @@ class ExcludedWhiteListNormalizer extends NodeWithAttributeNormalizer implements
 {
     const NODE_NAME = 'exclude';
 
+    /**
+     * @param NodeNormalizerHelper     $nodeNormalizerHelper
+     * @param AttributeNormalizer      $attributeNormalizer
+     * @param WhiteListEntryNormalizer $whiteListEntryNormalizer
+     * @param UnmanagedNodeNormalizer  $unmanagedNodeNormalizer
+     */
     public function __construct(
+        NodeNormalizerHelper $nodeNormalizerHelper,
         AttributeNormalizer $attributeNormalizer,
         WhiteListEntryNormalizer $whiteListEntryNormalizer,
         UnmanagedNodeNormalizer $unmanagedNodeNormalizer
     ) {
         parent::__construct(
+            $nodeNormalizerHelper,
             $attributeNormalizer,
             [
                 $whiteListEntryNormalizer,
@@ -37,19 +46,15 @@ class ExcludedWhiteListNormalizer extends NodeWithAttributeNormalizer implements
      */
     public function normalize($whiteList, \DOMDocument $document)
     {
-        $excludedNode = $this->createElementNode(
+        $domNode = $this->createElementNode(
             $document,
             self::NODE_NAME
         );
 
 
-        foreach ($whiteList->getItemList() as $item) {
-            $excludedNode->appendChild(
-                $this->getNormalizer($item)->normalize($item, $document)
-            );
-        }
+        $this->getHelper()->normalizeAndAppendBlockList($domNode, $whiteList, $document, $this);
 
-        return $excludedNode;
+        return $domNode;
     }
 
     /**
@@ -59,12 +64,10 @@ class ExcludedWhiteListNormalizer extends NodeWithAttributeNormalizer implements
      */
     public function denormalize(\DOMNode $node)
     {
-        $itemList = [];
-        foreach ($this->extractChildNodeList($node) as $itemNode) {
-            $itemList[] = $this->getDenormalizer($itemNode)->denormalize($itemNode);
-        }
-
-        return new ExcludedWhiteList($itemList, $this->extractAttributes($node));
+        return new ExcludedWhiteList(
+            $this->extractAttributes($node),
+            $this->getHelper()->denormalizeChildNode($node, $this)
+        );
     }
 
     /**

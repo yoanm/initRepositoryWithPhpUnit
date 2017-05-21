@@ -2,6 +2,7 @@
 namespace Yoanm\PhpUnitConfigManager\Infrastructure\Transformer;
 
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Attribute;
+use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Block;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Php;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Php\PhpItem;
 
@@ -10,7 +11,7 @@ class PhpInputItemTransformer extends AbstractTransformer
     /**
      * @param array $inputList
      *
-     * @return Php|null
+     * @return Block|null
      */
     public function extract(array $inputList)
     {
@@ -18,16 +19,18 @@ class PhpInputItemTransformer extends AbstractTransformer
         if (isset($inputList[InputTransformer::KEY_PHP]) && is_array($inputList[InputTransformer::KEY_PHP])) {
             foreach ($inputList[InputTransformer::KEY_PHP] as $inputValue) {
                 list($name, $value, $attributeList) = $this->extractPhpItemDataFromValue($inputValue);
-                $phpItemList[] = new PhpItem(
-                    $name,
-                    $value,
-                    $attributeList
+                $phpItemList[] = new Block(
+                    new PhpItem(
+                        $name,
+                        $value,
+                        $attributeList
+                    )
                 );
             }
         }
 
         if (count($phpItemList)) {
-            return new Php($phpItemList);
+            return new Block(new Php($phpItemList));
         }
 
         return null;

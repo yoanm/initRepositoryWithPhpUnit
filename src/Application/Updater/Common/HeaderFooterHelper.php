@@ -15,12 +15,13 @@ class HeaderFooterHelper
     public function extractHeaderOrLeadingSpaceNode(array $itemList)
     {
         $headerNodeList = $this->extractNodeHeaderList($itemList);
+
         if (0 === count($headerNodeList)
             && $leadingSpaceNode = $this->extractLeadingSpace($itemList)
         ) {
             $headerNodeList = [$leadingSpaceNode];
-            return $headerNodeList;
         }
+
         return $headerNodeList;
     }
 

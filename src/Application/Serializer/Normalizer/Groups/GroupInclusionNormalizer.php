@@ -1,25 +1,35 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Groups;
 
-use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DelegatedNodeNormalizer;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Helper\NodeNormalizerHelper;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\UnmanagedNodeNormalizer;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Groups\GroupInclusion;
 
-class GroupInclusionNormalizer extends DelegatedNodeNormalizer implements DenormalizerInterface, NormalizerInterface
+class GroupInclusionNormalizer extends NodeNormalizer implements DenormalizerInterface, NormalizerInterface
 {
     const INCLUDED_NODE_NAME = 'include';
     const EXCLUDED_NODE_NAME = 'exclude';
 
+    /**
+     * @param NodeNormalizerHelper    $nodeNormalizerHelper
+     * @param GroupNormalizer         $groupNormalizer
+     * @param UnmanagedNodeNormalizer $unmanagedNodeNormalizer
+     */
     public function __construct(
+        NodeNormalizerHelper $nodeNormalizerHelper,
         GroupNormalizer $groupNormalizer,
         UnmanagedNodeNormalizer $unmanagedNodeNormalizer
     ) {
-        parent::__construct([
-            $groupNormalizer,
-            $unmanagedNodeNormalizer,
-        ]);
+        parent::__construct(
+            $nodeNormalizerHelper,
+            [
+                $groupNormalizer,
+                $unmanagedNodeNormalizer,
+            ]
+        );
     }
 
     /**
@@ -30,18 +40,14 @@ class GroupInclusionNormalizer extends DelegatedNodeNormalizer implements Denorm
      */
     public function normalize($groupInclusion, \DOMDocument $document)
     {
-        $groupListNode = $this->createElementNode(
+        $domNode = $this->createElementNode(
             $document,
             $groupInclusion->isExcluded() ? self::EXCLUDED_NODE_NAME : self::INCLUDED_NODE_NAME
         );
 
-        foreach ($groupInclusion->getItemList() as $item) {
-            $groupListNode->appendChild(
-                $this->getNormalizer($item)->normalize($item, $document)
-            );
-        }
+        $this->getHelper()->normalizeAndAppendBlockList($domNode, $groupInclusion, $document, $this);
 
-        return $groupListNode;
+        return $domNode;
     }
 
     /**
@@ -51,13 +57,8 @@ class GroupInclusionNormalizer extends DelegatedNodeNormalizer implements Denorm
      */
     public function denormalize(\DOMNode $node)
     {
-        $itemList = [];
-        foreach ($this->extractChildNodeList($node) as $itemNode) {
-            $itemList[] = $this->getDenormalizer($itemNode)->denormalize($itemNode);
-        }
-
         return new GroupInclusion(
-            $itemList,
+            $this->getHelper()->denormalizeChildNode($node, $this),
             self::EXCLUDED_NODE_NAME === $node->nodeName
         );
     }

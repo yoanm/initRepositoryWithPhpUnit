@@ -36,9 +36,9 @@ class ListenerUpdater extends AbstractNodeUpdater
         return new Listener(
             $baseItem->getClass(),
             $this->plainValueUpdater->update($newItem->getFile(), $baseItem->getFile()),
-            $this->getNodeUpdaterHelper()->mergeItemList(
-                $baseItem->getItemList(),
-                $newItem->getItemList(),
+            $this->getNodeUpdaterHelper()->mergeBlockList(
+                $baseItem->getBlockList(),
+                $newItem->getBlockList(),
                 $this
             )
         );

@@ -31,9 +31,9 @@ class ListenersUpdater extends AbstractNodeUpdater
     public function merge(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
     {
         return new Listeners(
-            $this->getNodeUpdaterHelper()->mergeItemList(
-                $baseItem->getItemList(),
-                $newItem->getItemList(),
+            $this->getNodeUpdaterHelper()->mergeBlockList(
+                $baseItem->getBlockList(),
+                $newItem->getBlockList(),
                 $this
             )
         );

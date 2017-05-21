@@ -2,8 +2,9 @@
 namespace Yoanm\PhpUnitConfigManager\Domain\Model\Groups;
 
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
+use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Node;
 
-class Group implements ConfigurationItemInterface
+class Group extends Node implements ConfigurationItemInterface
 {
     /** @var string */
     private $value;
@@ -13,6 +14,7 @@ class Group implements ConfigurationItemInterface
      */
     public function __construct($value)
     {
+        parent::__construct();
         $this->value = $value;
     }
 

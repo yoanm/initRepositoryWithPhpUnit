@@ -1,6 +1,7 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Filter;
 
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Helper\NodeNormalizerHelper;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\AttributeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeWithAttributeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
@@ -13,13 +14,22 @@ class WhiteListNormalizer extends NodeWithAttributeNormalizer implements Denorma
     const NODE_NAME = 'whitelist';
     const EXCLUDED_ITEM_LIST_NODE_NAME = 'exclude';
 
+    /**
+     * @param NodeNormalizerHelper        $nodeNormalizerHelper
+     * @param AttributeNormalizer         $attributeNormalizer
+     * @param WhiteListEntryNormalizer    $whiteListEntryNormalizer
+     * @param ExcludedWhiteListNormalizer $excludedWhiteListNormalizer
+     * @param UnmanagedNodeNormalizer     $unmanagedNodeNormalizer
+     */
     public function __construct(
+        NodeNormalizerHelper $nodeNormalizerHelper,
         AttributeNormalizer $attributeNormalizer,
         WhiteListEntryNormalizer $whiteListEntryNormalizer,
         ExcludedWhiteListNormalizer $excludedWhiteListNormalizer,
         UnmanagedNodeNormalizer $unmanagedNodeNormalizer
     ) {
         parent::__construct(
+            $nodeNormalizerHelper,
             $attributeNormalizer,
             [
                 $whiteListEntryNormalizer,
@@ -37,16 +47,13 @@ class WhiteListNormalizer extends NodeWithAttributeNormalizer implements Denorma
      */
     public function normalize($whiteList, \DOMDocument $document)
     {
-        $whiteListNode = $this->createElementNode($document, self::NODE_NAME);
-        $this->appendAttributes($whiteListNode, $whiteList->getAttributeList(), $document);
+        $domNode = $this->createElementNode($document, self::NODE_NAME);
 
-        foreach ($whiteList->getItemList() as $item) {
-            $whiteListNode->appendChild(
-                $this->getNormalizer($item)->normalize($item, $document)
-            );
-        }
+        $this->appendAttributes($domNode, $whiteList->getAttributeList(), $document);
 
-        return $whiteListNode;
+        $this->getHelper()->normalizeAndAppendBlockList($domNode, $whiteList, $document, $this);
+
+        return $domNode;
     }
 
     /**
@@ -56,14 +63,9 @@ class WhiteListNormalizer extends NodeWithAttributeNormalizer implements Denorma
      */
     public function denormalize(\DOMNode $node)
     {
-        $itemList = [];
-        foreach ($this->extractChildNodeList($node) as $itemNode) {
-            $itemList[] = $this->getDenormalizer($itemNode)->denormalize($itemNode);
-        }
-
         return new WhiteList(
-            $itemList,
-            $this->extractAttributes($node)
+            $this->extractAttributes($node),
+            $this->getHelper()->denormalizeChildNode($node, $this)
         );
     }
 

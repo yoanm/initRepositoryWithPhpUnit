@@ -111,75 +111,105 @@
         </service>
 
         <!-- Normalizers -->
+        <service id="phpunit_config_manager.app.creator.block_list" class="Yoanm\PhpUnitConfigManager\Application\Creator\BlockListCreator">
+            <argument type="service" id="phpunit_config_manager.app.updater.helper.header_footer"/>
+        </service>
+        <service id="phpunit_config_manager.app.serializer.normalizer_helper" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Helper\NodeNormalizerHelper">
+            <argument type="service" id="phpunit_config_manager.app.creator.block_list"/>
+        </service>
         <service id="phpunit_config_manager.app.serializer.normalizer.attribute" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\AttributeNormalizer"/>
         <service id="phpunit_config_manager.app.serializer.normalizer.unmanaged_node" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\UnmanagedNodeNormalizer"/>
-        <service id="phpunit_config_manager.app.serializer.normalizer.group" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Groups\GroupNormalizer"/>
+        <service id="phpunit_config_manager.app.serializer.normalizer.group" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Groups\GroupNormalizer">
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer_helper"/>
+        </service>
         <service id="phpunit_config_manager.app.serializer.normalizer.filesystem_item" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\FilesystemItemNormalizer">
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer_helper"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.attribute"/>
         </service>
         <service id="phpunit_config_manager.app.serializer.normalizer.test_suite_item" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\TestSuites\TestSuite\TestSuiteItemNormalizer">
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer_helper"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.attribute"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.filesystem_item"/>
         </service>
+        <service id="phpunit_config_manager.app.serializer.normalizer.excluded_test_suite_item" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\TestSuites\TestSuite\ExcludedTestSuiteItemNormalizer">
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer_helper"/>
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.attribute"/>
+        </service>
         <service id="phpunit_config_manager.app.serializer.normalizer.test-suite" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\TestSuites\TestSuiteNormalizer">
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer_helper"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.attribute"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.test_suite_item"/>
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.excluded_test_suite_item"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.unmanaged_node"/>
         </service>
         <service id="phpunit_config_manager.app.serializer.normalizer.test-suites" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\TestSuitesNormalizer">
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer_helper"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.test-suite"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.unmanaged_node"/>
         </service>
         <service id="phpunit_config_manager.app.serializer.normalizer.group_inclusion" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Groups\GroupInclusionNormalizer">
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer_helper"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.group"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.unmanaged_node"/>
         </service>
         <service id="phpunit_config_manager.app.serializer.normalizer.groups" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\GroupsNormalizer">
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer_helper"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.group_inclusion"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.unmanaged_node"/>
         </service>
         <service id="phpunit_config_manager.app.serializer.normalizer.excluded_whitelist" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Filter\ExcludedWhiteListNormalizer">
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer_helper"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.attribute"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.whitelist_entry"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.unmanaged_node"/>
         </service>
         <service id="phpunit_config_manager.app.serializer.normalizer.whitelist_entry" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Filter\WhiteListEntryNormalizer">
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer_helper"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.attribute"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.filesystem_item"/>
         </service>
         <service id="phpunit_config_manager.app.serializer.normalizer.whitelist" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Filter\WhiteListNormalizer">
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer_helper"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.attribute"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.whitelist_entry"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.excluded_whitelist"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.unmanaged_node"/>
         </service>
         <service id="phpunit_config_manager.app.serializer.normalizer.filter" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\FilterNormalizer">
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer_helper"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.whitelist"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.unmanaged_node"/>
         </service>
         <service id="phpunit_config_manager.app.serializer.normalizer.log" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Logging\LogNormalizer">
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer_helper"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.attribute"/>
         </service>
         <service id="phpunit_config_manager.app.serializer.normalizer.logging" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\LoggingNormalizer">
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer_helper"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.log"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.unmanaged_node"/>
         </service>
         <service id="phpunit_config_manager.app.serializer.normalizer.listener" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Listeners\ListenerNormalizer">
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer_helper"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.attribute"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.unmanaged_node"/>
         </service>
         <service id="phpunit_config_manager.app.serializer.normalizer.listeners" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\ListenersNormalizer">
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer_helper"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.listener"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.unmanaged_node"/>
         </service>
         <service id="phpunit_config_manager.app.serializer.normalizer.php_item" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Php\PhpItemNormalizer">
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer_helper"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.attribute"/>
         </service>
         <service id="phpunit_config_manager.app.serializer.normalizer.php" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\PhpNormalizer">
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer_helper"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.php_item"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.unmanaged_node"/>
         </service>
         <service id="phpunit_config_manager.app.serializer.normalizer.configuration" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\ConfigurationNormalizer">
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer_helper"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.attribute"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.test-suites"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.groups"/>
@@ -190,6 +220,7 @@
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.unmanaged_node"/>
         </service>
         <service id="phpunit_config_manager.app.serializer.normalizer.configuration_file" class="Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\ConfigurationFileNormalizer">
+            <argument type="service" id="phpunit_config_manager.app.serializer.normalizer_helper"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.configuration"/>
             <argument type="service" id="phpunit_config_manager.app.serializer.normalizer.unmanaged_node"/>
         </service>

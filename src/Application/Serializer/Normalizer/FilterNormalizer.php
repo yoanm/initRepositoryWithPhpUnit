@@ -1,25 +1,35 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer;
 
-use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DelegatedNodeNormalizer;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Helper\NodeNormalizerHelper;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\UnmanagedNodeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Filter\WhiteListNormalizer;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Filter;
 
-class FilterNormalizer extends DelegatedNodeNormalizer implements DenormalizerInterface, NormalizerInterface
+class FilterNormalizer extends NodeNormalizer implements DenormalizerInterface, NormalizerInterface
 {
     const NODE_NAME = 'filter';
 
+    /**
+     * @param NodeNormalizerHelper    $nodeNormalizerHelper
+     * @param WhiteListNormalizer     $whiteListNormalizer
+     * @param UnmanagedNodeNormalizer $unmanagedNodeNormalizer
+     */
     public function __construct(
+        NodeNormalizerHelper $nodeNormalizerHelper,
         WhiteListNormalizer $whiteListNormalizer,
         UnmanagedNodeNormalizer $unmanagedNodeNormalizer
     ) {
-        parent::__construct([
-            $whiteListNormalizer,
-            $unmanagedNodeNormalizer,
-        ]);
+        parent::__construct(
+            $nodeNormalizerHelper,
+            [
+                $whiteListNormalizer,
+                $unmanagedNodeNormalizer,
+            ]
+        );
     }
 
     /**
@@ -30,15 +40,11 @@ class FilterNormalizer extends DelegatedNodeNormalizer implements DenormalizerIn
      */
     public function normalize($filter, \DOMDocument $document)
     {
-        $filterNode = $this->createElementNode($document, self::NODE_NAME);
+        $domNode = $this->createElementNode($document, self::NODE_NAME);
 
-        foreach ($filter->getItemList() as $item) {
-            $filterNode->appendChild(
-                $this->getNormalizer($item)->normalize($item, $document)
-            );
-        }
+        $this->getHelper()->normalizeAndAppendBlockList($domNode, $filter, $document, $this);
 
-        return $filterNode;
+        return $domNode;
     }
 
     /**
@@ -48,12 +54,7 @@ class FilterNormalizer extends DelegatedNodeNormalizer implements DenormalizerIn
      */
     public function denormalize(\DOMNode $node)
     {
-        $itemList = [];
-        foreach ($this->extractChildNodeList($node) as $itemNode) {
-            $itemList[] = $this->getDenormalizer($itemNode)->denormalize($itemNode);
-        }
-
-        return new Filter($itemList);
+        return new Filter($this->getHelper()->denormalizeChildNode($node, $this));
     }
 
     /**

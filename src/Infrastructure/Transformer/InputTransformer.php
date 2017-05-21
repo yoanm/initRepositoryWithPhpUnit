@@ -3,6 +3,7 @@ namespace Yoanm\PhpUnitConfigManager\Infrastructure\Transformer;
 
 use Symfony\Component\Serializer\SerializerInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Attribute;
+use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Block;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Configuration;
 use Yoanm\PhpUnitConfigManager\Domain\Model\ConfigurationFile;
@@ -117,9 +118,11 @@ class InputTransformer extends AbstractTransformer
             self::DEFAULT_VERSION,
             self::DEFAULT_ENCODING,
             [
-                new Configuration(
-                    $this->extractConfigurationNode($inputList),
-                    $this->extractPhpUnitOptions($inputList)
+                New Block(
+                    new Configuration(
+                        $this->extractPhpUnitOptions($inputList),
+                        $this->extractConfigurationNode($inputList)
+                    )
                 ),
             ]
         );

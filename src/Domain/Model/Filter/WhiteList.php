@@ -1,29 +1,9 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Domain\Model\Filter;
 
-use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Attribute;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\AttributeContainer;
+use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
 
-class WhiteList extends AttributeContainer
+class WhiteList extends AttributeContainer implements ConfigurationItemInterface
 {
-    /** @var WhiteListItem[]|ExcludedWhiteList[] */
-    private $itemList;
-
-    /**
-     * @param WhiteListItem[]|ExcludedWhiteList[] $itemList
-     * @param Attribute[]                         $attributeList
-     */
-    public function __construct(array $itemList = [], array $attributeList = [])
-    {
-        parent::__construct($attributeList);
-        $this->itemList = $itemList;
-    }
-
-    /**
-     * @return WhiteListItem[]|ExcludedWhiteList[]
-     */
-    public function getItemList()
-    {
-        return $this->itemList;
-    }
 }

@@ -1,6 +1,7 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Infrastructure\Transformer;
 
+use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Block;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\FilesystemItem;
 use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites;
 use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites\TestSuite;
@@ -12,14 +13,14 @@ class TestSuitesInputItemTransformer extends AbstractTransformer
     /**
      * @param array $inputList
      *
-     * @return TestSuites|null
+     * @return Block|null
      */
     public function extract(array $inputList)
     {
         $testSuiteList = $this->extractSuite($inputList);
 
         if (count($testSuiteList)) {
-            return new TestSuites($testSuiteList);
+            return new Block(new TestSuites($testSuiteList));
         }
 
         return null;
@@ -37,7 +38,7 @@ class TestSuitesInputItemTransformer extends AbstractTransformer
 
         $testSuiteList = [];
         foreach ($rawTestSuiteList as $testSuiteName => $testSuiteItemList) {
-            $testSuiteList[] = new TestSuite($testSuiteName, $testSuiteItemList);
+            $testSuiteList[] = new Block(new TestSuite($testSuiteName, $testSuiteItemList));
         }
         return $testSuiteList;
     }
@@ -54,12 +55,14 @@ class TestSuitesInputItemTransformer extends AbstractTransformer
                 foreach ($inputList[$inputKey] as $inputValue) {
                     $data = $this->extractDataFromValue($inputValue);
                     $name = array_shift($data);
-                    $rawTestSuiteList[$name][] = new TestSuiteItem(
-                        InputTransformer::KEY_TEST_SUITE_FILE === $inputKey
-                           ? FilesystemItem::TYPE_FILE
-                           : FilesystemItem::TYPE_DIRECTORY,
-                        array_shift($data),
-                        $this->convertToAttributeList($data)
+                    $rawTestSuiteList[$name][] = new Block(
+                        new TestSuiteItem(
+                            InputTransformer::KEY_TEST_SUITE_FILE === $inputKey
+                               ? FilesystemItem::TYPE_FILE
+                               : FilesystemItem::TYPE_DIRECTORY,
+                            array_shift($data),
+                            $this->convertToAttributeList($data)
+                        )
                     );
                 }
             }
@@ -79,7 +82,7 @@ class TestSuitesInputItemTransformer extends AbstractTransformer
             foreach ($inputList[InputTransformer::KEY_TEST_SUITE_EXCLUDED] as $inputValue) {
                 $data = $this->extractDataFromValue($inputValue);
                 $name = array_shift($data);
-                $rawTestSuiteList[$name][] = new ExcludedTestSuiteItem(array_shift($data));
+                $rawTestSuiteList[$name][] = new Block(new ExcludedTestSuiteItem(array_shift($data)));
             }
         }
 

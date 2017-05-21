@@ -4,14 +4,11 @@ namespace Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Attribute;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\AttributeContainer;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
-use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites\TestSuite\TestSuiteItemInterface;
 
 class TestSuite extends AttributeContainer implements ConfigurationItemInterface
 {
     /** @var string */
     private $name;
-    /** @var TestSuiteItemInterface[]|ConfigurationItemInterface[] */
-    private $itemList;
 
     /**
      * @param string                       $name
@@ -20,9 +17,8 @@ class TestSuite extends AttributeContainer implements ConfigurationItemInterface
      */
     public function __construct($name, array $itemList = [], array $attributeList = [])
     {
-        parent::__construct($attributeList);
+        parent::__construct($attributeList, $itemList);
         $this->name = $name;
-        $this->itemList = $itemList;
     }
 
     /**
@@ -31,13 +27,5 @@ class TestSuite extends AttributeContainer implements ConfigurationItemInterface
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * @return TestSuiteItemInterface[]|ConfigurationItemInterface[]|ConfigurationItemInterface[]
-     */
-    public function getItemList()
-    {
-        return $this->itemList;
     }
 }

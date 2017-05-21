@@ -1,31 +1,23 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Domain\Model\Groups;
 
+use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Block;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
+use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Node;
 
-class GroupInclusion implements ConfigurationItemInterface
+class GroupInclusion extends Node implements ConfigurationItemInterface
 {
     /** @var bool */
     private $isExcluded;
-    /** @var Group[]|ConfigurationItemInterface[] */
-    private $itemList;
 
     /**
-     * @param Group[]|ConfigurationItemInterface[] $itemList
-     * @param bool                    $isExcluded
+     * @param Block[] $itemList
+     * @param bool    $isExcluded
      */
-    public function __construct($itemList, $isExcluded = true)
+    public function __construct(array $itemList, $isExcluded = true)
     {
-        $this->itemList = $itemList;
+        parent::__construct($itemList);
         $this->isExcluded = $isExcluded;
-    }
-
-    /**
-     * @return ConfigurationItemInterface[]|Group[]
-     */
-    public function getItemList()
-    {
-        return $this->itemList;
     }
 
     /**

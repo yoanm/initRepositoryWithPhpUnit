@@ -2,6 +2,7 @@
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer;
 
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\AttributeNormalizer;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Helper\NodeNormalizerHelper;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeWithAttributeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NormalizerInterface;
@@ -20,7 +21,19 @@ class ConfigurationNormalizer extends NodeWithAttributeNormalizer implements
 {
     const NODE_NAME = 'phpunit';
 
+    /**
+     * @param NodeNormalizerHelper    $nodeNormalizerHelper
+     * @param AttributeNormalizer     $attributeNormalizer
+     * @param TestSuitesNormalizer    $testSuiteListNormalizer
+     * @param GroupsNormalizer        $groupsNormalizer
+     * @param FilterNormalizer        $filterNormalizer
+     * @param LoggingNormalizer       $loggingNormalizer
+     * @param ListenersNormalizer     $listenersNormalizer
+     * @param PhpNormalizer           $phpNormalizer
+     * @param UnmanagedNodeNormalizer $unmanagedNodeNormalizer
+     */
     public function __construct(
+        NodeNormalizerHelper $nodeNormalizerHelper,
         AttributeNormalizer $attributeNormalizer,
         TestSuitesNormalizer $testSuiteListNormalizer,
         GroupsNormalizer $groupsNormalizer,
@@ -31,6 +44,7 @@ class ConfigurationNormalizer extends NodeWithAttributeNormalizer implements
         UnmanagedNodeNormalizer $unmanagedNodeNormalizer
     ) {
         parent::__construct(
+            $nodeNormalizerHelper,
             $attributeNormalizer,
             [
                 $testSuiteListNormalizer,
@@ -52,35 +66,26 @@ class ConfigurationNormalizer extends NodeWithAttributeNormalizer implements
      */
     public function normalize($configuration, \DOMDocument $document)
     {
-        $node = $document->createElement(self::NODE_NAME);
-        $document->appendChild($node);
+        $domNode = $document->createElement(self::NODE_NAME);
+        $document->appendChild($domNode);
 
-        $this->appendConfigAttributeList($document, $configuration, $node);
+        $this->appendConfigAttributeList($document, $configuration, $domNode);
 
-        foreach ($configuration->getItemList() as $item) {
-            $node->appendChild(
-                $this->getNormalizer($item)->normalize($item, $document)
-            );
-        }
+        $this->getHelper()->normalizeAndAppendBlockList($domNode, $configuration, $document, $this);
 
-        return $node;
+        return $domNode;
     }
 
     /**
-     * @param \DOMNode $document
+     * @param \DOMNode $node
      *
      * @return Configuration
      */
-    public function denormalize(\DOMNode $document)
+    public function denormalize(\DOMNode $node)
     {
-        $itemList = [];
-        foreach ($this->extractChildNodeList($document) as $node) {
-            $itemList[] = $this->getDenormalizer($node)->denormalize($node);
-        }
-
         return new Configuration(
-            $itemList,
-            $this->extractAttributes($document)
+            $this->extractAttributes($node),
+            $this->getHelper()->denormalizeChildNode($node, $this)
         );
     }
 

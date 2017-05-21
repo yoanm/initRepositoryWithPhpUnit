@@ -45,9 +45,9 @@ class TestSuiteUpdater extends AbstractNodeUpdater
     {
         return new TestSuite(
             $baseItem->getName(),
-            $this->getNodeUpdaterHelper()->mergeItemList(
-                $baseItem->getItemList(),
-                $newItem->getItemList(),
+            $this->getNodeUpdaterHelper()->mergeBlockList(
+                $baseItem->getBlockList(),
+                $newItem->getBlockList(),
                 $this
             ),
             $this->attributeUpdater->update($baseItem->getAttributeList(), $newItem->getAttributeList())

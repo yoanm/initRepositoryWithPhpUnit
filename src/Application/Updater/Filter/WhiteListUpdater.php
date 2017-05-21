@@ -38,15 +38,15 @@ class WhiteListUpdater extends AbstractNodeUpdater
      */
     public function merge(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
     {
-        $itemList = $this->getNodeUpdaterHelper()->mergeItemList(
-            $baseItem->getItemList(),
-            $newItem->getItemList(),
+        $itemList = $this->getNodeUpdaterHelper()->mergeBlockList(
+            $baseItem->getBlockList(),
+            $newItem->getBlockList(),
             $this
         );
 
         return new WhiteList(
-            $this->reorder($itemList),
-            $this->attributeUpdater->update($baseItem->getAttributeList(), $newItem->getAttributeList())
+            $this->attributeUpdater->update($baseItem->getAttributeList(), $newItem->getAttributeList()),
+            $this->reorder($itemList)
         );
     }
 
@@ -67,35 +67,32 @@ class WhiteListUpdater extends AbstractNodeUpdater
     }
 
     /**
-     * @param ConfigurationItemInterface[] $itemList
+     * @param Block[] $itemList
      *
-     * @return ConfigurationItemInterface[]
+     * @return Block[]
      */
     private function reorder(array $itemList)
     {
-        $groupedItemList = $this->getNodeUpdaterHelper()->groupItemList($itemList, $this);
         // Try to move excluded node at end
-        list($blockList, $excludedNodeBlock) = $this->extractItemListAndExcluded($groupedItemList);
+        list($blockList, $excludedNodeBlock) = $this->extractItemListAndExcluded($itemList);
         if ($excludedNodeBlock) {
-            return $this->recomputeBlockList(
-                $this->appendExcludedNodeBlock($blockList, $excludedNodeBlock)
-            );
+            return $this->getNodeUpdaterHelper()->appendBeforeTrailingBlock([$excludedNodeBlock], $blockList);
         }
 
         return $itemList;
     }
 
     /**
-     * @param \DOMNode[]|Block[] $groupedItemList
+     * @param Block[] $itemList
      *
      * @return array
      */
-    private function extractItemListAndExcluded(array $groupedItemList)
+    private function extractItemListAndExcluded(array $itemList)
     {
         $excludedNodeBlock = null;
         $blockList = [];
-        foreach ($groupedItemList as $block) {
-            if ($block instanceof Block && $block->getItem() instanceof ExcludedWhiteList) {
+        foreach ($itemList as $block) {
+            if ($block->getItem() instanceof ExcludedWhiteList) {
                 $excludedNodeBlock = $block;
             } else {
                 $blockList[] = $block;
@@ -109,10 +106,10 @@ class WhiteListUpdater extends AbstractNodeUpdater
     }
 
     /**
-     * @param \DOMNode[]|Block[] $blockList
-     * @param Block              $excludedNodeBlock
+     * @param Block[] $blockList
+     * @param Block   $excludedNodeBlock
      *
-     * @return \DOMNode[]|Block[]
+     * @return Block[]
      */
     private function appendExcludedNodeBlock(array $blockList, Block $excludedNodeBlock)
     {
@@ -134,28 +131,5 @@ class WhiteListUpdater extends AbstractNodeUpdater
         }
 
         return $blockList;
-    }
-
-    /**
-     * @param \DOMNode[]|Block[] $blockList
-     *
-     * @return \DOMNode[]
-     */
-    private function recomputeBlockList(array $blockList)
-    {
-        $list = [];
-        foreach ($blockList as $block) {
-            if ($block instanceof Block) {
-                $list = $this->getNodeUpdaterHelper()->mergeBlock(
-                    $block,
-                    $list,
-                    $this
-                );
-            } else {
-                $list[] = $block;
-            }
-        }
-
-        return $list;
     }
 }

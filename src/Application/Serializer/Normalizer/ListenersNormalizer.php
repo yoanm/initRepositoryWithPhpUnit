@@ -1,25 +1,35 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer;
 
-use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DelegatedNodeNormalizer;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Helper\NodeNormalizerHelper;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\UnmanagedNodeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Listeners\ListenerNormalizer;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Listeners;
 
-class ListenersNormalizer extends DelegatedNodeNormalizer implements DenormalizerInterface, NormalizerInterface
+class ListenersNormalizer extends NodeNormalizer implements DenormalizerInterface, NormalizerInterface
 {
     const NODE_NAME = 'listeners';
 
+    /**
+     * @param NodeNormalizerHelper    $nodeNormalizerHelper
+     * @param ListenerNormalizer      $listenerNormalizer
+     * @param UnmanagedNodeNormalizer $unmanagedNodeNormalizer
+     */
     public function __construct(
+        NodeNormalizerHelper $nodeNormalizerHelper,
         ListenerNormalizer $listenerNormalizer,
         UnmanagedNodeNormalizer $unmanagedNodeNormalizer
     ) {
-        parent::__construct([
-            $listenerNormalizer,
-            $unmanagedNodeNormalizer,
-        ]);
+        parent::__construct(
+            $nodeNormalizerHelper,
+            [
+                $listenerNormalizer,
+                $unmanagedNodeNormalizer,
+            ]
+        );
     }
 
     /**
@@ -30,14 +40,11 @@ class ListenersNormalizer extends DelegatedNodeNormalizer implements Denormalize
      */
     public function normalize($listeners, \DOMDocument $document)
     {
-        $listenerListNode = $this->createElementNode($document, self::NODE_NAME);
-        foreach ($listeners->getItemList() as $item) {
-            $listenerListNode->appendChild(
-                $itemNode = $this->getNormalizer($item)->normalize($item, $document)
-            );
-        }
+        $domNode = $this->createElementNode($document, self::NODE_NAME);
 
-        return $listenerListNode;
+        $this->getHelper()->normalizeAndAppendBlockList($domNode, $listeners, $document, $this);
+
+        return $domNode;
     }
 
     /**
@@ -47,12 +54,7 @@ class ListenersNormalizer extends DelegatedNodeNormalizer implements Denormalize
      */
     public function denormalize(\DOMNode $node)
     {
-        $itemList = [];
-        foreach ($this->extractChildNodeList($node) as $itemNode) {
-            $itemList[] = $this->getDenormalizer($itemNode)->denormalize($itemNode);
-        }
-
-        return new Listeners($itemList);
+        return new Listeners($this->getHelper()->denormalizeChildNode($node, $this));
     }
 
     /**

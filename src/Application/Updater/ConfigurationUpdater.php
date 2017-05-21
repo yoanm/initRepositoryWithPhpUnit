@@ -57,14 +57,14 @@ class ConfigurationUpdater extends AbstractNodeUpdater
     public function merge(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
     {
         return new Configuration(
-            $this->getNodeUpdaterHelper()->mergeItemList(
-                $baseItem->getItemList(),
-                $newItem->getItemList(),
-                $this
-            ),
             $this->attributeUpdater->update(
                 $baseItem->getAttributeList(),
                 $newItem->getAttributeList()
+            ),
+            $this->getNodeUpdaterHelper()->mergeBlockList(
+                $baseItem->getBlockList(),
+                $newItem->getBlockList(),
+                $this
             )
         );
     }

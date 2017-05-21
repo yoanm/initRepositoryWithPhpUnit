@@ -1,28 +1,27 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Domain\Model\Listeners;
 
+use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Block;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
-use Yoanm\PhpUnitConfigManager\Domain\Model\Common\UnmanagedNode;
+use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Node;
 
-class Listener implements ConfigurationItemInterface
+class Listener extends Node implements ConfigurationItemInterface
 {
     /** @var string */
     private $class;
     /** @var string|null */
     private $file;
-    /** @var UnmanagedNode[] */
-    private $itemList;
 
     /**
-     * @param string          $class
-     * @param string|null     $file
-     * @param UnmanagedNode[] $itemList
+     * @param string      $class
+     * @param string|null $file
+     * @param Block[]     $itemList
      */
     public function __construct($class, $file = null, array $itemList = [])
     {
+        parent::__construct($itemList);
         $this->class = $class;
         $this->file = $file;
-        $this->itemList = $itemList;
     }
     /**
      * @return string
@@ -38,13 +37,5 @@ class Listener implements ConfigurationItemInterface
     public function getFile()
     {
         return $this->file;
-    }
-
-    /**
-     * @return UnmanagedNode[]
-     */
-    public function getItemList()
-    {
-        return $this->itemList;
     }
 }

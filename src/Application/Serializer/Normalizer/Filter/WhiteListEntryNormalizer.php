@@ -1,6 +1,7 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Filter;
 
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Helper\NodeNormalizerHelper;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\AttributeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeWithAttributeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
@@ -14,11 +15,18 @@ class WhiteListEntryNormalizer extends NodeWithAttributeNormalizer implements
     DenormalizerInterface,
     NormalizerInterface
 {
+    /**
+     * @param NodeNormalizerHelper     $nodeNormalizerHelper
+     * @param AttributeNormalizer      $attributeNormalizer
+     * @param FilesystemItemNormalizer $filesystemItemNormalizer
+     */
     public function __construct(
+        NodeNormalizerHelper $nodeNormalizerHelper,
         AttributeNormalizer $attributeNormalizer,
         FilesystemItemNormalizer $filesystemItemNormalizer
     ) {
         parent::__construct(
+            $nodeNormalizerHelper,
             $attributeNormalizer,
             [
                 $filesystemItemNormalizer

@@ -19,39 +19,42 @@ class NodeUpdaterHelper
     }
 
     /**
-     * @param ConfigurationItemInterface[]  $baseItemList
-     * @param ConfigurationItemInterface[]  $newItemList
+     * @param Block[]                       $baseBlockList
+     * @param Block[]                       $newBlockList
      * @param DelegatedNodeUpdaterInterface $delegatedNodeUpdater
      *
-     * @return ConfigurationItemInterface[]
+     * @return Block[]
      */
-    public function mergeItemList(
-        array $baseItemList,
-        array $newItemList,
+    public function mergeBlockList(
+        array $baseBlockList,
+        array $newBlockList,
         DelegatedNodeUpdaterInterface $delegatedNodeUpdater
     ) {
-        $groupedBaseNodeList = $this->groupItemList($baseItemList, $delegatedNodeUpdater);
-        /** @var Block[] $supportedNewNodeList */
-        $supportedNewNodeList = $this->groupItemList($newItemList, $delegatedNodeUpdater, true);
+        $newBlockList = array_filter($newBlockList, function (Block $block) {
+            return !$block->getItem() instanceof UnmanagedNode;
+        });
 
+        /** @var Block[] $updatedItemList */
         $updatedItemList = [];
-        while ($groupedBaseNode = array_shift($groupedBaseNodeList)) {
-            if ($groupedBaseNode instanceof Block) {
-                list($updatedItemList, $supportedNewNodeList) = $this->updateAndMergeBlock(
-                    $groupedBaseNode,
-                    $supportedNewNodeList,
-                    $updatedItemList,
-                    $delegatedNodeUpdater
-                );
-            } else {
-                $updatedItemList[] = $groupedBaseNode;
+        while ($baseBlock = array_shift($baseBlockList)) {
+            $key = $this->getSameNodeKey($baseBlock, $newBlockList, $delegatedNodeUpdater);
+            $updatedItemList[] = isset($newBlockList[$key])
+                ? $this->mergeBlock(
+                    $baseBlock,
+                    $delegatedNodeUpdater,
+                    $newBlockList[$key]
+                )
+                : $baseBlock
+            ;
+
+            if (null !== $key) {
+                unset($newBlockList[$key]);
             }
         }
-        if (count($supportedNewNodeList)) {
-            $updatedItemList = $this->appendNewNodeList(
-                $supportedNewNodeList,
-                $updatedItemList,
-                $delegatedNodeUpdater
+        if (count($newBlockList)) {
+            $updatedItemList = $this->appendBeforeTrailingBlock(
+                $newBlockList,
+                $updatedItemList
             );
         }
 
@@ -59,174 +62,109 @@ class NodeUpdaterHelper
     }
 
     /**
-     * @param ConfigurationItemInterface[]  $itemList
-     * @param bool|false                    $supportedOnly
-     * @param DelegatedNodeUpdaterInterface $delegatedNodeUpdater
+     * @param Block[] $blockToAppendList
+     * @param Block[] $initialBlockList
      *
-     * @return \DOMNode[]|Block[]
+     * @return Block[]
      */
-    public function groupItemList(
-        array $itemList,
-        DelegatedNodeUpdaterInterface $delegatedNodeUpdater,
-        $supportedOnly = false
+    public function appendBeforeTrailingBlock(
+        array $blockToAppendList,
+        array $initialBlockList
     ) {
-        $groupedItemList = $this->doItemGrouping($itemList, $delegatedNodeUpdater);
-
-        if (true === $supportedOnly) {
-            return array_filter($groupedItemList, function ($item) {
-                return $item instanceof Block;
-            });
-        }
-
-        return $groupedItemList;
-    }
-
-    /**
-     * @param Block                         $supportedNewNode
-     * @param Block                         $groupedBaseNode
-     * @param DelegatedNodeUpdaterInterface $delegatedNodeUpdater
-     * @param ConfigurationItemInterface[]  $updatedItemList
-     *
-     * @return ConfigurationItemInterface[]
-     */
-    public function mergeBlock(
-        Block $groupedBaseNode,
-        array $updatedItemList,
-        DelegatedNodeUpdaterInterface $delegatedNodeUpdater,
-        Block $supportedNewNode = null
-    ) {
-        $updatedItemList = $this->headerFooterHelper->mergeHeaderNodeList(
-            $groupedBaseNode->getHeaderNodeList(),
-            $updatedItemList
-        );
-        $updatedItemList[] = $supportedNewNode
-            ? $this->mergeNode(
-                $groupedBaseNode->getItem(),
-                $supportedNewNode->getItem(),
-                $delegatedNodeUpdater
-            )
-            : $groupedBaseNode->getItem();
-
-        //return $updatedItemList;
-        return $this->headerFooterHelper->mergeFooterNodeList(
-            $groupedBaseNode->getFooterNodeList(),
-            $updatedItemList
-        );
-    }
-
-    /**
-     * @param Block[]                       $supportedNewNodeList
-     * @param ConfigurationItemInterface[]  $updatedItemList
-     * @param DelegatedNodeUpdaterInterface $delegatedNodeUpdater
-     *
-     * @return ConfigurationItemInterface[]
-     */
-    protected function appendNewNodeList(
-        array $supportedNewNodeList,
-        array $updatedItemList,
-        DelegatedNodeUpdaterInterface $delegatedNodeUpdater
-    ) {
-        // 1 - Remove trailing non block object (spaces and comments)
-        $trailingNonBlockNodeList = [];
-        while ($node = array_pop($updatedItemList)) {
-            if (!$node instanceof \DOMNode
-                || $node->nodeType === XML_ELEMENT_NODE
-            ) {
-                $trailingNonBlockNodeList[] = $node;
+        // 1 - Remove trailing block object (spaces and comments)
+        $trailingBlockList = [];
+        /** @var Block $node */
+        while ($node = array_pop($initialBlockList)) {
+            if (!$node->getItem() instanceof UnmanagedNode) {
+                $initialBlockList[] = $node;
                 break;
+            } else {
+                /** @var UnmanagedNode $unmanagedNode */
+                $unmanagedNode = $node->getItem();
+                $footerNodeList = $node->getFooterNodeList();
+                /** @var UnmanagedNode|null $potentialEndTextNode */
+                $potentialEndTextNode = array_pop($footerNodeList);
+                if ($potentialEndTextNode && $potentialEndTextNode->getValue()->nodeType === XML_TEXT_NODE) {
+                    // If footer node exist and it's a text node
+                    // => Keep it to append it after new nodes but keep the rest of block above new nodes
+                    $trailingBlockList[] = new Block($potentialEndTextNode);
+                    $initialBlockList[] = new Block(
+                        $unmanagedNode,
+                        $node->getHeaderNodeList(),
+                        $footerNodeList
+                    );
+                    break;
+                }
+                $trailingBlockList[] = $node;
+                if (!$potentialEndTextNode && $unmanagedNode->getValue()->nodeType === XML_TEXT_NODE) {
+                    // If current node has no footer and is a text node => Keep it to append it after new nodes
+                    break;
+                }
             }
-            $trailingNonBlockNodeList[] = $node;
         }
         // 2 - Append remaining new node
-        foreach ($supportedNewNodeList as $supportedNewNode) {
-            $updatedItemList = $this->mergeBlock($supportedNewNode, $updatedItemList, $delegatedNodeUpdater);
+        foreach ($blockToAppendList as $block) {
+            $initialBlockList[] = $block;
         }
-        // 3 - Re append previously removed trailing non block objects
-        foreach (array_reverse($trailingNonBlockNodeList) as $trailingNonBlockNode) {
-            $updatedItemList[] = $trailingNonBlockNode;
+        // 3 - Re append previously removed trailing block objects
+        foreach (array_reverse($trailingBlockList) as $trailingBlock) {
+            $initialBlockList[] = $trailingBlock;
         }
-        return $updatedItemList;
+
+        return $initialBlockList;
     }
 
     /**
-     * @param Block                         $groupedBaseNode
-     * @param Block[]                       $supportedNewNodeList
-     * @param ConfigurationItemInterface[]  $updatedItemList
+     * @param Block                         $baseBlock
      * @param DelegatedNodeUpdaterInterface $delegatedNodeUpdater
+     * @param Block|null                    $newBlock
      *
-     * @return array
+     * @return Block
      */
-    protected function updateAndMergeBlock(
-        Block $groupedBaseNode,
-        array $supportedNewNodeList,
-        array $updatedItemList,
-        DelegatedNodeUpdaterInterface $delegatedNodeUpdater
+    protected function mergeBlock(
+        Block $baseBlock,
+        DelegatedNodeUpdaterInterface $delegatedNodeUpdater,
+        Block $newBlock
     ) {
-        $key = $this->getSameNodeKey($groupedBaseNode, $supportedNewNodeList, $delegatedNodeUpdater);
+//        $updatedItemList = $this->headerFooterHelper->mergeHeaderNodeList(
+//            $baseBlock->getHeaderNodeList(),
+//            $updatedItemList
+//        );
+        return new Block(
+            $this->mergeItem(
+                $baseBlock->getItem(),
+                $newBlock->getItem(),
+                $delegatedNodeUpdater
+            ),
+            $baseBlock->getHeaderNodeList(),
+            $baseBlock->getFooterNodeList()
+        );
 
-        if (null !== $key) {
-            $updatedItemList = $this->mergeBlock(
-                $groupedBaseNode,
-                $updatedItemList,
-                $delegatedNodeUpdater,
-                $supportedNewNodeList[$key]
-            );
-            unset($supportedNewNodeList[$key]);
-        } else {
-            $updatedItemList = $this->mergeBlock($groupedBaseNode, $updatedItemList, $delegatedNodeUpdater);
-        }
-
-        return [
-            $updatedItemList,
-            $supportedNewNodeList
-        ];
+        //return $updatedItemList;
+//        return $this->headerFooterHelper->mergeFooterNodeList(
+//            $baseBlock->getFooterNodeList(),
+//            $updatedItemList
+//        );
     }
 
     /**
-     * @param array                         $itemList
-     * @param DelegatedNodeUpdaterInterface $delegatedNodeUpdater
-     * @return array
-     * @throws \Exception
-     */
-    protected function doItemGrouping(array $itemList, DelegatedNodeUpdaterInterface $delegatedNodeUpdater)
-    {
-        $groupedItemList = [];
-        while ($item = array_shift($itemList)) {
-            if ($delegatedNodeUpdater->getUpdater($item, false)) {
-                // Check if header comment exist if previous nodes
-                $headerNodeList = $this->headerFooterHelper->extractHeaderOrLeadingSpaceNode($groupedItemList);
-                $groupedItemList = $this->headerFooterHelper->updateListIfHeader($headerNodeList, $groupedItemList);
-                // Check if footer comment exist if base node list
-                $footerNodeList = $this->headerFooterHelper->extractNodeFooterList($itemList, $headerNodeList);
-                $itemList = $this->headerFooterHelper->updateListIfFooter($itemList, $footerNodeList);
-
-                $groupedItemList[] = new Block($item, $headerNodeList, $footerNodeList);
-            } else {
-                $groupedItemList[] = $item;
-            }
-        }
-
-        return $groupedItemList;
-    }
-
-    /**
-     * @param Block                         $groupedBaseNode
-     * @param Block[]                       $supportedNewNodeList
+     * @param Block                         $baseBlock
+     * @param Block[]                       $newBlockList
      * @param DelegatedNodeUpdaterInterface $delegatedNodeUpdater
      *
      * @return null|int
      */
     protected function getSameNodeKey(
-        Block $groupedBaseNode,
-        array $supportedNewNodeList,
+        Block $baseBlock,
+        array $newBlockList,
         DelegatedNodeUpdaterInterface $delegatedNodeUpdater
     ) {
         $key = null;
-        $updater = $delegatedNodeUpdater->getUpdater($groupedBaseNode->getItem(), false);
-        if ($updater) {
-            foreach ($supportedNewNodeList as $supportedNewNodeKey => $potentialNewNode) {
-                if ($updater->isSameNode($groupedBaseNode->getItem(), $potentialNewNode->getItem())) {
-                    $key = $supportedNewNodeKey;
+
+        if ($updater = $delegatedNodeUpdater->getUpdater($baseBlock->getItem(), false)) {
+            foreach ($newBlockList as $newBlockKey => $potentialNewNode) {
+                if ($updater->isSameNode($baseBlock->getItem(), $potentialNewNode->getItem())) {
+                    $key = $newBlockKey;
                     break;
                 }
             }
@@ -242,7 +180,7 @@ class NodeUpdaterHelper
      *
      * @return ConfigurationItemInterface
      */
-    protected function mergeNode(
+    protected function mergeItem(
         ConfigurationItemInterface $baseItem,
         ConfigurationItemInterface $newItem,
         DelegatedNodeUpdaterInterface $delegatedNodeUpdater

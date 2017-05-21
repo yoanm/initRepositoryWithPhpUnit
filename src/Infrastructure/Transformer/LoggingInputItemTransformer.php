@@ -2,6 +2,7 @@
 namespace Yoanm\PhpUnitConfigManager\Infrastructure\Transformer;
 
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Attribute;
+use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Block;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Logging;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Logging\Log;
 
@@ -10,14 +11,14 @@ class LoggingInputItemTransformer extends AbstractTransformer
     /**
      * @param array $inputList
      *
-     * @return Logging|null
+     * @return Block|null
      */
     public function extract(array $inputList)
     {
         $logEntryList = $this->extractLogEntryList($inputList);
 
         if (count($logEntryList)) {
-            return new Logging($logEntryList);
+            return new Block(new Logging($logEntryList));
         }
 
         return null;
@@ -41,7 +42,7 @@ class LoggingInputItemTransformer extends AbstractTransformer
                     new Attribute('type', $type),
                     new Attribute('target', $target)
                 );
-                $logEntryList[] = new Log($attributeList);
+                $logEntryList[] = new Block(new Log($attributeList));
             }
         }
 

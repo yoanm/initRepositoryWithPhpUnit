@@ -1,26 +1,36 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer;
 
-use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DelegatedNodeNormalizer;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NodeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DenormalizerInterface;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Helper\NodeNormalizerHelper;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\NormalizerInterface;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\UnmanagedNodeNormalizer;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\TestSuites\TestSuiteNormalizer;
 use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites;
 use Yoanm\PhpUnitConfigManager\Domain\Model\TestSuites\TestSuite;
 
-class TestSuitesNormalizer extends DelegatedNodeNormalizer implements DenormalizerInterface, NormalizerInterface
+class TestSuitesNormalizer extends NodeNormalizer implements DenormalizerInterface, NormalizerInterface
 {
     const NODE_NAME = 'testsuites';
 
+    /**
+     * @param NodeNormalizerHelper    $nodeNormalizerHelper
+     * @param TestSuiteNormalizer     $testSuiteNormalizer
+     * @param UnmanagedNodeNormalizer $unmanagedNodeNormalizer
+     */
     public function __construct(
+        NodeNormalizerHelper $nodeNormalizerHelper,
         TestSuiteNormalizer $testSuiteNormalizer,
         UnmanagedNodeNormalizer $unmanagedNodeNormalizer
     ) {
-        parent::__construct([
-            $testSuiteNormalizer,
-            $unmanagedNodeNormalizer,
-        ]);
+        parent::__construct(
+            $nodeNormalizerHelper,
+            [
+                $testSuiteNormalizer,
+                $unmanagedNodeNormalizer,
+            ]
+        );
     }
 
     /**
@@ -31,14 +41,11 @@ class TestSuitesNormalizer extends DelegatedNodeNormalizer implements Denormaliz
      */
     public function normalize($testSuites, \DOMDocument $document)
     {
-        $itemListNode = $this->createElementNode($document, self::NODE_NAME);
-        foreach ($testSuites->getItemList() as $item) {
-            $itemListNode->appendChild(
-                $this->getNormalizer($item)->normalize($item, $document)
-            );
-        }
+        $domNode = $this->createElementNode($document, self::NODE_NAME);
 
-        return $itemListNode;
+        $this->getHelper()->normalizeAndAppendBlockList($domNode, $testSuites, $document, $this);
+
+        return $domNode;
     }
 
     /**
@@ -48,12 +55,7 @@ class TestSuitesNormalizer extends DelegatedNodeNormalizer implements Denormaliz
      */
     public function denormalize(\DomNode $node)
     {
-        $itemList = [];
-        foreach ($this->extractChildNodeList($node) as $itemNode) {
-            $itemList[] = $this->getDenormalizer($itemNode)->denormalize($itemNode);
-        }
-
-        return new TestSuites($itemList);
+        return new TestSuites($this->getHelper()->denormalizeChildNode($node, $this));
     }
 
     /**

@@ -1,16 +1,18 @@
 <?php
 namespace Yoanm\PhpUnitConfigManager\Domain\Model\Common;
 
-class AttributeContainer implements ConfigurationItemInterface
+class AttributeContainer extends Node
 {
     /** @var Attribute[] */
     private $attributeList = [];
 
     /**
      * @param Attribute[] $attributeList
+     * @param Block[]     $itemList
      */
-    public function __construct(array $attributeList = [])
+    public function __construct(array $attributeList = [], array $itemList = [])
     {
+        parent::__construct($itemList);
         $this->attributeList = $attributeList;
     }
 
