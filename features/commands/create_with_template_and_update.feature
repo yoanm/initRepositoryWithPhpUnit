@@ -152,7 +152,6 @@ Feature: As user
       <!-- BLOCK_COMMENT - END logging -->
     """
 
-    @yo
   Scenario: Update some templates listeners items and add new ones
     Given I will use configuration template fixture "create_with_template.xml"
     When I execute phpunitcm create with following options:

@@ -37,7 +37,7 @@ class TestSuiteItemUpdater extends AbstractNodeUpdater
      *
      * @return TestSuiteItem
      */
-    public function merge(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
+    public function update(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
     {
         return new TestSuiteItem(
             $baseItem->getType(),

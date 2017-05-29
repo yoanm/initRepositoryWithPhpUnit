@@ -34,7 +34,7 @@ abstract class AbstractNodeUpdater implements DelegatedNodeUpdaterInterface
      *
      * @return ConfigurationItemInterface
      */
-    abstract public function merge(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem);
+    abstract public function update(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem);
 
     /**
      * @param ConfigurationItemInterface $item
@@ -50,21 +50,6 @@ abstract class AbstractNodeUpdater implements DelegatedNodeUpdaterInterface
      * @return bool
      */
     abstract public function isSameNode(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem);
-
-    /**
-     * @param ConfigurationItemInterface[] $itemList
-     *
-     * @return ConfigurationItemInterface
-     */
-    public function update(array $itemList)
-    {
-        $newItem = array_pop($itemList);
-        while ($baseItem = array_pop($itemList)) {
-            $newItem = $this->merge($baseItem, $newItem);
-        }
-
-        return $newItem;
-    }
 
     /**
      * @param ConfigurationItemInterface $item

@@ -28,7 +28,7 @@ class PhpUpdater extends AbstractNodeUpdater
      *
      * @return Php
      */
-    public function merge(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
+    public function update(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
     {
         return new Php(
             $this->getNodeUpdaterHelper()->mergeBlockList(

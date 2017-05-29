@@ -32,7 +32,7 @@ class ConfigurationFileUpdater extends AbstractNodeUpdater
      *
      * @return ConfigurationFile
      */
-    public function merge(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
+    public function update(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
     {
         return new ConfigurationFile(
             $this->plainValueUpdater->update($baseItem->getVersion(), $newItem->getVersion()),

@@ -31,11 +31,11 @@ class ListenerUpdater extends AbstractNodeUpdater
      *
      * @return Listener
      */
-    public function merge(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
+    public function update(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
     {
         return new Listener(
             $baseItem->getClass(),
-            $this->plainValueUpdater->update($newItem->getFile(), $baseItem->getFile()),
+            $this->plainValueUpdater->update($baseItem->getFile(), $newItem->getFile()),
             $this->getNodeUpdaterHelper()->mergeBlockList(
                 $baseItem->getBlockList(),
                 $newItem->getBlockList(),

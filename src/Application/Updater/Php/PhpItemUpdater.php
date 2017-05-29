@@ -37,11 +37,11 @@ class PhpItemUpdater extends AbstractNodeUpdater
      *
      * @return PhpItem
      */
-    public function merge(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
+    public function update(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
     {
         return new PhpItem(
             $baseItem->getName(),
-            $this->plainValueUpdater->update($newItem->getValue(), $baseItem->getValue()),
+            $this->plainValueUpdater->update($baseItem->getValue(), $newItem->getValue()),
             $this->attributeUpdater->update($baseItem->getAttributeList(), $newItem->getAttributeList())
         );
     }

@@ -3,13 +3,14 @@ namespace Yoanm\PhpUnitConfigManager\Application\Updater\Filter;
 
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AbstractNodeUpdater;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\AttributeUpdater;
+use Yoanm\PhpUnitConfigManager\Application\Updater\Common\BlockOrderDelegateInterface;
 use Yoanm\PhpUnitConfigManager\Application\Updater\Common\NodeUpdaterHelper;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Block;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\ConfigurationItemInterface;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Filter\ExcludedWhiteList;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Filter\WhiteList;
 
-class WhiteListUpdater extends AbstractNodeUpdater
+class WhiteListUpdater extends AbstractNodeUpdater implements BlockOrderDelegateInterface
 {
     /** @var AttributeUpdater */
     private $attributeUpdater;
@@ -36,17 +37,18 @@ class WhiteListUpdater extends AbstractNodeUpdater
      *
      * @return WhiteList
      */
-    public function merge(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
+    public function update(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
     {
         $itemList = $this->getNodeUpdaterHelper()->mergeBlockList(
             $baseItem->getBlockList(),
             $newItem->getBlockList(),
+            $this,
             $this
         );
 
         return new WhiteList(
             $this->attributeUpdater->update($baseItem->getAttributeList(), $newItem->getAttributeList()),
-            $this->reorder($itemList)
+            $itemList
         );
     }
 
@@ -67,42 +69,28 @@ class WhiteListUpdater extends AbstractNodeUpdater
     }
 
     /**
-     * @param Block[] $itemList
+     * @param Block[] $blockList
      *
      * @return Block[]
      */
-    private function reorder(array $itemList)
+    public function reorder(array $blockList)
     {
         // Try to move excluded node at end
-        list($blockList, $excludedNodeBlock) = $this->extractItemListAndExcluded($itemList);
-        if ($excludedNodeBlock) {
-            return $this->getNodeUpdaterHelper()->appendBeforeTrailingBlock([$excludedNodeBlock], $blockList);
-        }
-
-        return $itemList;
-    }
-
-    /**
-     * @param Block[] $itemList
-     *
-     * @return array
-     */
-    private function extractItemListAndExcluded(array $itemList)
-    {
         $excludedNodeBlock = null;
-        $blockList = [];
-        foreach ($itemList as $block) {
+        $orderedBlockList = [];
+        foreach ($blockList as $block) {
             if ($block->getItem() instanceof ExcludedWhiteList) {
                 $excludedNodeBlock = $block;
             } else {
-                $blockList[] = $block;
+                $orderedBlockList[] = $block;
             }
         }
 
-        return [
-            $blockList,
-            $excludedNodeBlock,
-        ];
+        if ($excludedNodeBlock) {
+            $orderedBlockList[] = $excludedNodeBlock;
+        }
+
+        return $orderedBlockList;
     }
 
     /**

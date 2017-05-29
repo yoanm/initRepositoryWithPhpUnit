@@ -4,8 +4,10 @@ namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Helper;
 use Yoanm\PhpUnitConfigManager\Application\Creator\BlockListCreator;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\NormalizedNode;
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common\DelegatedNodeNormalizerInterface;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\ConfigurationNormalizer;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Block;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Node;
+use Yoanm\PhpUnitConfigManager\Domain\Model\Common\UnmanagedNode;
 
 class NodeNormalizerHelper
 {
@@ -32,7 +34,8 @@ class NodeNormalizerHelper
     {
         $itemList = [];
         foreach ($nodeList as $node) {
-            $itemList[] = $delegatedNodeNormalizer->getDenormalizer($node)->denormalize($node);
+
+            $itemList[] = ($item = $delegatedNodeNormalizer->getDenormalizer($node)->denormalize($node));
         }
 
         return $this->blockListCreator->create($itemList);

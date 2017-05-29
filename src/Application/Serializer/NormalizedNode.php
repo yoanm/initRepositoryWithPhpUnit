@@ -17,11 +17,11 @@ class NormalizedNode
     private $nodeAttributeNSList = [];
 
     /**
-     * @param Attribute[]           $nodeAttributeList
-     * @param NormalizedNode[]      $nodeChildList
-     * @param string|null           $nodeName
-     * @param string|\DOMNode |null $nodeContent
-     * @param AttributeNS[]         $nodeAttributeNSList
+     * @param Attribute[]          $nodeAttributeList
+     * @param NormalizedNode[]     $nodeChildList
+     * @param string|null          $nodeName
+     * @param string|\DOMNode|null $nodeContent
+     * @param AttributeNS[]        $nodeAttributeNSList
      */
     public function __construct(
         array $nodeAttributeList = [],

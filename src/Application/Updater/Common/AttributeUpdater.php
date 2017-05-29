@@ -49,7 +49,7 @@ class AttributeUpdater
     {
         return new Attribute(
             $baseItem->getName(),
-            $this->plainValueUpdater->update($newItem->getValue(), $baseItem->getValue())
+            $this->plainValueUpdater->update($baseItem->getValue(), $newItem->getValue())
         );
     }
 }

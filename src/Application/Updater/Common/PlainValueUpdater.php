@@ -4,12 +4,12 @@ namespace Yoanm\PhpUnitConfigManager\Application\Updater\Common;
 class PlainValueUpdater
 {
     /**
-     * @param string $baseValue
-     * @param string $newValue
+     * @param string|null $newValue
+     * @param string|null $baseValue
      *
-     * @return string
+     * @return string|null
      */
-    public function update($newValue, $baseValue)
+    public function update($baseValue, $newValue)
     {
         return $newValue ? $newValue : $baseValue;
     }

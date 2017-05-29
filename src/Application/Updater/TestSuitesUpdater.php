@@ -27,7 +27,7 @@ class TestSuitesUpdater extends AbstractNodeUpdater
      *
      * @return TestSuites
      */
-    public function merge(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
+    public function update(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
     {
         return new TestSuites(
             $this->getNodeUpdaterHelper()->mergeBlockList(

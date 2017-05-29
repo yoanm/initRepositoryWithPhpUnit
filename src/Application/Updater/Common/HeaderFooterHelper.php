@@ -27,46 +27,6 @@ class HeaderFooterHelper
 
     /**
      * @param UnmanagedNode[]|ConfigurationItemInterface[] $itemList
-     *
-     * @return UnmanagedNode[]
-     */
-    public function extractNodeHeaderList(array $itemList)
-    {
-        // Manage only Header comment => Comment is before the node and comment have new line before and after
-        $potentialEndTextNode = array_pop($itemList);
-        $potentialCommentNode = array_pop($itemList);
-        $potentialStartTextNode = array_pop($itemList);
-        if ($this->isTextNodeWithNewLine($potentialEndTextNode)
-            && $this->isCommentNode($potentialCommentNode)
-            && $this->isTextNodeWithNewLine($potentialStartTextNode)
-        ) {
-            return [
-                $potentialStartTextNode,
-                $potentialCommentNode,
-                $potentialEndTextNode
-            ];
-        }
-
-        return [];
-    }
-
-    /**
-     * @param UnmanagedNode[]|ConfigurationItemInterface[] $itemList
-     *
-     * @return UnmanagedNode|null
-     */
-    public function extractLeadingSpace(array $itemList)
-    {
-        $potentialEndTextNode = array_pop($itemList);
-        if ($this->isTextNode($potentialEndTextNode)) {
-            return $potentialEndTextNode;
-        }
-
-        return null;
-    }
-
-    /**
-     * @param UnmanagedNode[]|ConfigurationItemInterface[] $itemList
      * @param UnmanagedNode[]                              $extractedHeaderBlockCommentNodeList
      *
      * @return UnmanagedNode[]
@@ -89,46 +49,6 @@ class HeaderFooterHelper
         }
 
         return $list;
-    }
-
-    /**
-     * @param UnmanagedNode[]                              $groupedBaseHeaderNodeList
-     * @param UnmanagedNode[]|ConfigurationItemInterface[] $updatedItemList
-     *
-     * @return UnmanagedNode[]|ConfigurationItemInterface[]
-     */
-    public function mergeHeaderNodeList(array $groupedBaseHeaderNodeList, array $updatedItemList)
-    {
-        foreach ($groupedBaseHeaderNodeList as $node) {
-            $updatedItemList[] = $node;
-        }
-
-        return $updatedItemList;
-    }
-
-    /**
-     * @param UnmanagedNode[]                              $groupedBaseFooterNodeList
-     * @param UnmanagedNode[]|ConfigurationItemInterface[] $updatedItemList
-     *
-     * @return UnmanagedNode[]|ConfigurationItemInterface[]
-     */
-    public function mergeFooterNodeList(array $groupedBaseFooterNodeList, array $updatedItemList)
-    {
-        foreach ($groupedBaseFooterNodeList as $node) {
-            $updatedItemList[] = $node;
-        }
-
-        return $updatedItemList;
-    }
-
-    /**
-     * @param UnmanagedNode[] $headerNodeList
-     * @return bool
-     */
-    public function hasHeaderBlockComment(array $headerNodeList)
-    {
-        return 3 === count($headerNodeList)
-            && $this->isCommentNode($headerNodeList[1]);
     }
 
     /**
@@ -163,6 +83,48 @@ class HeaderFooterHelper
             return $itemList;
         }
         return $itemList;
+    }
+
+
+
+    /**
+     * @param UnmanagedNode[]|ConfigurationItemInterface[] $itemList
+     *
+     * @return UnmanagedNode[]
+     */
+    protected function extractNodeHeaderList(array $itemList)
+    {
+        // Manage only Header comment => Comment is before the node and comment have new line before and after
+        $potentialEndTextNode = array_pop($itemList);
+        $potentialCommentNode = array_pop($itemList);
+        $potentialStartTextNode = array_pop($itemList);
+        if ($this->isTextNodeWithNewLine($potentialEndTextNode)
+            && $this->isCommentNode($potentialCommentNode)
+            && $this->isTextNodeWithNewLine($potentialStartTextNode)
+        ) {
+            return [
+                $potentialStartTextNode,
+                $potentialCommentNode,
+                $potentialEndTextNode
+            ];
+        }
+
+        return [];
+    }
+
+    /**
+     * @param UnmanagedNode[]|ConfigurationItemInterface[] $itemList
+     *
+     * @return UnmanagedNode|null
+     */
+    protected function extractLeadingSpace(array $itemList)
+    {
+        $potentialEndTextNode = array_pop($itemList);
+        if ($this->isTextNode($potentialEndTextNode)) {
+            return $potentialEndTextNode;
+        }
+
+        return null;
     }
 
     /**
@@ -226,7 +188,7 @@ class HeaderFooterHelper
             // In case no CR => it's a trailing comment with space(s) before
             if (!$this->isTextNodeWithNewLine($commentOrText)) {
                 $list = [$commentOrText, $potentialComment];
-            } else {
+            } /*else {
                 //Else, repush the two nodes and check if a header comment could be found
                 // In this case, the comment will be managed later (for the following element node)
                 $newItemList = $itemList;
@@ -237,7 +199,7 @@ class HeaderFooterHelper
                     // It's not the header block comment of a following element node => so add it as footer
                     $list = [$commentOrText, $potentialComment];
                 }
-            }
+            }*/
         }
 
         return $list;
@@ -266,5 +228,15 @@ class HeaderFooterHelper
         }
 
         return $list;
+    }
+
+    /**
+     * @param UnmanagedNode[] $headerNodeList
+     * @return bool
+     */
+    private function hasHeaderBlockComment(array $headerNodeList)
+    {
+        return 3 === count($headerNodeList)
+            && $this->isCommentNode($headerNodeList[1]);
     }
 }

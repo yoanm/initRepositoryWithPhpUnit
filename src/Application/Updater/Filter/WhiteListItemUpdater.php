@@ -31,7 +31,7 @@ class WhiteListItemUpdater extends AbstractNodeUpdater
      *
      * @return WhiteListItem
      */
-    public function merge(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
+    public function update(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
     {
         return new WhiteListItem(
             $baseItem->getType(),

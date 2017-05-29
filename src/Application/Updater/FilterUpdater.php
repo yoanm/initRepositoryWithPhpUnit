@@ -27,7 +27,7 @@ class FilterUpdater extends AbstractNodeUpdater
      *
      * @return Filter
      */
-    public function merge(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
+    public function update(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
     {
         return new Filter(
             $this->getNodeUpdaterHelper()->mergeBlockList(

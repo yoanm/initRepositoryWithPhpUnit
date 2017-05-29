@@ -2,6 +2,7 @@
 namespace Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\Common;
 
 use Yoanm\PhpUnitConfigManager\Application\Serializer\Helper\NodeNormalizerHelper;
+use Yoanm\PhpUnitConfigManager\Application\Serializer\Normalizer\ConfigurationNormalizer;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Block;
 use Yoanm\PhpUnitConfigManager\Domain\Model\Common\Node;
 
@@ -90,10 +91,12 @@ class NodeNormalizer implements DelegatedNodeNormalizerInterface
      */
     protected function denormalizeChildNode(\DomNode $node)
     {
-        return $this->getHelper()->denormalizeChildNodeList(
+        $tmp = $this->getHelper()->denormalizeChildNodeList(
             $this->extractChildNodeList($node),
             $this
         );
+
+        return $tmp;
     }
 
     /**

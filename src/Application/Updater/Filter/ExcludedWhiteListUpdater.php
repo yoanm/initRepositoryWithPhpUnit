@@ -33,7 +33,7 @@ class ExcludedWhiteListUpdater extends AbstractNodeUpdater
      *
      * @return ExcludedWhiteList
      */
-    public function merge(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
+    public function update(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
     {
         return new ExcludedWhiteList(
             $this->attributeUpdater->update($baseItem->getAttributeList(), $newItem->getAttributeList()),

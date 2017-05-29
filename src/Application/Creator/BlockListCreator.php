@@ -35,6 +35,8 @@ class BlockListCreator
             });
         }
 
+        $groupedItemList = $this->extractLastTrailingTextNode($groupedItemList);
+
         return $groupedItemList;
     }
 
@@ -78,6 +80,41 @@ class BlockListCreator
         // Append potential remaining unamaged node
         if (count($currentUnmanagedNodeList)) {
             $groupedItemList[] = new Block(array_shift($currentUnmanagedNodeList), [], $currentUnmanagedNodeList);
+        }
+
+        return $groupedItemList;
+    }
+
+    /**
+     * Will extract last leading text node and append it again in a new Block node
+     * @param Block[] $groupedItemList
+     *
+     * @return Block[]
+     */
+    private function extractLastTrailingTextNode(array $groupedItemList)
+    {
+        if (0 === count($groupedItemList)) {
+            return $groupedItemList;
+        }
+        $lastGroup = array_pop($groupedItemList);
+        $footerNodeList = $lastGroup ? $lastGroup->getFooterNodeList() : [];
+        /** @var UnmanagedNode|null $potentialEndTextNode */
+        $potentialEndTextNode = array_pop($footerNodeList);
+
+        if ($potentialEndTextNode instanceof UnmanagedNode
+            && $potentialEndTextNode->getValue() instanceof \DOMText
+            && false !== strpos($potentialEndTextNode->getValue()->nodeValue, "\n")
+        ) {
+            // If footer node exist and it's a text node
+            // => Keep it to append it after new nodes but keep the rest of block above new nodes
+            $groupedItemList[] = new Block(
+                $lastGroup->getItem(),
+                $lastGroup->getHeaderNodeList(),
+                $footerNodeList
+            );
+            $groupedItemList[] = new Block($potentialEndTextNode);
+        } else {
+            $groupedItemList[] = $lastGroup;
         }
 
         return $groupedItemList;

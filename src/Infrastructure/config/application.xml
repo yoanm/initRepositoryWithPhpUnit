@@ -11,88 +11,89 @@
 
         <!-- Updater -->
         <service id="phpunit_config_manager.app.updater.helper.header_footer" class="Yoanm\PhpUnitConfigManager\Application\Updater\Common\HeaderFooterHelper"/>
-        <service id="phpunit_config_manager.app.updater.common.helper" class="Yoanm\PhpUnitConfigManager\Application\Updater\Common\NodeUpdaterHelper">
-            <argument type="service" id="phpunit_config_manager.app.updater.helper.header_footer" />
+        <service id="phpunit_config_manager.app.updater.helper.block_list" class="Yoanm\PhpUnitConfigManager\Application\Updater\Common\BlockListHelper"/>
+        <service id="phpunit_config_manager.app.updater.helper.node" class="Yoanm\PhpUnitConfigManager\Application\Updater\Common\NodeUpdaterHelper">
+            <argument type="service" id="phpunit_config_manager.app.updater.helper.block_list" />
         </service>
         <service id="phpunit_config_manager.app.updater.common.plain_value" class="Yoanm\PhpUnitConfigManager\Application\Updater\Common\PlainValueUpdater"/>
         <service id="phpunit_config_manager.app.updater.common.attribute" class="Yoanm\PhpUnitConfigManager\Application\Updater\Common\AttributeUpdater">
             <argument type="service" id="phpunit_config_manager.app.updater.common.plain_value" />
-            <argument type="service" id="phpunit_config_manager.app.updater.common.helper" />
+            <argument type="service" id="phpunit_config_manager.app.updater.helper.node" />
         </service>
         <service id="phpunit_config_manager.app.updater.groups.item" class="Yoanm\PhpUnitConfigManager\Application\Updater\Groups\GroupItemUpdater">
             <argument type="service" id="phpunit_config_manager.app.updater.common.plain_value" />
-            <argument type="service" id="phpunit_config_manager.app.updater.common.helper" />
+            <argument type="service" id="phpunit_config_manager.app.updater.helper.node" />
         </service>
         <service id="phpunit_config_manager.app.updater.test_suites.suite.item" class="Yoanm\PhpUnitConfigManager\Application\Updater\TestSuites\TestSuiteItemUpdater">
             <argument type="service" id="phpunit_config_manager.app.updater.common.attribute"/>
             <argument type="service" id="phpunit_config_manager.app.updater.common.plain_value" />
-            <argument type="service" id="phpunit_config_manager.app.updater.common.helper" />
+            <argument type="service" id="phpunit_config_manager.app.updater.helper.node" />
         </service>
         <service id="phpunit_config_manager.app.updater.test_suites.suite.excluded_item" class="Yoanm\PhpUnitConfigManager\Application\Updater\TestSuites\ExcludedTestSuiteItemUpdater">
-            <argument type="service" id="phpunit_config_manager.app.updater.common.helper" />
+            <argument type="service" id="phpunit_config_manager.app.updater.helper.node" />
         </service>
         <service id="phpunit_config_manager.app.updater.test_suites.suite" class="Yoanm\PhpUnitConfigManager\Application\Updater\TestSuites\TestSuiteUpdater">
             <argument type="service" id="phpunit_config_manager.app.updater.common.attribute"/>
             <argument type="service" id="phpunit_config_manager.app.updater.common.plain_value" />
             <argument type="service" id="phpunit_config_manager.app.updater.test_suites.suite.item"/>
             <argument type="service" id="phpunit_config_manager.app.updater.test_suites.suite.excluded_item"/>
-            <argument type="service" id="phpunit_config_manager.app.updater.common.helper" />
+            <argument type="service" id="phpunit_config_manager.app.updater.helper.node" />
         </service>
         <service id="phpunit_config_manager.app.updater.test_suites" class="Yoanm\PhpUnitConfigManager\Application\Updater\TestSuitesUpdater">
             <argument type="service" id="phpunit_config_manager.app.updater.test_suites.suite"/>
-            <argument type="service" id="phpunit_config_manager.app.updater.common.helper" />
+            <argument type="service" id="phpunit_config_manager.app.updater.helper.node" />
         </service>
         <service id="phpunit_config_manager.app.updater.groups.inclusion" class="Yoanm\PhpUnitConfigManager\Application\Updater\Groups\GroupInclusionUpdater">
             <argument type="service" id="phpunit_config_manager.app.updater.groups.item"/>
-            <argument type="service" id="phpunit_config_manager.app.updater.common.helper" />
+            <argument type="service" id="phpunit_config_manager.app.updater.helper.node" />
         </service>
         <service id="phpunit_config_manager.app.updater.groups" class="Yoanm\PhpUnitConfigManager\Application\Updater\GroupsUpdater">
             <argument type="service" id="phpunit_config_manager.app.updater.groups.inclusion"/>
-            <argument type="service" id="phpunit_config_manager.app.updater.common.helper" />
+            <argument type="service" id="phpunit_config_manager.app.updater.helper.node" />
         </service>
         <service id="phpunit_config_manager.app.updater.filter.whitelist.item" class="Yoanm\PhpUnitConfigManager\Application\Updater\Filter\WhiteListItemUpdater">
             <argument type="service" id="phpunit_config_manager.app.updater.common.attribute"/>
-            <argument type="service" id="phpunit_config_manager.app.updater.common.helper" />
+            <argument type="service" id="phpunit_config_manager.app.updater.helper.node" />
         </service>
         <service id="phpunit_config_manager.app.updater.filter.whitelist.excluded" class="Yoanm\PhpUnitConfigManager\Application\Updater\Filter\ExcludedWhiteListUpdater">
             <argument type="service" id="phpunit_config_manager.app.updater.common.attribute"/>
             <argument type="service" id="phpunit_config_manager.app.updater.filter.whitelist.item"/>
-            <argument type="service" id="phpunit_config_manager.app.updater.common.helper" />
+            <argument type="service" id="phpunit_config_manager.app.updater.helper.node" />
         </service>
         <service id="phpunit_config_manager.app.updater.filter.whitelist" class="Yoanm\PhpUnitConfigManager\Application\Updater\Filter\WhiteListUpdater">
             <argument type="service" id="phpunit_config_manager.app.updater.common.attribute"/>
             <argument type="service" id="phpunit_config_manager.app.updater.filter.whitelist.item"/>
             <argument type="service" id="phpunit_config_manager.app.updater.filter.whitelist.excluded"/>
-            <argument type="service" id="phpunit_config_manager.app.updater.common.helper" />
+            <argument type="service" id="phpunit_config_manager.app.updater.helper.node" />
         </service>
         <service id="phpunit_config_manager.app.updater.filter" class="Yoanm\PhpUnitConfigManager\Application\Updater\FilterUpdater">
             <argument type="service" id="phpunit_config_manager.app.updater.filter.whitelist"/>
-            <argument type="service" id="phpunit_config_manager.app.updater.common.helper" />
+            <argument type="service" id="phpunit_config_manager.app.updater.helper.node" />
         </service>
         <service id="phpunit_config_manager.app.updater.loging.item" class="Yoanm\PhpUnitConfigManager\Application\Updater\Logging\LogUpdater">
             <argument type="service" id="phpunit_config_manager.app.updater.common.attribute"/>
-            <argument type="service" id="phpunit_config_manager.app.updater.common.helper" />
+            <argument type="service" id="phpunit_config_manager.app.updater.helper.node" />
         </service>
         <service id="phpunit_config_manager.app.updater.logging" class="Yoanm\PhpUnitConfigManager\Application\Updater\LoggingUpdater">
             <argument type="service" id="phpunit_config_manager.app.updater.loging.item"/>
-            <argument type="service" id="phpunit_config_manager.app.updater.common.helper" />
+            <argument type="service" id="phpunit_config_manager.app.updater.helper.node" />
         </service>
         <service id="phpunit_config_manager.app.updater.listeners.item" class="Yoanm\PhpUnitConfigManager\Application\Updater\Listeners\ListenerUpdater">
             <argument type="service" id="phpunit_config_manager.app.updater.common.plain_value"/>
-            <argument type="service" id="phpunit_config_manager.app.updater.common.helper" />
+            <argument type="service" id="phpunit_config_manager.app.updater.helper.node" />
         </service>
         <service id="phpunit_config_manager.app.updater.listeners" class="Yoanm\PhpUnitConfigManager\Application\Updater\ListenersUpdater">
             <argument type="service" id="phpunit_config_manager.app.updater.listeners.item"/>
-            <argument type="service" id="phpunit_config_manager.app.updater.common.helper" />
+            <argument type="service" id="phpunit_config_manager.app.updater.helper.node" />
         </service>
         <service id="phpunit_config_manager.app.updater.php.item" class="Yoanm\PhpUnitConfigManager\Application\Updater\Php\PhpItemUpdater">
             <argument type="service" id="phpunit_config_manager.app.updater.common.attribute"/>
             <argument type="service" id="phpunit_config_manager.app.updater.common.plain_value"/>
-            <argument type="service" id="phpunit_config_manager.app.updater.common.helper" />
+            <argument type="service" id="phpunit_config_manager.app.updater.helper.node" />
         </service>
         <service id="phpunit_config_manager.app.updater.php" class="Yoanm\PhpUnitConfigManager\Application\Updater\PhpUpdater">
             <argument type="service" id="phpunit_config_manager.app.updater.php.item"/>
-            <argument type="service" id="phpunit_config_manager.app.updater.common.helper" />
+            <argument type="service" id="phpunit_config_manager.app.updater.helper.node" />
         </service>
         <service id="phpunit_config_manager.app.updater.configuration" class="Yoanm\PhpUnitConfigManager\Application\Updater\ConfigurationUpdater">
             <argument type="service" id="phpunit_config_manager.app.updater.common.attribute"/>
@@ -102,12 +103,12 @@
             <argument type="service" id="phpunit_config_manager.app.updater.logging"/>
             <argument type="service" id="phpunit_config_manager.app.updater.listeners"/>
             <argument type="service" id="phpunit_config_manager.app.updater.php"/>
-            <argument type="service" id="phpunit_config_manager.app.updater.common.helper" />
+            <argument type="service" id="phpunit_config_manager.app.updater.helper.node" />
         </service>
         <service id="phpunit_config_manager.app.updater.configuration_file" class="Yoanm\PhpUnitConfigManager\Application\Updater\ConfigurationFileUpdater">
             <argument type="service" id="phpunit_config_manager.app.updater.common.plain_value"/>
             <argument type="service" id="phpunit_config_manager.app.updater.configuration"/>
-            <argument type="service" id="phpunit_config_manager.app.updater.common.helper" />
+            <argument type="service" id="phpunit_config_manager.app.updater.helper.node" />
         </service>
 
         <!-- Normalizers -->

@@ -27,7 +27,7 @@ class GroupsUpdater extends AbstractNodeUpdater
      *
      * @return Groups
      */
-    public function merge(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
+    public function update(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
     {
         return new Groups(
             $this->getNodeUpdaterHelper()->mergeBlockList(

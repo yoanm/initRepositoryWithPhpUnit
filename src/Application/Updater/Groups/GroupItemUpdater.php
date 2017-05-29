@@ -31,7 +31,7 @@ class GroupItemUpdater extends AbstractNodeUpdater
      *
      * @return Group
      */
-    public function merge(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
+    public function update(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
     {
         return $baseItem;
     }

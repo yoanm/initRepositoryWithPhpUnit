@@ -43,6 +43,12 @@ class UpdateConfigurationFileList
      */
     protected function getConfiguration(UpdateConfigurationFileListRequest $request)
     {
-        return $this->configurationFileUpdater->update($request->getConfigurationFileList());
+        $configurationFileList = $request->getConfigurationFileList();
+        $configurationFile = array_shift($configurationFileList);
+        while (($newConfigurationFile = array_shift($configurationFileList)) instanceof ConfigurationFile) {
+            $configurationFile = $this->configurationFileUpdater->update($configurationFile, $newConfigurationFile);
+        }
+
+        return $configurationFile;
     }
 }

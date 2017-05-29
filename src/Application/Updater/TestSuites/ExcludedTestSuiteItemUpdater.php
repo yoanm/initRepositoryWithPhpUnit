@@ -17,7 +17,7 @@ class ExcludedTestSuiteItemUpdater extends AbstractNodeUpdater
      *
      * @return ExcludedTestSuiteItem
      */
-    public function merge(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
+    public function update(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
     {
         return new ExcludedTestSuiteItem($baseItem->getValue());
     }

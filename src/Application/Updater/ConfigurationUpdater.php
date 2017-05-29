@@ -54,7 +54,7 @@ class ConfigurationUpdater extends AbstractNodeUpdater
      *
      * @return Configuration
      */
-    public function merge(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
+    public function update(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
     {
         return new Configuration(
             $this->attributeUpdater->update(

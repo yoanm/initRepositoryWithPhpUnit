@@ -31,7 +31,7 @@ class LogUpdater extends AbstractNodeUpdater
      *
      * @return Log
      */
-    public function merge(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
+    public function update(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
     {
         return new Log(
             $this->attributeUpdater->update($baseItem->getAttributeList(), $newItem->getAttributeList())

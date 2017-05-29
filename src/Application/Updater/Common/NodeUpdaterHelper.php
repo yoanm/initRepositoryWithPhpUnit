@@ -7,15 +7,42 @@ use Yoanm\PhpUnitConfigManager\Domain\Model\Common\UnmanagedNode;
 
 class NodeUpdaterHelper
 {
-    /** @var HeaderFooterHelper */
-    private $headerFooterHelper;
+    /** @var BlockListHelper */
+    private $blockListHelper;
 
     /**
-     * @param HeaderFooterHelper    $headerFooterHelper
+     * @param BlockListHelper $blockListHelper
      */
-    public function __construct(HeaderFooterHelper $headerFooterHelper)
+    public function __construct(BlockListHelper $blockListHelper)
     {
-        $this->headerFooterHelper = $headerFooterHelper;
+        $this->blockListHelper = $blockListHelper;
+    }
+
+    /**
+     * @param Block[]                          $baseItemList
+     * @param Block[]                          $newItemList
+     * @param DelegatedNodeUpdaterInterface    $delegatedNodeUpdater
+     * @param BlockOrderDelegateInterface|null $blockOrderDelegate
+     *
+     * @return ConfigurationItemInterface[]
+     */
+    public function mergeBlockList(
+        array $baseItemList,
+        array $newItemList,
+        DelegatedNodeUpdaterInterface $delegatedNodeUpdater,
+        BlockOrderDelegateInterface $blockOrderDelegate = null
+    ) {
+        $blockList = $this->doMergeBlockList(
+            $baseItemList,
+            $newItemList,
+            $delegatedNodeUpdater
+        );
+
+        if ($blockOrderDelegate) {
+            $blockList = $this->reorder($blockOrderDelegate, $blockList);
+        }
+
+        return $blockList;
     }
 
     /**
@@ -25,7 +52,7 @@ class NodeUpdaterHelper
      *
      * @return Block[]
      */
-    public function mergeBlockList(
+    protected function doMergeBlockList(
         array $baseBlockList,
         array $newBlockList,
         DelegatedNodeUpdaterInterface $delegatedNodeUpdater
@@ -41,18 +68,16 @@ class NodeUpdaterHelper
             $updatedItemList[] = isset($newBlockList[$key])
                 ? $this->mergeBlock(
                     $baseBlock,
-                    $delegatedNodeUpdater,
-                    $newBlockList[$key]
+                    $newBlockList[$key],
+                    $delegatedNodeUpdater
                 )
                 : $baseBlock
             ;
-
-            if (null !== $key) {
-                unset($newBlockList[$key]);
-            }
+            // Do it even if key is not present => avoid a useless if
+            unset($newBlockList[$key]);
         }
         if (count($newBlockList)) {
-            $updatedItemList = $this->appendBeforeTrailingBlock(
+            $updatedItemList = $this->blockListHelper->appendBeforeTrailingBlock(
                 $newBlockList,
                 $updatedItemList
             );
@@ -62,89 +87,32 @@ class NodeUpdaterHelper
     }
 
     /**
-     * @param Block[] $blockToAppendList
-     * @param Block[] $initialBlockList
-     *
-     * @return Block[]
-     */
-    public function appendBeforeTrailingBlock(
-        array $blockToAppendList,
-        array $initialBlockList
-    ) {
-        // 1 - Remove trailing block object (spaces and comments)
-        $trailingBlockList = [];
-        /** @var Block $node */
-        while ($node = array_pop($initialBlockList)) {
-            if (!$node->getItem() instanceof UnmanagedNode) {
-                $initialBlockList[] = $node;
-                break;
-            } else {
-                /** @var UnmanagedNode $unmanagedNode */
-                $unmanagedNode = $node->getItem();
-                $footerNodeList = $node->getFooterNodeList();
-                /** @var UnmanagedNode|null $potentialEndTextNode */
-                $potentialEndTextNode = array_pop($footerNodeList);
-                if ($potentialEndTextNode && $potentialEndTextNode->getValue()->nodeType === XML_TEXT_NODE) {
-                    // If footer node exist and it's a text node
-                    // => Keep it to append it after new nodes but keep the rest of block above new nodes
-                    $trailingBlockList[] = new Block($potentialEndTextNode);
-                    $initialBlockList[] = new Block(
-                        $unmanagedNode,
-                        $node->getHeaderNodeList(),
-                        $footerNodeList
-                    );
-                    break;
-                }
-                $trailingBlockList[] = $node;
-                if (!$potentialEndTextNode && $unmanagedNode->getValue()->nodeType === XML_TEXT_NODE) {
-                    // If current node has no footer and is a text node => Keep it to append it after new nodes
-                    break;
-                }
-            }
-        }
-        // 2 - Append remaining new node
-        foreach ($blockToAppendList as $block) {
-            $initialBlockList[] = $block;
-        }
-        // 3 - Re append previously removed trailing block objects
-        foreach (array_reverse($trailingBlockList) as $trailingBlock) {
-            $initialBlockList[] = $trailingBlock;
-        }
-
-        return $initialBlockList;
-    }
-
-    /**
      * @param Block                         $baseBlock
-     * @param DelegatedNodeUpdaterInterface $delegatedNodeUpdater
      * @param Block|null                    $newBlock
+     * @param DelegatedNodeUpdaterInterface $delegatedNodeUpdater
      *
      * @return Block
      */
     protected function mergeBlock(
         Block $baseBlock,
-        DelegatedNodeUpdaterInterface $delegatedNodeUpdater,
-        Block $newBlock
+        Block $newBlock,
+        DelegatedNodeUpdaterInterface $delegatedNodeUpdater
     ) {
-//        $updatedItemList = $this->headerFooterHelper->mergeHeaderNodeList(
-//            $baseBlock->getHeaderNodeList(),
-//            $updatedItemList
-//        );
+        // Merge only main item, old header and footer are kept
+        // Except if no base header/footer exist
         return new Block(
             $this->mergeItem(
                 $baseBlock->getItem(),
                 $newBlock->getItem(),
                 $delegatedNodeUpdater
             ),
-            $baseBlock->getHeaderNodeList(),
-            $baseBlock->getFooterNodeList()
+            0 === count($baseBlock->getHeaderNodeList())
+                ? $newBlock->getHeaderNodeList()
+                : $baseBlock->getHeaderNodeList(),
+            0 === count($baseBlock->getFooterNodeList())
+                ? $newBlock->getFooterNodeList()
+                : $baseBlock->getFooterNodeList()
         );
-
-        //return $updatedItemList;
-//        return $this->headerFooterHelper->mergeFooterNodeList(
-//            $baseBlock->getFooterNodeList(),
-//            $updatedItemList
-//        );
     }
 
     /**
@@ -161,7 +129,7 @@ class NodeUpdaterHelper
     ) {
         $key = null;
 
-        if ($updater = $delegatedNodeUpdater->getUpdater($baseBlock->getItem(), false)) {
+        if (count($newBlockList) && $updater = $delegatedNodeUpdater->getUpdater($baseBlock->getItem(), false)) {
             foreach ($newBlockList as $newBlockKey => $potentialNewNode) {
                 if ($updater->isSameNode($baseBlock->getItem(), $potentialNewNode->getItem())) {
                     $key = $newBlockKey;
@@ -194,6 +162,30 @@ class NodeUpdaterHelper
             return $newItem;
         }
 
-        return $updater->update([$baseItem, $newItem]);
+        return $updater->update($baseItem, $newItem);
+    }
+
+    /**
+     * @param BlockOrderDelegateInterface $blockOrderDelegate
+     * @param array $blockList
+     * @return array|\Yoanm\PhpUnitConfigManager\Domain\Model\Common\Block[]
+     */
+    protected function reorder(BlockOrderDelegateInterface $blockOrderDelegate, array $blockList)
+    {
+        /** @var Block|null $lastBlock */
+        $lastBlock = array_pop($blockList);
+        // If last block is not a trailing space, re-append it
+        if (!$lastBlock || !$lastBlock->getItem() instanceof UnmanagedNode) {
+            $blockList[] = $lastBlock;
+            $lastBlock = null;
+        }
+        $blockList = $blockOrderDelegate->reorder($blockList);
+
+        // Append potential last trailing block if it exist
+        if ($lastBlock) {
+            $blockList[] = $lastBlock;
+        }
+
+        return $blockList;
     }
 }

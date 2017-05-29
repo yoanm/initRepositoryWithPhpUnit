@@ -28,7 +28,7 @@ class LoggingUpdater extends AbstractNodeUpdater
      *
      * @return Logging
      */
-    public function merge(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
+    public function update(ConfigurationItemInterface $baseItem, ConfigurationItemInterface $newItem)
     {
         return new Logging(
             $this->getNodeUpdaterHelper()->mergeBlockList(
